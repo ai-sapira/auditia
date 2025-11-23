@@ -1,0 +1,14 @@
+{
+  "buildCommand": "cd auditia-os && npm run build",
+  "outputDirectory": "auditia-os/dist",
+  "devCommand": "cd auditia-os && npm run dev",
+  "installCommand": "cd auditia-os && npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+
