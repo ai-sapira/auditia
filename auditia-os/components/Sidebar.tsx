@@ -142,96 +142,104 @@ export const Sidebar: React.FC<SidebarProps> = ({
     return (
       <div className="w-72 h-screen bg-white border-r border-stone-200 flex flex-col sticky top-0 animate-slide-in z-40">
         {/* Client Header */}
-        <div className="h-28 flex flex-col justify-center px-6 border-b border-stone-100 bg-white">
+        <div className="h-32 flex flex-col justify-center px-6 border-b border-stone-100 bg-white">
            <div className="flex items-center gap-2 mb-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-              <span className="text-[10px] font-medium text-stone-400 uppercase tracking-wider">Cliente activo</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
+              <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">Cliente activo</span>
            </div>
-           <span className="font-serif text-2xl font-bold text-stone-900 leading-none tracking-tight">{selectedClient}</span>
+           <span className="font-serif text-xl font-bold text-stone-900 leading-tight tracking-tight">{selectedClient}</span>
         </div>
         
         <div className="flex-1 overflow-y-auto py-8 px-6 space-y-8">
            
-           {/* 1. Overview */}
-           <div 
-              className="flex items-center gap-3 px-3 py-2.5 -mx-3 rounded-md text-[13px] font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-50 cursor-pointer transition-all group"
-           >
-              <PieChart className="w-4 h-4 text-stone-400 group-hover:text-stone-600 transition-colors" /> 
-              {t('sidebar.client_overview')}
+           {/* 1. Overview (Always Active in this view) */}
+           <div className="py-1 mb-6">
+             <div className="flex items-center gap-2 px-0 group cursor-pointer">
+                <h3 className="text-[13px] font-sans text-stone-900 pl-1 font-medium">Overview del cliente</h3>
+                <div className="w-4 h-4 flex items-center justify-center">
+                   <div className="w-1.5 h-1.5 bg-stone-900 rounded-full"></div>
+                </div>
+             </div>
            </div>
 
            {/* 2. Encargos */}
-           <div>
-              <SectionHeader label={t('sidebar.engagements_list')} />
+           <div className="mb-6">
+              <div className="flex items-center gap-2 px-0 mb-3">
+                 <h3 className="text-[13px] font-sans text-stone-500 pl-1">Encargos</h3>
+              </div>
               
               {/* Search Input */}
-              <div className="relative mb-4 group">
-                 <Search className="absolute left-0 top-2 w-3.5 h-3.5 text-stone-400 group-hover:text-stone-600 transition-colors" />
+              <div className="relative mb-3 group">
+                 <Search className="absolute left-0 top-2.5 w-3.5 h-3.5 text-stone-400 group-hover:text-stone-600 transition-colors" />
                  <input 
                    type="text" 
-                   placeholder={t('sidebar.search')} 
-                   className="w-full bg-transparent border-b border-stone-200 py-1.5 pl-6 pr-2 text-[12px] text-stone-600 focus:outline-none focus:border-stone-900 transition-colors placeholder:text-stone-300 font-sans"
+                   placeholder="Buscar encargo..." 
+                   className="w-full bg-transparent border-b border-stone-200 py-2 pl-6 pr-2 text-[13px] text-stone-600 focus:outline-none focus:border-stone-900 transition-colors placeholder:text-stone-300 font-sans"
                  />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1 pl-1">
                  {/* Active Engagement Card - High Fidelity */}
                  <div 
                     onClick={() => onSelectEngagement('eng-001')}
-                    className="group relative pl-4 border-l-2 border-emerald-500 cursor-pointer py-2 transition-all hover:pl-5"
+                    className="group relative pl-4 border-l-[1.5px] border-emerald-500 cursor-pointer py-2.5 transition-all hover:pl-5"
                  >
-                    <div className="flex justify-between items-center">
-                       <span className="text-[13px] font-serif font-semibold text-stone-900 group-hover:text-emerald-900 transition-colors">Auditoría 2025</span>
-                       <ArrowRight className="w-3 h-3 text-emerald-500 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+                    <div className="flex justify-between items-center mb-0.5">
+                       <span className="text-[14px] font-serif font-medium text-stone-900 group-hover:text-emerald-900 transition-colors">Auditoría 2025</span>
+                       <ArrowRight className="w-3.5 h-3.5 text-emerald-600 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                     </div>
-                    <span className="text-[10px] text-stone-400 group-hover:text-stone-500 mt-0.5 block">En curso · FY25</span>
+                    <span className="text-[11px] text-stone-500 group-hover:text-stone-600 block">En curso</span>
                  </div>
                  
                  {/* Closed Engagement */}
                  <div 
                     onClick={() => onSelectEngagement('eng-002')}
-                    className="group relative pl-4 border-l-2 border-transparent hover:border-stone-200 cursor-pointer py-2 transition-all hover:pl-5 opacity-70 hover:opacity-100"
+                    className="group relative pl-4 border-l-[1.5px] border-stone-100 hover:border-stone-300 cursor-pointer py-2.5 transition-all hover:pl-5 opacity-80 hover:opacity-100"
                  >
-                    <div className="flex justify-between items-center">
-                        <span className="text-[13px] font-serif font-medium text-stone-500 group-hover:text-stone-800 transition-colors">Auditoría 2024</span>
+                    <div className="flex justify-between items-center mb-0.5">
+                        <span className="text-[14px] font-serif text-stone-500 group-hover:text-stone-800 transition-colors">Auditoría 2024</span>
                     </div>
-                    <span className="text-[10px] text-stone-300 group-hover:text-stone-400 mt-0.5 block">Cerrado</span>
+                    <span className="text-[11px] text-stone-400 group-hover:text-stone-500 block">Cerrado</span>
                  </div>
 
                  {/* Create New */}
-                 <button className="flex items-center gap-2 text-[11px] font-medium text-stone-400 hover:text-stone-900 mt-4 pt-3 transition-colors group w-full">
-                    <div className="w-5 h-5 rounded border border-stone-200 border-dashed flex items-center justify-center group-hover:border-solid group-hover:border-stone-400 transition-all">
-                        <Plus className="w-3 h-3" /> 
+                 <button className="flex items-center gap-2 text-[12px] font-medium text-stone-400 hover:text-stone-900 mt-5 transition-colors group w-full pl-1">
+                    <div className="w-4 h-4 rounded border border-stone-300 flex items-center justify-center group-hover:border-stone-900 transition-all bg-white">
+                        <Plus className="w-2.5 h-2.5 text-stone-500 group-hover:text-stone-900" /> 
                     </div>
-                    {t('top_nav.btn_create')}
+                    Crear encargo
                  </button>
               </div>
            </div>
 
            {/* 3. Comentarios */}
-           <div className="flex items-center gap-3 px-3 py-2.5 -mx-3 rounded-md text-[13px] font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-50 cursor-pointer transition-all group">
-              <MessageSquare className="w-4 h-4 text-stone-400 group-hover:text-stone-600 transition-colors" />
-              {t('sidebar.client_comments')}
+           <div className="py-1">
+             <div className="flex items-center gap-2 px-0 group cursor-pointer">
+                <h3 className="text-[13px] font-sans text-stone-500 pl-1 cursor-pointer group-hover:text-stone-900 transition-colors">Comentarios con cliente</h3>
+                <div className="w-4 h-4 flex items-center justify-center">
+                   <div className="w-1.5 h-1.5 bg-stone-300 rounded-full group-hover:bg-stone-900 transition-colors"></div>
+                </div>
+             </div>
            </div>
 
-           {/* 4. Client Intelligence (Others) */}
-           <div className="pt-6 border-t border-stone-50">
+           {/* 4. Otros */}
+           <div className="py-1">
               <div 
                 onClick={() => setIsOthersOpen(!isOthersOpen)}
-                className="flex items-center justify-between cursor-pointer group select-none mb-4"
+                className="flex items-center justify-between cursor-pointer group select-none mb-2"
               >
-                 <SectionHeader label={t('sidebar.others')} className="mb-0" />
+                 <h3 className="text-[13px] font-sans text-stone-500 pl-1 group-hover:text-stone-900 transition-colors">Otros</h3>
                  <ChevronDown 
-                    className={`w-3.5 h-3.5 text-stone-300 group-hover:text-stone-500 transition-transform duration-300 ${isOthersOpen ? 'rotate-180' : ''}`} 
+                    className={`w-3.5 h-3.5 text-stone-300 group-hover:text-stone-900 transition-transform duration-300 ${isOthersOpen ? 'rotate-180' : ''}`} 
                  />
               </div>
               
               <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOthersOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'}`}>
-                 <div className="space-y-1">
-                    <IntelligenceItem icon={Users} label={t('sidebar.client_team')} />
-                    <IntelligenceItem icon={FolderOpen} label={t('sidebar.client_docs')} />
-                    <IntelligenceItem icon={Database} label="ERP & Sistemas" />
-                    <IntelligenceItem icon={FileText} label="Ficha Fiscal" />
+                 <div className="space-y-1 pl-1 pt-2">
+                    <IntelligenceItem icon={Users} label="Equipo del cliente" />
+                    <IntelligenceItem icon={FolderOpen} label="Documentos" />
+                    <IntelligenceItem icon={FileText} label="Facturas" />
+                    <IntelligenceItem icon={Database} label="Información del cliente" />
                  </div>
               </div>
            </div>
@@ -244,17 +252,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
   // --- 4. ENGAGEMENT LEVEL (Double Sidebar) ---
   if (viewLevel === 'engagement') {
     return (
-      <div className="flex h-screen sticky top-0 animate-slide-in shadow-2xl z-30">
+      <div className="flex h-screen sticky top-0 shadow-2xl z-30 bg-white animate-sidebar-enter">
          
          {/* 4A. The Strip (Context - Collapsed Client Sidebar) */}
-         {/* Changed to Soft Grey (bg-stone-100) per user request */}
-         <div className="w-[72px] bg-stone-100 border-r border-stone-200 flex flex-col items-center py-6 z-20 shadow-lg transition-all duration-300 group/strip">
+         <div className="w-[72px] bg-stone-50 border-r border-stone-200 flex flex-col items-center py-6 z-20 shadow-xl transition-all duration-300 group/strip animate-strip-enter">
             
             {/* Back Button - Interactive */}
-            <div className="mb-10 relative w-full flex justify-center">
+            <div className="mb-8 relative w-full flex justify-center">
                <button 
                   onClick={onBackToClient}
-                  className="w-10 h-10 rounded-full bg-white border border-stone-300 flex items-center justify-center text-stone-500 hover:text-stone-900 hover:border-stone-900 hover:scale-105 transition-all duration-300 shadow-sm z-20"
+                  className="w-9 h-9 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-400 hover:text-stone-900 hover:border-stone-300 hover:shadow-md transition-all duration-300"
                   title={t('sidebar.back_to_client')}
                >
                   <ArrowLeft className="w-4 h-4" />
@@ -262,30 +269,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             {/* Divider */}
-            <div className="w-8 h-px bg-stone-200 mb-10"></div>
+            <div className="w-8 h-px bg-stone-200 mb-8"></div>
 
             {/* Vertical Text (Client Context) */}
-            <div className="flex-1 flex items-center justify-center w-full py-8">
-                <div className="writing-vertical-rl text-[11px] font-serif font-medium text-stone-400 tracking-[0.15em] uppercase transform rotate-180 select-none group-hover/strip:text-stone-600 transition-colors cursor-default">
+            <div className="flex-1 flex items-center justify-center w-full py-4 overflow-hidden">
+                <div className="transform -rotate-90 whitespace-nowrap text-base font-serif font-medium text-stone-300 tracking-tight select-none group-hover/strip:text-stone-500 transition-colors cursor-default">
                    {selectedClient || 'Cliente'}
                 </div>
             </div>
 
             {/* Context Icons */}
-            <div className="space-y-3 mb-10 flex flex-col items-center">
+            <div className="space-y-4 mb-8 flex flex-col items-center">
+               <StripIcon icon={PieChart} tooltip="Overview" />
+               <StripIcon icon={MessageSquare} tooltip="Comentarios" />
+               
+               {/* Divider for 'Otros' */}
+               <div className="w-3 h-px bg-stone-200 my-1"></div>
+               
                <StripIcon icon={Users} tooltip="Equipo" />
-               <StripIcon icon={FolderOpen} tooltip="Docs" />
-               <StripIcon icon={MessageSquare} tooltip="Chat" />
+               <StripIcon icon={FolderOpen} tooltip="Documentos" />
+               <StripIcon icon={FileText} tooltip="Facturas" />
+               <StripIcon icon={Database} tooltip="Info" />
             </div>
             
             {/* User Avatar */}
-            <div className="w-9 h-9 bg-white text-stone-500 rounded-full flex items-center justify-center text-[10px] font-bold font-serif border border-stone-300 shadow-sm">
+            <div className="w-8 h-8 bg-white text-stone-500 rounded-full flex items-center justify-center text-[10px] font-bold font-serif border border-stone-200 shadow-sm cursor-pointer hover:border-stone-400 transition-colors">
                AR
             </div>
          </div>
 
          {/* 4B. The Sub-Sidebar (Engagement Work Area) */}
-         <div className="w-72 bg-white border-r border-stone-200 flex flex-col animate-width relative z-10">
+         <div className="w-72 bg-white border-r border-stone-200 flex flex-col relative z-10 animate-panel-enter">
             {/* Engagement Header */}
             <div className="px-8 pt-10 pb-8 border-b border-stone-50 bg-white">
                <h2 className="font-serif text-xl font-bold text-stone-900 leading-tight mb-2">Auditoría 2025</h2>
@@ -298,27 +312,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8">
                
                {/* Summary Link */}
-               <div>
-                  <div 
-                     onClick={() => onSelectArea('summary')}
-                     className={`group flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition-all border border-transparent ${
-                        activeArea === 'summary' 
-                        ? 'bg-stone-900 text-white shadow-md' 
-                        : 'text-stone-600 hover:bg-stone-50 hover:border-stone-100'
-                     }`}
-                  >
-                     <PieChart className={`w-4 h-4 ${activeArea === 'summary' ? 'text-stone-300' : 'text-stone-400 group-hover:text-stone-900'}`} />
-                     <span className="text-[13px] font-medium">{t('sidebar.engagement_summary')}</span>
-                  </div>
+               <div className="py-1 mb-6">
+                 <div 
+                    onClick={() => onSelectArea('summary')}
+                    className="flex items-center gap-2 px-0 group cursor-pointer"
+                 >
+                    <h3 className={`text-[13px] font-sans pl-1 font-medium ${activeArea === 'summary' ? 'text-stone-900' : 'text-stone-500 group-hover:text-stone-900'} transition-colors`}>Resumen del encargo</h3>
+                    <div className="w-4 h-4 flex items-center justify-center">
+                       <div className={`w-1.5 h-1.5 rounded-full ${activeArea === 'summary' ? 'bg-stone-900' : 'bg-stone-300 group-hover:bg-stone-900'} transition-colors`}></div>
+                    </div>
+                 </div>
                </div>
 
                {/* Accounts Tree - High Structure */}
-               <div>
-                  <SectionHeader label={t('sidebar.audit_accounts')} />
-                  <div className="space-y-0 relative pl-2">
-                     {/* Vertical Tree Line */}
-                     <div className="absolute left-[15px] top-2 bottom-6 w-px bg-stone-200"></div>
+               <div className="mb-6">
+                  <div className="flex items-center gap-2 px-0 mb-3">
+                     <h3 className="text-[13px] font-sans text-stone-500 pl-1">Cuentas a auditar</h3>
+                  </div>
 
+                  <div className="space-y-1 pl-1">
                      <TreeItem 
                         code="30" 
                         label="Existencias" 
@@ -344,16 +356,65 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                </div>
 
-               {/* Tools */}
-               <div>
-                  <SectionHeader label={t('sidebar.others')} />
-                  <div className="space-y-1">
-                     <SubNavItem icon={CheckSquare} label={t('sidebar.requests')} />
-                     <SubNavItem icon={MessageSquare} label={t('sidebar.messages')} />
+               {/* Solicitudes al cliente */}
+               <div className="py-1 mb-1">
+                 <div 
+                    onClick={() => onSelectArea('client-requests')}
+                    className="flex items-center gap-2 px-0 group cursor-pointer"
+                 >
+                    <h3 className={`text-[13px] font-sans pl-1 font-medium ${activeArea === 'client-requests' ? 'text-stone-900' : 'text-stone-500 group-hover:text-stone-900'} transition-colors`}>{t('sidebar.requests') || 'Solicitudes al cliente'}</h3>
+                    <div className="w-4 h-4 flex items-center justify-center">
+                       <div className={`w-1.5 h-1.5 rounded-full ${activeArea === 'client-requests' ? 'bg-stone-900' : 'bg-transparent group-hover:bg-stone-300'} transition-colors`}></div>
+                    </div>
+                 </div>
+               </div>
+
+               {/* Mensajes */}
+               <div className="py-1 mb-6">
+                 <div 
+                    onClick={() => onSelectArea('messages')}
+                    className="flex items-center gap-2 px-0 group cursor-pointer"
+                 >
+                    <h3 className={`text-[13px] font-sans pl-1 font-medium ${activeArea === 'messages' ? 'text-stone-900' : 'text-stone-500 group-hover:text-stone-900'} transition-colors`}>{t('sidebar.messages') || 'Mensajes'}</h3>
+                    <div className="w-4 h-4 flex items-center justify-center">
+                       <div className={`w-1.5 h-1.5 rounded-full ${activeArea === 'messages' ? 'bg-stone-900' : 'bg-transparent group-hover:bg-stone-300'} transition-colors`}></div>
+                    </div>
+                 </div>
+               </div>
+
+               {/* Tools / Otros */}
+               <div className="py-1">
+                  <div 
+                    onClick={() => setIsOthersOpen(!isOthersOpen)}
+                    className="flex items-center justify-between cursor-pointer group select-none mb-2"
+                  >
+                     <h3 className="text-[13px] font-sans text-stone-500 pl-1 group-hover:text-stone-900 transition-colors">Otros</h3>
+                     <ChevronDown 
+                        className={`w-3.5 h-3.5 text-stone-300 group-hover:text-stone-900 transition-transform duration-300 ${isOthersOpen ? 'rotate-180' : ''}`} 
+                     />
+                  </div>
+                  <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOthersOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'}`}>
+                     <div className="space-y-1 pl-1 pt-2">
+                        <IntelligenceItem icon={Files} label="Documentos del encargo" />
+                        <IntelligenceItem icon={Users} label="Equipo auditor" />
+                     </div>
                   </div>
                </div>
 
             </div>
+
+             {/* Footer - Mi perfil y ajustes */}
+             <div className="px-6 py-6 border-t border-stone-50">
+                <div className="flex items-center gap-3 cursor-pointer group">
+                  <div className="w-8 h-8 bg-stone-50 text-stone-600 flex items-center justify-center text-[10px] font-bold font-serif rounded-full border border-stone-200 group-hover:border-stone-400 group-hover:bg-white transition-colors">
+                    AR
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium text-stone-900 leading-none mb-1 group-hover:underline transition-all">{CURRENT_USER.name}</span>
+                    <span className="text-[10px] text-stone-400 leading-none">Mi perfil y ajustes</span>
+                  </div>
+                </div>
+              </div>
          </div>
       </div>
     );
@@ -365,7 +426,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 // --- HELPER COMPONENTS ---
 
 const SectionHeader = ({ label, className = "" }: { label: string, className?: string }) => (
-  <h3 className={`text-[10px] font-sans text-stone-400 font-semibold uppercase tracking-widest mb-3 ${className}`}>
+  <h3 className={`text-[13px] font-sans text-stone-500 mb-3 pl-1 ${className}`}>
     {label}
   </h3>
 );
@@ -385,11 +446,10 @@ const NavItem = ({ icon: Icon, label, isActive, onClick }: { icon: any, label: s
 );
 
 const IntelligenceItem = ({ icon: Icon, label }: { icon: any, label: string }) => (
-   <div className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-stone-50 cursor-pointer group transition-all">
-      <div className="w-6 h-6 rounded bg-white border border-stone-200 flex items-center justify-center group-hover:border-stone-300 group-hover:scale-105 transition-all shadow-sm">
-         <Icon className="w-3 h-3 text-stone-400 group-hover:text-stone-600" />
+   <div className="group relative pl-4 border-l-[1.5px] border-transparent hover:border-stone-300 cursor-pointer py-2 transition-all hover:pl-5">
+      <div className="flex items-center gap-3">
+          <span className="text-[13px] font-medium text-stone-500 group-hover:text-stone-900 transition-colors">{label}</span>
       </div>
-      <span className="text-xs font-medium text-stone-500 group-hover:text-stone-900 transition-colors">{label}</span>
    </div>
 );
 
@@ -429,28 +489,22 @@ const UserProfile = ({ compact }: { compact: boolean }) => (
 );
 
 const TreeItem = ({ code, label, status, isActive, onClick }: { code: string, label: string, status: string, isActive?: boolean, onClick?: () => void }) => {
-   const dotColor = 
-      status === 'in_progress' ? 'bg-amber-400' : 
-      status === 'review' ? 'bg-blue-400' : 
-      'bg-stone-200';
-
    return (
       <div 
          onClick={onClick}
-         className={`relative flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition-all z-10 group ${
-            isActive 
-            ? 'bg-stone-900 text-white shadow-sm' 
-            : 'text-stone-500 hover:bg-stone-50 hover:text-stone-900'
-         }`}
+         className={`group relative pl-4 border-l-[1.5px] ${isActive ? 'border-stone-900' : 'border-transparent hover:border-stone-300'} cursor-pointer py-2 transition-all hover:pl-5`}
       >
-         {/* Connector Dot */}
-         <div className={`absolute left-[11px] w-2 h-2 rounded-full border-2 z-20 transition-transform duration-300 ${
-            isActive ? 'bg-white border-stone-900 scale-125' : `${dotColor} border-white`
-         }`}></div>
-         
-         <div className="ml-5 flex flex-col">
-            <span className={`text-[13px] leading-tight transition-colors ${isActive ? 'font-medium text-white' : ''}`}>{label}</span>
-            <span className={`text-[9px] font-mono mt-0.5 leading-none tracking-tight ${isActive ? 'text-stone-400' : 'text-stone-300'}`}>{code}</span>
+         <div className="flex flex-col">
+            <div className="flex justify-between items-center mb-0.5">
+               <span className={`text-[13px] font-medium transition-colors ${isActive ? 'text-stone-900 font-serif' : 'text-stone-500 group-hover:text-stone-900'}`}>{label}</span>
+               {status === 'in_progress' && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
+               )}
+               {status === 'review' && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+               )}
+            </div>
+            <span className={`text-[10px] font-mono ${isActive ? 'text-stone-500' : 'text-stone-300 group-hover:text-stone-400'}`}>{code}</span>
          </div>
       </div>
    );

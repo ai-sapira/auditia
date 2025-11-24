@@ -6,7 +6,9 @@ import { PortfolioView } from './views/PortfolioView';
 import { EngagementView } from './views/EngagementView';
 import { ClientPortalView } from './views/ClientPortalView';
 import { LandingView } from './views/LandingView';
+import { ClientOverviewView } from './views/ClientOverviewView';
 import { AIAssistant } from './components/AIAssistant';
+
 import { LogOut } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { ViewLevel } from './types';
@@ -88,28 +90,16 @@ const AppContent: React.FC = () => {
     }
 
     if (viewLevel === 'client') {
-      // Placeholder for Client Overview (Level 1 Content)
-      // For this demo, we can reuse Dashboard or Portfolio with client data, 
-      // or simply show the Portfolio view filtered for this client.
       return (
-         <div className="p-12 animate-fade-in">
-            <h1 className="text-3xl font-serif text-stone-900 mb-6">{selectedClient} Overview</h1>
-            <p className="text-stone-500">Client-level dashboard would go here (Billing, Global Risk, Entity Map).</p>
-            <div className="mt-8 p-6 border border-stone-200 rounded-sm bg-stone-50">
-               <h3 className="text-sm font-bold text-stone-900 mb-2">Quick Actions</h3>
-               <button 
-                  onClick={() => handleEngagementSelect('eng-001')}
-                  className="text-sm text-stone-600 underline hover:text-stone-900"
-               >
-                  Go to Audit 2025 Engagement →
-               </button>
-            </div>
-         </div>
+        <ClientOverviewView 
+          clientName={selectedClient || 'Client'} 
+          onNavigateToEngagement={handleEngagementSelect} 
+        />
       );
     }
 
     if (viewLevel === 'engagement') {
-      return <EngagementView activeArea={activeArea} />;
+      return <EngagementView activeArea={activeArea} onSelectArea={handleAreaSelect} />;
     }
   };
 

@@ -61,3 +61,49 @@ h1, h2, h3, .serif-font {
   to { opacity: 1; transform: translateX(0); }
 }
 
+/* Smooth Entry Animations */
+@keyframes stripEnter {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes panelEnter {
+  0% { 
+    opacity: 0; 
+    transform: translateX(-15px) scaleX(0.98);
+    transform-origin: left center;
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateX(0) scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+@keyframes sidebarContainerEnter {
+  0% { width: 288px; } /* w-72 */
+  100% { width: 360px; } /* 72 + 288 */
+}
+
+.animate-strip-enter {
+  animation: stripEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-panel-enter {
+  animation: panelEnter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-sidebar-enter {
+  /* Optional wrapper animation if needed */
+}
+
+/* Collapse left sidebar when findings detail sidebar is open */
+body:has([data-findings-sidebar-open="true"]) > div > div > .shrink-0,
+body:has(.findings-sidebar-open) > div > div > .shrink-0 {
+  width: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  pointer-events: none;
+}
