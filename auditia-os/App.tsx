@@ -27,7 +27,10 @@ const AppContent: React.FC = () => {
   const [activeArea, setActiveArea] = useState<string | null>('summary'); // 'summary' or '40' (Proveedores)
 
   // Controls specific view within a level (e.g., Dashboard vs Portfolio in Firm Level)
-  const [currentModule, setCurrentModule] = useState('dashboard'); 
+  const [currentModule, setCurrentModule] = useState('dashboard');
+
+  // State for Audit Completion Simulation
+  const [isAuditCompleted, setIsAuditCompleted] = useState(false); 
 
   const handleModeSelect = (mode: 'auditor' | 'client') => {
     setUserMode(mode);
@@ -99,7 +102,7 @@ const AppContent: React.FC = () => {
     }
 
     if (viewLevel === 'engagement') {
-      return <EngagementView activeArea={activeArea} onSelectArea={handleAreaSelect} />;
+      return <EngagementView activeArea={activeArea} onSelectArea={handleAreaSelect} isAuditCompleted={isAuditCompleted} />;
     }
   };
 
@@ -121,6 +124,11 @@ const AppContent: React.FC = () => {
           onBackToClient={handleBackToClient}
           onSelectEngagement={handleEngagementSelect}
           onSelectArea={handleAreaSelect}
+          isAuditCompleted={isAuditCompleted}
+          onSimulateCompletion={() => {
+            setIsAuditCompleted(true);
+            setActiveArea('final-report');
+          }}
         />
       </div>
 

@@ -7,13 +7,15 @@ import { EngagementERPIntegrationsView } from './EngagementERPIntegrationsView';
 import { EngagementTeamView } from './EngagementTeamView';
 import { EngagementOverview } from '../components/engagement/EngagementOverview';
 import { EngagementAreaDetail } from '../components/engagement/EngagementAreaDetail';
+import { EngagementFinalReport } from '../components/engagement/EngagementFinalReport';
 
 interface EngagementViewProps {
-  activeArea: string | null; // 'summary' or '40' (Proveedores)
+  activeArea: string | null; // 'summary' or '40' (Proveedores) or 'final-report'
   onSelectArea?: (areaId: string) => void;
+  isAuditCompleted?: boolean;
 }
 
-export const EngagementView: React.FC<EngagementViewProps> = ({ activeArea, onSelectArea }) => {
+export const EngagementView: React.FC<EngagementViewProps> = ({ activeArea, onSelectArea, isAuditCompleted = false }) => {
   const [showTimeline, setShowTimeline] = useState(false); 
 
   const progressData = [
@@ -27,6 +29,10 @@ export const EngagementView: React.FC<EngagementViewProps> = ({ activeArea, onSe
   ];
 
   // --- ROUTING TO NEW VIEWS ---
+  if (activeArea === 'final-report') {
+    return <EngagementFinalReport onSelectArea={onSelectArea} />;
+  }
+
   if (activeArea === 'client-requests') {
     return <EngagementRequestsView />;
   }

@@ -39,6 +39,8 @@ interface SidebarProps {
   onBackToClient: () => void;
   onSelectEngagement: (id: string) => void;
   onSelectArea: (id: string) => void;
+  isAuditCompleted?: boolean;
+  onSimulateCompletion?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
@@ -49,11 +51,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onNavigate,
   onBackToClient,
   onSelectEngagement,
-  onSelectArea
+  onSelectArea,
+  isAuditCompleted = false,
+  onSimulateCompletion
 }) => {
   const { t } = useLanguage();
   const [isOthersOpen, setIsOthersOpen] = useState(false); // Default closed
   const [isAccountsExpanded, setIsAccountsExpanded] = useState(false); // Accounts collapsible
+  const [isReportsOpen, setIsReportsOpen] = useState(true); // Reports section
 
   // --- 1. CLIENT PORTAL (External View) ---
   if (mode === 'client') {
@@ -409,7 +414,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                      <TreeItem 
                         code="40" 
                         label="Proveedores (v1.0)" 
-                        status="in_progress" 
+                        status={isAuditCompleted ? "completed" : "in_progress"}
                         isActive={activeArea === '40'}
                         onClick={() => onSelectArea('40')}
                      />
@@ -417,78 +422,78 @@ export const Sidebar: React.FC<SidebarProps> = ({
                      {/* ACTIVO */}
                      <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Activo no corriente</div>
                      <TreeItem code="20" label="Inmovilizado intangible" status="completed" />
-                     <TreeItem code="21" label="Inmovilizado material" status="in_progress" />
+                     <TreeItem code="21" label="Inmovilizado material" status={isAuditCompleted ? "completed" : "in_progress"} />
                      <TreeItem code="22" label="Inversiones inmobiliarias" status="completed" />
-                     <TreeItem code="23" label="Inmovilizado en curso" status="not_started" />
-                     <TreeItem code="24" label="Inversiones financieras L/P" status="not_started" />
-                     <TreeItem code="25" label="Otras inversiones L/P" status="not_started" />
+                     <TreeItem code="23" label="Inmovilizado en curso" status={isAuditCompleted ? "completed" : "not_started"} />
+                     <TreeItem code="24" label="Inversiones financieras L/P" status={isAuditCompleted ? "completed" : "not_started"} />
+                     <TreeItem code="25" label="Otras inversiones L/P" status={isAuditCompleted ? "completed" : "not_started"} />
                      <TreeItem code="28" label="Amortización acumulada" status="completed" />
-                     <TreeItem code="29" label="Deterioro de valor" status="not_started" />
+                     <TreeItem code="29" label="Deterioro de valor" status={isAuditCompleted ? "completed" : "not_started"} />
                      
                      <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Activo corriente</div>
-                     <TreeItem code="30" label="Existencias comerciales" status="in_progress" />
-                     <TreeItem code="31" label="Materias primas" status="not_started" />
-                     <TreeItem code="32" label="Otros aprovisionamientos" status="not_started" />
-                     <TreeItem code="33" label="Productos en curso" status="not_started" />
-                     <TreeItem code="35" label="Productos terminados" status="not_started" />
-                     <TreeItem code="39" label="Deterioro existencias" status="not_started" />
-                     <TreeItem code="41" label="Acreedores varios" status="not_started" />
-                     <TreeItem code="43" label="Clientes" status="in_progress" />
-                     <TreeItem code="44" label="Deudores varios" status="not_started" />
+                     <TreeItem code="30" label="Existencias comerciales" status={isAuditCompleted ? "completed" : "in_progress"} />
+                     <TreeItem code="31" label="Materias primas" status={isAuditCompleted ? "completed" : "not_started"} />
+                     <TreeItem code="32" label="Otros aprovisionamientos" status={isAuditCompleted ? "completed" : "not_started"} />
+                     <TreeItem code="33" label="Productos en curso" status={isAuditCompleted ? "completed" : "not_started"} />
+                     <TreeItem code="35" label="Productos terminados" status={isAuditCompleted ? "completed" : "not_started"} />
+                     <TreeItem code="39" label="Deterioro existencias" status={isAuditCompleted ? "completed" : "not_started"} />
+                     <TreeItem code="41" label="Acreedores varios" status={isAuditCompleted ? "completed" : "not_started"} />
+                     <TreeItem code="43" label="Clientes" status={isAuditCompleted ? "completed" : "in_progress"} />
+                     <TreeItem code="44" label="Deudores varios" status={isAuditCompleted ? "completed" : "not_started"} />
                      <TreeItem code="46" label="Personal" status="completed" />
-                     <TreeItem code="47" label="Administraciones públicas" status="not_started" />
+                     <TreeItem code="47" label="Administraciones públicas" status={isAuditCompleted ? "completed" : "not_started"} />
                   </div>
 
                   {/* More accounts (expandable) */}
                   <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isAccountsExpanded ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'}`}>
                      <div className="space-y-1 pl-1 pt-1">
-                        <TreeItem code="48" label="Ajustes por periodificación" status="not_started" />
-                        <TreeItem code="49" label="Deterioro créditos" status="not_started" />
+                        <TreeItem code="48" label="Ajustes por periodificación" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="49" label="Deterioro créditos" status={isAuditCompleted ? "completed" : "not_started"} />
                         
                         <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Tesorería</div>
-                        <TreeItem code="52" label="Deudas C/P entidades crédito" status="not_started" />
-                        <TreeItem code="54" label="Inversiones financieras C/P" status="in_progress" />
-                        <TreeItem code="55" label="Otras cuentas no bancarias" status="not_started" />
-                        <TreeItem code="56" label="Fianzas y depósitos C/P" status="not_started" />
+                        <TreeItem code="52" label="Deudas C/P entidades crédito" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="54" label="Inversiones financieras C/P" status={isAuditCompleted ? "completed" : "in_progress"} />
+                        <TreeItem code="55" label="Otras cuentas no bancarias" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="56" label="Fianzas y depósitos C/P" status={isAuditCompleted ? "completed" : "not_started"} />
                         <TreeItem code="57" label="Tesorería (Bancos)" status="completed" />
                         
                         {/* PATRIMONIO NETO */}
                         <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Patrimonio neto</div>
                         <TreeItem code="10" label="Capital social" status="completed" />
                         <TreeItem code="11" label="Reservas" status="completed" />
-                        <TreeItem code="12" label="Resultados pendientes aplicación" status="not_started" />
-                        <TreeItem code="13" label="Subvenciones, donaciones" status="not_started" />
+                        <TreeItem code="12" label="Resultados pendientes aplicación" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="13" label="Subvenciones, donaciones" status={isAuditCompleted ? "completed" : "not_started"} />
                         
                         {/* PASIVO */}
                         <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Pasivo no corriente</div>
-                        <TreeItem code="14" label="Provisiones" status="in_progress" />
-                        <TreeItem code="15" label="Deudas L/P partes vinculadas" status="not_started" />
-                        <TreeItem code="16" label="Deudas L/P ent. crédito" status="not_started" />
-                        <TreeItem code="17" label="Deudas L/P" status="not_started" />
-                        <TreeItem code="18" label="Pasivos por fianzas L/P" status="not_started" />
+                        <TreeItem code="14" label="Provisiones" status={isAuditCompleted ? "completed" : "in_progress"} />
+                        <TreeItem code="15" label="Deudas L/P partes vinculadas" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="16" label="Deudas L/P ent. crédito" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="17" label="Deudas L/P" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="18" label="Pasivos por fianzas L/P" status={isAuditCompleted ? "completed" : "not_started"} />
                         
                         {/* CUENTA DE RESULTADOS */}
                         <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Compras y gastos</div>
-                        <TreeItem code="60" label="Compras" status="not_started" />
-                        <TreeItem code="61" label="Variación existencias" status="not_started" />
-                        <TreeItem code="62" label="Servicios exteriores" status="not_started" />
-                        <TreeItem code="63" label="Tributos" status="not_started" />
+                        <TreeItem code="60" label="Compras" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="61" label="Variación existencias" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="62" label="Servicios exteriores" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="63" label="Tributos" status={isAuditCompleted ? "completed" : "not_started"} />
                         <TreeItem code="64" label="Gastos de personal" status="completed" />
-                        <TreeItem code="65" label="Otros gastos de gestión" status="not_started" />
-                        <TreeItem code="66" label="Gastos financieros" status="not_started" />
-                        <TreeItem code="67" label="Pérdidas procedentes activos" status="not_started" />
-                        <TreeItem code="68" label="Dotación amortizaciones" status="not_started" />
-                        <TreeItem code="69" label="Pérdidas deterioro" status="not_started" />
+                        <TreeItem code="65" label="Otros gastos de gestión" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="66" label="Gastos financieros" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="67" label="Pérdidas procedentes activos" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="68" label="Dotación amortizaciones" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="69" label="Pérdidas deterioro" status={isAuditCompleted ? "completed" : "not_started"} />
                         
                         <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Ventas e ingresos</div>
-                        <TreeItem code="70" label="Ventas de mercaderías" status="in_progress" />
-                        <TreeItem code="71" label="Variación existencias" status="not_started" />
-                        <TreeItem code="73" label="Trabajos realizados empresa" status="not_started" />
-                        <TreeItem code="74" label="Subvenciones explotación" status="not_started" />
-                        <TreeItem code="75" label="Otros ingresos de gestión" status="not_started" />
-                        <TreeItem code="76" label="Ingresos financieros" status="not_started" />
-                        <TreeItem code="77" label="Beneficios procedentes activos" status="not_started" />
-                        <TreeItem code="79" label="Excesos y reversiones" status="not_started" />
+                        <TreeItem code="70" label="Ventas de mercaderías" status={isAuditCompleted ? "completed" : "in_progress"} />
+                        <TreeItem code="71" label="Variación existencias" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="73" label="Trabajos realizados empresa" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="74" label="Subvenciones explotación" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="75" label="Otros ingresos de gestión" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="76" label="Ingresos financieros" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="77" label="Beneficios procedentes activos" status={isAuditCompleted ? "completed" : "not_started"} />
+                        <TreeItem code="79" label="Excesos y reversiones" status={isAuditCompleted ? "completed" : "not_started"} />
                      </div>
                   </div>
 
@@ -509,7 +514,65 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         </>
                      )}
                   </button>
+
+                  {/* Simulate Completion Button */}
+                  {!isAuditCompleted && onSimulateCompletion && (
+                     <button
+                        onClick={onSimulateCompletion}
+                        className="w-full mt-4 py-2.5 px-3 text-[11px] font-medium text-white bg-neutral-900 hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2 rounded-md shadow-sm"
+                     >
+                        <FileCheck className="w-3.5 h-3.5" />
+                        Simular Finalización de Auditoría
+                     </button>
+                  )}
+
+                  {/* Audit Completed Badge */}
+                  {isAuditCompleted && (
+                     <div className="mt-4 py-2.5 px-3 text-[11px] font-medium text-[#4A5D4A] bg-[#F7F9F7] border border-[#E0E5E0] flex items-center justify-center gap-2 rounded-md">
+                        <FileCheck className="w-3.5 h-3.5" />
+                        Auditoría Completada
+                     </div>
+                  )}
                </div>
+
+               {/* INFORMES Section - NEW */}
+               {isAuditCompleted && (
+                  <div className="mb-6">
+                     <div 
+                        onClick={() => setIsReportsOpen(!isReportsOpen)}
+                        className="flex items-center justify-between cursor-pointer group select-none mb-2"
+                     >
+                        <div className="flex items-center gap-2">
+                           <h3 className="text-[13px] font-sans text-neutral-500 pl-1 group-hover:text-neutral-900 transition-colors">Informes</h3>
+                           <span className="text-[9px] px-1.5 py-0.5 bg-[#4A5D4A] text-white rounded-full font-medium">Nuevo</span>
+                        </div>
+                        <ChevronDown 
+                           className={`w-3.5 h-3.5 text-neutral-300 group-hover:text-neutral-900 transition-transform duration-300 ${isReportsOpen ? 'rotate-180' : ''}`} 
+                        />
+                     </div>
+                     
+                     <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isReportsOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                        <div className="space-y-1 pl-1 pt-2">
+                           <div 
+                              onClick={() => onSelectArea('final-report')}
+                              className={`group relative pl-4 border-l-[1.5px] ${activeArea === 'final-report' ? 'border-[#4A5D4A]' : 'border-transparent hover:border-[#4A5D4A]'} cursor-pointer py-2 transition-all hover:pl-5`}
+                           >
+                              <div className="flex items-center gap-3">
+                                 <div className="p-1.5 rounded bg-[#F7F9F7]">
+                                    <ClipboardList className="w-3.5 h-3.5 text-[#4A5D4A]" />
+                                 </div>
+                                 <div className="flex-1 min-w-0">
+                                    <span className={`text-[13px] font-medium transition-colors block ${activeArea === 'final-report' ? 'text-neutral-900' : 'text-neutral-500 group-hover:text-neutral-900'}`}>
+                                       Informe de Auditoría
+                                    </span>
+                                    <span className="text-[10px] text-[#4A5D4A]">Generado · 28/03/2025</span>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               )}
 
                {/* Solicitudes al cliente */}
                <div className="py-1 mb-1">
