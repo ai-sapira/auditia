@@ -1,67 +1,318 @@
+/* ==========================================================================
+   AUDITIA DESIGN SYSTEM v2.0
+   Inspiración: Legora + Devin — Sobrio, Profesional, Regulado
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS VARIABLES (Design Tokens)
+   -------------------------------------------------------------------------- */
+:root {
+  /* Neutrales */
+  --color-white: #FFFFFF;
+  --color-bg: #FAFAFA;
+  --color-bg-subtle: #F5F5F5;
+  --color-border: #E5E5E5;
+  --color-border-strong: #D4D4D4;
+  
+  /* Texto */
+  --color-text-primary: #171717;
+  --color-text-secondary: #525252;
+  --color-text-tertiary: #737373;
+  --color-text-muted: #A3A3A3;
+  
+  /* Estados - Muy desaturados */
+  --color-success-bg: #F7F9F7;
+  --color-success-border: #E0E5E0;
+  --color-success-text: #4A5D4A;
+  
+  --color-warning-bg: #FDFAF6;
+  --color-warning-border: #EDE5D8;
+  --color-warning-text: #8B7355;
+  
+  --color-error-bg: #FBF8F7;
+  --color-error-border: #E8E0DE;
+  --color-error-text: #8B5A50;
+  
+  --color-info-bg: #F7F9FA;
+  --color-info-border: #E0E5E8;
+  --color-info-text: #4A5D6A;
+  
+  /* Tipografía */
+  --font-serif: 'Source Serif 4', 'Georgia', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+  
+  /* Espaciado */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  
+  /* Transiciones */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Bordes */
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   2. BASE STYLES
+   -------------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #FFFFFF; /* Pure White */
-  color: #09090B; /* Zinc 950 */
+  font-family: var(--font-sans);
+  background-color: var(--color-white);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, .serif-font {
-  font-family: 'Playfair Display', serif;
+/* Tipografía Serif para títulos */
+h1, h2, h3, .font-serif {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-.font-mono {
-  font-family: 'JetBrains Mono', monospace;
+/* Tipografía Mono para datos */
+.font-mono, code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
 }
 
-/* Custom Scrollbar - Minimalist */
+/* --------------------------------------------------------------------------
+   3. SCROLLBAR - Minimalista
+   -------------------------------------------------------------------------- */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #E5E7EB;
-  border-radius: 0px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #D1D5DB;
+  background: var(--color-border);
+  border-radius: 0;
 }
 
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-strong);
+}
+
+/* --------------------------------------------------------------------------
+   4. UTILITY CLASSES
+   -------------------------------------------------------------------------- */
+
+/* Sombras - Muy sutiles */
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+.shadow-md {
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+}
+
+/* Bordes */
 .border-hairline {
   border-width: 1px;
-  border-color: #F3F4F6;
+  border-color: var(--color-border);
 }
 
-/* Legal Paper Shadow */
-.paper-shadow {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+/* --------------------------------------------------------------------------
+   5. COMPONENTES BASE
+   -------------------------------------------------------------------------- */
+
+/* Botón Primario */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 10px 16px;
+  background: var(--color-text-primary);
+  color: var(--color-white);
+  border: 1px solid var(--color-text-primary);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
+.btn-primary:hover {
+  background: #0A0A0A;
+  border-color: #0A0A0A;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Botón Secundario */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 10px 16px;
+  background: var(--color-white);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-secondary:hover {
+  background: var(--color-bg);
+  border-color: var(--color-border-strong);
+}
+
+/* Botón Ghost */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-ghost:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+/* Input */
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--color-white);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  transition: border-color var(--transition-fast);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-text-primary);
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Card */
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badge-default {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-secondary);
+}
+
+.badge-success {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
+}
+
+.badge-warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border: 1px solid var(--color-warning-border);
+}
+
+.badge-error {
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
+}
+
+.badge-info {
+  background: var(--color-info-bg);
+  color: var(--color-info-text);
+  border: 1px solid var(--color-info-border);
+}
+
+/* --------------------------------------------------------------------------
+   6. ANIMACIONES
+   -------------------------------------------------------------------------- */
 .animate-fade-in {
-  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-slide-in {
-  animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.animate-width {
-  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { 
+    opacity: 0; 
+    transform: translateY(8px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(-10px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { 
+    opacity: 0; 
+    transform: translateX(-8px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
 }
 
-/* Smooth Entry Animations */
 @keyframes stripEnter {
   0% { opacity: 0; }
   100% { opacity: 1; }
@@ -70,40 +321,58 @@ h1, h2, h3, .serif-font {
 @keyframes panelEnter {
   0% { 
     opacity: 0; 
-    transform: translateX(-15px) scaleX(0.98);
-    transform-origin: left center;
+    transform: translateX(-12px);
   }
   100% { 
     opacity: 1; 
-    transform: translateX(0) scaleX(1);
-    transform-origin: left center;
+    transform: translateX(0);
   }
 }
 
-@keyframes sidebarContainerEnter {
-  0% { width: 288px; } /* w-72 */
-  100% { width: 360px; } /* 72 + 288 */
-}
-
 .animate-strip-enter {
-  animation: stripEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: stripEnter 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-panel-enter {
-  animation: panelEnter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation: panelEnter 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.animate-sidebar-enter {
-  /* Optional wrapper animation if needed */
-}
+/* --------------------------------------------------------------------------
+   7. LAYOUT HELPERS
+   -------------------------------------------------------------------------- */
 
-/* Collapse left sidebar when findings detail sidebar is open */
-body:has([data-findings-sidebar-open="true"]) > div > div > .shrink-0,
+/* Collapse sidebar when findings detail is open */
 body:has(.findings-sidebar-open) > div > div > .shrink-0 {
   width: 0 !important;
   min-width: 0 !important;
   overflow: hidden;
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
   pointer-events: none;
 }
+
+/* --------------------------------------------------------------------------
+   8. CUSTOM TAILWIND-LIKE UTILITIES
+   -------------------------------------------------------------------------- */
+
+/* Status colors para reemplazar emerald/amber/rose/violet */
+.bg-status-success { background-color: var(--color-success-bg); }
+.text-status-success { color: var(--color-success-text); }
+.border-status-success { border-color: var(--color-success-border); }
+
+.bg-status-warning { background-color: var(--color-warning-bg); }
+.text-status-warning { color: var(--color-warning-text); }
+.border-status-warning { border-color: var(--color-warning-border); }
+
+.bg-status-error { background-color: var(--color-error-bg); }
+.text-status-error { color: var(--color-error-text); }
+.border-status-error { border-color: var(--color-error-border); }
+
+.bg-status-info { background-color: var(--color-info-bg); }
+.text-status-info { color: var(--color-info-text); }
+.border-status-info { border-color: var(--color-info-border); }
+
+/* --------------------------------------------------------------------------
+   9. GOOGLE FONTS IMPORT
+   -------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap');

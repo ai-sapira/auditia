@@ -14,6 +14,7 @@ import {
   Download, 
   ArrowRight, 
   ChevronRight, 
+  ChevronLeft,
   MessageSquare, 
   FileText, 
   MoreHorizontal,
@@ -27,7 +28,11 @@ import {
   X,
   ChevronDown,
   ChevronUp,
-  Search
+  Search,
+  Sparkles,
+  PenTool,
+  BarChart3,
+  TrendingUp
 } from 'lucide-react';
 import { FINDINGS_ALFA } from '../../constants';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -36,6 +41,8 @@ import { EngagementRiskMapper } from './EngagementRiskMapper';
 import { EngagementCircularizer } from './EngagementCircularizer';
 import { EngagementTester } from './EngagementTester';
 import { EngagementFindings } from './EngagementFindings';
+import { EngagementAnalyticalReview } from './EngagementAnalyticalReview';
+import { EngagementConclusionsWriter } from './EngagementConclusionsWriter';
 
 interface EngagementAreaDetailProps {
   showTimeline: boolean;
@@ -49,6 +56,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
   const [activeTab, setActiveTab] = useState('data');
   const [selectedFindingId, setSelectedFindingId] = useState<string | null>(null);
   const [isFindingsSidebarOpen, setIsFindingsSidebarOpen] = useState(false);
+  const [selectedPapersTool, setSelectedPapersTool] = useState<'list' | 'analytical' | 'conclusions'>('list');
   
   // Test Selection State
   const [selectedTestId, setSelectedTestId] = useState<string | null>(null);
@@ -59,6 +67,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
     riskmapper: 'not_executed',
     circularizer: 'not_executed',
     tester: 'not_executed',
+    analytical: 'not_executed',
   });
   
   const [testLastRun, setTestLastRun] = useState<{
@@ -67,19 +76,21 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
       reconciler: null,
       riskmapper: null,
       circularizer: null,
-      tester: null
+      tester: null,
+      analytical: null
   });
 
   // Data Tab States
   const [showMaterialityDetails, setShowMaterialityDetails] = useState(false);
+  // Balance de comprobación y libro mayor ya subidos desde onboarding
   const [fileStates, setFileStates] = useState<{
     movements: 'pending' | 'uploading' | 'processing' | 'uploaded' | 'error';
     ledger: 'pending' | 'uploading' | 'processing' | 'uploaded' | 'error';
     closing: 'pending' | 'uploading' | 'processing' | 'uploaded' | 'error';
   }>({
-    movements: 'pending',
-    ledger: 'pending',
-    closing: 'pending'
+    movements: 'uploaded',  // Ya subido desde onboarding
+    ledger: 'uploaded',     // Ya subido desde onboarding
+    closing: 'pending'      // Pendiente de subir
   });
   
   // File errors and preview states
@@ -125,13 +136,14 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
   });
   
   // Store generated data counts to ensure consistency
+  // Pre-populated with data from onboarding
   const [fileDataCounts, setFileDataCounts] = useState<{
     movements: number;
     ledger: number;
     closing: number;
   }>({
-    movements: 0,
-    ledger: 0,
+    movements: 12405,  // Datos cargados desde onboarding del cliente
+    ledger: 847,       // Libro mayor cargado desde onboarding
     closing: 0
   });
   
@@ -524,6 +536,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
         case 'riskmapper': return <EngagementRiskMapper onBack={() => setSelectedTestId(null)} />;
         case 'circularizer': return <EngagementCircularizer onBack={() => setSelectedTestId(null)} />;
         case 'tester': return <EngagementTester onBack={() => setSelectedTestId(null)} />;
+        case 'analytical': return <EngagementAnalyticalReview onBack={() => setSelectedTestId(null)} />;
         default: return null;
       }
   };
@@ -667,7 +680,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                              <div className="w-full space-y-2">
                                 <div className="flex items-center justify-center gap-1.5 mb-2">
                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                                   <span className="text-xs font-medium text-emerald-700">Fichero cargado</span>
+                                   <span className="text-xs font-medium text-emerald-700">Cargado desde onboarding</span>
                                 </div>
                                 {fileDataCounts.movements > 0 && (
                                    <div className="text-[10px] text-stone-500 space-y-0.5 bg-white/50 rounded-sm p-2 border border-stone-100">
@@ -680,8 +693,8 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                          <span className="font-mono font-medium text-stone-700">5</span>
                                       </div>
                                       <div className="flex justify-between pt-1 border-t border-stone-100">
-                                         <span>Estado:</span>
-                                         <span className="text-emerald-600 font-medium">Validado ✓</span>
+                                         <span>Origen:</span>
+                                         <span className="text-blue-600 font-medium">SAP / ERP Cliente</span>
                                       </div>
                                    </div>
                                 )}
@@ -802,7 +815,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                              <div className="w-full space-y-2">
                                 <div className="flex items-center justify-center gap-1.5 mb-2">
                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                                   <span className="text-xs font-medium text-emerald-700">Fichero cargado</span>
+                                   <span className="text-xs font-medium text-emerald-700">Cargado desde onboarding</span>
                                 </div>
                                 {fileDataCounts.ledger > 0 && (
                                    <div className="text-[10px] text-stone-500 space-y-0.5 bg-white/50 rounded-sm p-2 border border-stone-100">
@@ -815,8 +828,8 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                          <span className="font-mono font-medium text-stone-700">6</span>
                                       </div>
                                       <div className="flex justify-between pt-1 border-t border-stone-100">
-                                         <span>Estado:</span>
-                                         <span className="text-emerald-600 font-medium">Validado ✓</span>
+                                         <span>Origen:</span>
+                                         <span className="text-blue-600 font-medium">SAP / ERP Cliente</span>
                                       </div>
                                    </div>
                                 )}
@@ -1898,6 +1911,71 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                  </div>
                               </div>
                         </motion.div>
+
+                                 {/* Test 5: Analytical Review */}
+                           <motion.div
+                                    key="analytical"
+                              initial={{ opacity: 0 }}
+                                    onClick={() => setSelectedTestId('analytical')}
+                              className="w-full border border-stone-200 rounded-sm bg-white shadow-sm transition-all cursor-pointer hover:shadow-md hover:border-stone-300"
+                                    animate={{ 
+                                 opacity: 1,
+                                 backgroundColor: testExecutionStates.analytical === 'running' ? '#eff6ff' : '#ffffff'
+                              }}
+                              transition={{ duration: 0.2 }}
+                              whileHover={{ 
+                                 backgroundColor: '#fafaf9',
+                                 borderColor: '#d6d3d1'
+                              }}
+                           >
+                              <div className="p-4">
+                                 {/* Fila 1: Título, badge agente, estado y botón */}
+                                 <div className="flex items-center justify-between gap-4 mb-2">
+                                    <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                                       <h3 className="text-lg font-serif text-stone-900">Revisión Analítica</h3>
+                                       <span className="text-[10px] font-medium text-violet-600 bg-violet-50 px-2 py-0.5 rounded border border-violet-200 whitespace-nowrap">IA Report</span>
+                                       <motion.div
+                                          key={testExecutionStates.analytical}
+                                          initial={{ scale: 0.8, opacity: 0 }}
+                                          animate={{ scale: 1, opacity: 1 }}
+                                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                       >
+                                          <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium inline-flex items-center gap-1.5 whitespace-nowrap ${
+                                              testExecutionStates.analytical === 'completed'
+                                                 ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                                 : testExecutionStates.analytical === 'running'
+                                                 ? 'bg-blue-50 text-blue-700 border-blue-100'
+                                                 : 'bg-stone-50 text-stone-400 border-stone-200'
+                                           }`}>
+                                              {testExecutionStates.analytical === 'running' && <Loader2 className="w-3 h-3 animate-spin" />}
+                                              {testExecutionStates.analytical === 'completed' ? 'Completado' :
+                                               testExecutionStates.analytical === 'running' ? 'Generando...' :
+                                               'Disponible'}
+                                           </span>
+                                       </motion.div>
+                                    </div>
+                                       <motion.button
+                                          whileTap={{ scale: 0.95 }}
+                                          onClick={(e) => { e.stopPropagation(); setSelectedTestId('analytical'); }}
+                                       className="px-3 py-1.5 text-xs font-medium rounded transition-all inline-flex items-center gap-1.5 shadow-sm flex-shrink-0 bg-violet-600 text-white hover:bg-violet-700"
+                                       >
+                                          <Eye className="w-3 h-3" />
+                                          Abrir
+                                       </motion.button>
+                                 </div>
+                                 
+                                 {/* Fila 2: Descripción y última ejecución */}
+                                 <div className="flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                                       <p className="text-xs text-stone-500 truncate">Compara saldos con el ejercicio anterior y genera informe con conclusiones automáticas</p>
+                                       <div className="text-xs text-stone-500 whitespace-nowrap flex-shrink-0">
+                                          <span className="font-medium">Última ejecución:</span>{' '}
+                                          <span className="font-mono text-stone-400">{testLastRun.analytical || '-'}</span>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </motion.div>
                         </div>
                      </div>
                   )}
@@ -1913,39 +1991,140 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
 
             {/* --- TAB 4: PAPERS --- */}
             {activeTab === 'papers' && (
-               <div className="animate-fade-in bg-white border border-stone-200 shadow-sm divide-y divide-stone-100 max-w-5xl">
-                  {papers.map(paper => (
-                     <div key={paper.id} className="p-5 flex items-center justify-between hover:bg-stone-50 transition-colors group">
-                        <div className="flex items-center gap-4">
-                           <div className="w-10 h-10 bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-400">
-                              <FileText className="w-5 h-5" />
-                           </div>
+               <div className="animate-fade-in max-w-7xl mx-auto">
+                  {/* Show selected tool or list */}
+                  {selectedPapersTool === 'analytical' ? (
+                     <EngagementAnalyticalReview onBack={() => setSelectedPapersTool('list')} />
+                  ) : selectedPapersTool === 'conclusions' ? (
+                     <EngagementConclusionsWriter onBack={() => setSelectedPapersTool('list')} />
+                  ) : (
+                     <div className="space-y-8">
+                        {/* Header */}
+                        <div className="flex justify-between items-end pb-6 border-b border-stone-200">
                            <div>
-                              <h4 className="text-sm font-medium text-stone-900">{paper.name}</h4>
-                              <div className="flex items-center gap-2 mt-0.5">
-                                 <span className="text-xs text-stone-400 font-mono">{paper.id}</span>
-                                 <span className="text-[10px] text-stone-300">•</span>
-                                 <span className="text-[10px] text-stone-400">Modified {paper.date}</span>
-                              </div>
+                              <h2 className="text-2xl font-serif text-stone-900 mb-2">Papeles de trabajo</h2>
+                              <p className="text-sm text-stone-500 font-sans">Documentación y herramientas de auditoría con IA</p>
                            </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                           <span className={`text-[10px] px-2 py-0.5 rounded border uppercase tracking-wide font-medium ${
-                              paper.status === 'final' ? 'bg-stone-900 text-white border-stone-900' :
-                              paper.status === 'review' ? 'bg-blue-50 text-blue-700 border-blue-100' :
-                              'bg-stone-100 text-stone-500 border-stone-200'
-                           }`}>
-                              {t(`engagement.paper_status_${paper.status}`)}
-                           </span>
-                           <button className="p-2 text-stone-300 hover:text-stone-900 hover:bg-stone-100 rounded transition-all">
-                              <Download className="w-4 h-4" />
-                           </button>
-                           <button className="p-2 text-stone-300 hover:text-stone-900 hover:bg-stone-100 rounded transition-all">
-                              <MoreHorizontal className="w-4 h-4" />
-                           </button>
+
+                        {/* AI Tools Section */}
+                        <div className="mb-8">
+                           <h3 className="text-xs font-medium text-stone-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                              <Sparkles className="w-4 h-4 text-violet-500" />
+                              Herramientas con Inteligencia Artificial
+                           </h3>
+                           <div className="grid grid-cols-2 gap-4">
+                              {/* Analytical Review Card */}
+                              <motion.div
+                                 whileHover={{ scale: 1.01, y: -2 }}
+                                 onClick={() => setSelectedPapersTool('analytical')}
+                                 className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-lg p-6 cursor-pointer hover:shadow-lg hover:border-violet-300 transition-all"
+                              >
+                                 <div className="flex items-start gap-4">
+                                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg">
+                                       <BarChart3 className="w-7 h-7 text-white" />
+                                    </div>
+                                    <div className="flex-1">
+                                       <div className="flex items-center gap-2 mb-1">
+                                          <h4 className="text-lg font-serif text-stone-900">Revisión Analítica</h4>
+                                          <span className="text-[10px] px-2 py-0.5 bg-violet-100 text-violet-700 rounded-full border border-violet-200 font-medium">IA</span>
+                                       </div>
+                                       <p className="text-sm text-stone-600 mb-4">
+                                          Compara saldos con el ejercicio anterior y genera un informe de variaciones automáticamente con la IA escribiendo en tiempo real.
+                                       </p>
+                                       <div className="flex items-center gap-4">
+                                          <div className="flex items-center gap-1 text-xs text-stone-500">
+                                             <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
+                                             Análisis comparativo
+                                          </div>
+                                          <div className="flex items-center gap-1 text-xs text-stone-500">
+                                             <Sparkles className="w-3.5 h-3.5 text-violet-500" />
+                                             Informe automático
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <ChevronRight className="w-5 h-5 text-violet-400" />
+                                 </div>
+                              </motion.div>
+
+                              {/* Conclusions Writer Card */}
+                              <motion.div
+                                 whileHover={{ scale: 1.01, y: -2 }}
+                                 onClick={() => setSelectedPapersTool('conclusions')}
+                                 className="bg-gradient-to-br from-purple-50 to-rose-50 border border-purple-200 rounded-lg p-6 cursor-pointer hover:shadow-lg hover:border-purple-300 transition-all"
+                              >
+                                 <div className="flex items-start gap-4">
+                                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-rose-500 flex items-center justify-center shadow-lg">
+                                       <PenTool className="w-7 h-7 text-white" />
+                                    </div>
+                                    <div className="flex-1">
+                                       <div className="flex items-center gap-2 mb-1">
+                                          <h4 className="text-lg font-serif text-stone-900">Redactar Conclusiones</h4>
+                                          <span className="text-[10px] px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full border border-purple-200 font-medium">IA</span>
+                                       </div>
+                                       <p className="text-sm text-stone-600 mb-4">
+                                          Genera automáticamente el informe de conclusiones basado en todas las pruebas, hallazgos y resultados del área auditada.
+                                       </p>
+                                       <div className="flex items-center gap-4">
+                                          <div className="flex items-center gap-1 text-xs text-stone-500">
+                                             <FileText className="w-3.5 h-3.5 text-purple-500" />
+                                             Informe completo
+                                          </div>
+                                          <div className="flex items-center gap-1 text-xs text-stone-500">
+                                             <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+                                             Escritura en vivo
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <ChevronRight className="w-5 h-5 text-purple-400" />
+                                 </div>
+                              </motion.div>
+                           </div>
+                        </div>
+
+                        {/* Generated Documents Section */}
+                        <div>
+                           <h3 className="text-xs font-medium text-stone-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                              <FileText className="w-4 h-4 text-stone-400" />
+                              Documentos del área
+                           </h3>
+                           <div className="bg-white border border-stone-200 shadow-sm divide-y divide-stone-100 rounded-sm">
+                              {papers.map(paper => (
+                                 <div key={paper.id} className="p-5 flex items-center justify-between hover:bg-stone-50 transition-colors group">
+                                    <div className="flex items-center gap-4">
+                                       <div className="w-10 h-10 bg-stone-50 border border-stone-100 flex items-center justify-center text-stone-400 rounded-lg">
+                                          <FileText className="w-5 h-5" />
+                                       </div>
+                                       <div>
+                                          <h4 className="text-sm font-medium text-stone-900">{paper.name}</h4>
+                                          <div className="flex items-center gap-2 mt-0.5">
+                                             <span className="text-xs text-stone-400 font-mono">{paper.id}</span>
+                                             <span className="text-[10px] text-stone-300">•</span>
+                                             <span className="text-[10px] text-stone-400">Modified {paper.date}</span>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                       <span className={`text-[10px] px-2 py-0.5 rounded border uppercase tracking-wide font-medium ${
+                                          paper.status === 'final' ? 'bg-stone-900 text-white border-stone-900' :
+                                          paper.status === 'review' ? 'bg-blue-50 text-blue-700 border-blue-100' :
+                                          'bg-stone-100 text-stone-500 border-stone-200'
+                                       }`}>
+                                          {t(`engagement.paper_status_${paper.status}`)}
+                                       </span>
+                                       <button className="p-2 text-stone-300 hover:text-stone-900 hover:bg-stone-100 rounded transition-all">
+                                          <Download className="w-4 h-4" />
+                                       </button>
+                                       <button className="p-2 text-stone-300 hover:text-stone-900 hover:bg-stone-100 rounded transition-all">
+                                          <MoreHorizontal className="w-4 h-4" />
+                                       </button>
+                                    </div>
+                                 </div>
+                              ))}
+                           </div>
                         </div>
                      </div>
-                  ))}
+                  )}
                </div>
             )}
 

@@ -395,8 +395,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                   <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOthersOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'}`}>
                      <div className="space-y-1 pl-1 pt-2">
-                        <IntelligenceItem icon={Files} label="Documentos del encargo" />
+                        <div 
+                           onClick={() => onSelectArea('documents')}
+                           className={`group relative pl-4 border-l-[1.5px] ${activeArea === 'documents' ? 'border-stone-900' : 'border-transparent hover:border-stone-300'} cursor-pointer py-2 transition-all hover:pl-5`}
+                        >
+                           <div className="flex items-center gap-3">
+                              <span className={`text-[13px] font-medium transition-colors ${activeArea === 'documents' ? 'text-stone-900' : 'text-stone-500 group-hover:text-stone-900'}`}>Documentos del encargo</span>
+                           </div>
+                        </div>
                         <IntelligenceItem icon={Users} label="Equipo auditor" />
+                        <div 
+                           onClick={() => onSelectArea('erp-integrations')}
+                           className={`group relative pl-4 border-l-[1.5px] ${activeArea === 'erp-integrations' ? 'border-stone-900' : 'border-transparent hover:border-stone-300'} cursor-pointer py-2 transition-all hover:pl-5`}
+                        >
+                           <div className="flex items-center gap-3">
+                              <span className={`text-[13px] font-medium transition-colors ${activeArea === 'erp-integrations' ? 'text-stone-900' : 'text-stone-500 group-hover:text-stone-900'}`}>Integraciones ERP</span>
+                           </div>
+                        </div>
                      </div>
                   </div>
                </div>

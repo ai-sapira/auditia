@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { TimelineEvent } from '../types';
 import { EngagementRequestsView } from './EngagementRequestsView';
 import { EngagementMessagesView } from './EngagementMessagesView';
+import { EngagementDocumentsView } from './EngagementDocumentsView';
+import { EngagementERPIntegrationsView } from './EngagementERPIntegrationsView';
 import { EngagementOverview } from '../components/engagement/EngagementOverview';
 import { EngagementAreaDetail } from '../components/engagement/EngagementAreaDetail';
 
@@ -30,6 +32,14 @@ export const EngagementView: React.FC<EngagementViewProps> = ({ activeArea, onSe
 
   if (activeArea === 'messages') {
     return <EngagementMessagesView />;
+  }
+
+  if (activeArea === 'documents') {
+    return <EngagementDocumentsView />;
+  }
+
+  if (activeArea === 'erp-integrations') {
+    return <EngagementERPIntegrationsView />;
   }
 
   // --- RENDER: OVERVIEW (Section 1) ---
