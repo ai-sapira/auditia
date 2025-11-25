@@ -40,6 +40,110 @@ import {
   Link as LinkIcon
 } from 'lucide-react';
 
+/**
+ * ========================================================================
+ * DESIGN SYSTEM v2.0 - Hallazgos & ajustes
+ * Legora + Devin inspired: Sobrio, Profesional, Regulado
+ * ========================================================================
+ */
+const DS = {
+  // Base colors
+  bg: {
+    primary: 'bg-white',
+    secondary: 'bg-neutral-50',
+    tertiary: 'bg-neutral-100',
+  },
+  text: {
+    primary: 'text-neutral-900',
+    secondary: 'text-neutral-700',
+    tertiary: 'text-neutral-500',
+    muted: 'text-neutral-400',
+  },
+  border: {
+    default: 'border-neutral-200',
+    subtle: 'border-neutral-100',
+    strong: 'border-neutral-300',
+  },
+  // Finding types - Subtle, professional colors
+  findingType: {
+    error: {
+      bg: 'bg-[#FBF8F7]',
+      text: 'text-[#8B5A50]',
+      border: 'border-[#E8E0DE]',
+      icon: 'text-[#8B5A50]',
+    },
+    control: {
+      bg: 'bg-[#FDFAF6]',
+      text: 'text-[#8B7355]',
+      border: 'border-[#EDE5D8]',
+      icon: 'text-[#8B7355]',
+    },
+    info: {
+      bg: 'bg-[#F7F9FA]',
+      text: 'text-[#4A5D6A]',
+      border: 'border-[#E0E5E8]',
+      icon: 'text-[#4A5D6A]',
+    },
+  },
+  // Status colors - Very muted
+  status: {
+    draft: {
+      bg: 'bg-neutral-100',
+      text: 'text-neutral-600',
+      border: 'border-neutral-200',
+    },
+    open: {
+      bg: 'bg-neutral-50',
+      text: 'text-neutral-700',
+      border: 'border-neutral-200',
+    },
+    pending_client: {
+      bg: 'bg-[#FDFAF6]',
+      text: 'text-[#8B7355]',
+      border: 'border-[#EDE5D8]',
+    },
+    client_replied: {
+      bg: 'bg-[#F7F9F7]',
+      text: 'text-[#4A5D4A]',
+      border: 'border-[#E0E5E0]',
+    },
+    closed: {
+      bg: 'bg-neutral-50',
+      text: 'text-neutral-500',
+      border: 'border-neutral-200',
+    },
+  },
+  // Priority
+  priority: {
+    low: {
+      bg: 'bg-neutral-50',
+      text: 'text-neutral-600',
+      border: 'border-neutral-200',
+    },
+    medium: {
+      bg: 'bg-neutral-100',
+      text: 'text-neutral-700',
+      border: 'border-neutral-300',
+    },
+    high: {
+      bg: 'bg-neutral-900',
+      text: 'text-white',
+      border: 'border-neutral-900',
+    },
+  },
+  // Messages
+  message: {
+    auditor: {
+      bg: 'bg-neutral-900',
+      text: 'text-white',
+    },
+    client: {
+      bg: 'bg-neutral-100',
+      text: 'text-neutral-800',
+    },
+  },
+};
+
 // --- Types ---
 
 type FindingStatus = 'draft' | 'open' | 'pending_client' | 'client_replied' | 'closed';
@@ -72,6 +176,18 @@ interface AffectedRow {
   status?: 'pending' | 'resolved' | 'explained';
 }
 
+interface PendingTask {
+  id: string;
+  title: string;
+  description?: string;
+  assignee: string;
+  dueDate?: string;
+  priority: 'low' | 'medium' | 'high';
+  status: 'pending' | 'in_progress' | 'completed';
+  createdAt: string;
+  relatedFindingId: string;
+}
+
 interface Finding {
   id: string;
   code: string;
@@ -88,6 +204,7 @@ interface Finding {
   adjustment?: AdjustmentProposal;
   internalComments: { user: string; text: string; date: string; id: string }[];
   messages: Message[];
+  pendingTasks: PendingTask[];
   createdAt: string;
   updatedAt: string;
   priority?: 'low' | 'medium' | 'high';
@@ -141,6 +258,30 @@ const INITIAL_FINDINGS: Finding[] = [
         isRead: true
       }
     ],
+    pendingTasks: [
+      {
+        id: 't1',
+        title: 'Solicitar albaranes de entrega a Logísticos SA',
+        description: 'Pedir los albaranes correspondientes a las facturas F-2024-001 y F-2024-092',
+        assignee: 'Ana García',
+        dueDate: '28/01/2025',
+        priority: 'high',
+        status: 'in_progress',
+        createdAt: '23/01/2025',
+        relatedFindingId: 'f1'
+      },
+      {
+        id: 't2',
+        title: 'Verificar registro contable de Tech Solutions',
+        description: 'Confirmar que la factura F-2024-089 se registró correctamente en enero',
+        assignee: 'Carlos M.',
+        dueDate: '30/01/2025',
+        priority: 'medium',
+        status: 'pending',
+        createdAt: '24/01/2025',
+        relatedFindingId: 'f1'
+      }
+    ],
     createdAt: '22/01/2025',
     updatedAt: '24/01/2025',
     adjustment: {
@@ -169,10 +310,23 @@ const INITIAL_FINDINGS: Finding[] = [
         id: 'm3',
         sender: 'auditor',
         senderName: 'Pablo S.',
-        content: 'Hola Laura, hemos detectado estos pedidos sin doble firma. ¿Existe alguna autorización por correo que no estemos viendo?',
+        content: 'Hola Laura, hemos detectados estos pedidos sin doble firma. ¿Existe alguna autorización por correo que no estemos viendo?',
         timestamp: '24/01/2025 09:15',
         attachments: [{ name: 'Pedidos_Sin_Firma.xlsx', size: '12 KB', type: 'xlsx' }],
         isRead: false
+      }
+    ],
+    pendingTasks: [
+      {
+        id: 't3',
+        title: 'Revisar emails de autorización de pedidos',
+        description: 'Buscar si existe autorización por correo del Director Financiero',
+        assignee: 'Pablo S.',
+        dueDate: '26/01/2025',
+        priority: 'medium',
+        status: 'pending',
+        createdAt: '24/01/2025',
+        relatedFindingId: 'f2'
       }
     ],
     createdAt: '24/01/2025',
@@ -213,6 +367,19 @@ const INITIAL_FINDINGS: Finding[] = [
         isRead: true
       }
     ],
+    pendingTasks: [
+      {
+        id: 't4',
+        title: 'Documentar cierre como no material',
+        description: 'Cliente confirmó que es un rappel. Preparar documentación de cierre.',
+        assignee: 'Ana García',
+        dueDate: '27/01/2025',
+        priority: 'low',
+        status: 'completed',
+        createdAt: '25/01/2025',
+        relatedFindingId: 'f3'
+      }
+    ],
     createdAt: '23/01/2025',
     updatedAt: '25/01/2025'
   },
@@ -235,21 +402,39 @@ const INITIAL_FINDINGS: Finding[] = [
     ],
     internalComments: [],
     messages: [],
+    pendingTasks: [
+      {
+        id: 't5',
+        title: 'Identificar asiento duplicado para eliminar',
+        description: 'Determinar cuál de los dos asientos es el correcto y solicitar la anulación del duplicado',
+        assignee: 'Carlos M.',
+        dueDate: '29/01/2025',
+        priority: 'high',
+        status: 'pending',
+        createdAt: '26/01/2025',
+        relatedFindingId: 'f4'
+      },
+      {
+        id: 't6',
+        title: 'Contactar a Construcciones Beta para confirmación',
+        description: 'Solicitar confirmación de saldo y verificar que solo hay una factura pendiente',
+        assignee: 'Carlos M.',
+        dueDate: '30/01/2025',
+        priority: 'medium',
+        status: 'pending',
+        createdAt: '26/01/2025',
+        relatedFindingId: 'f4'
+      }
+    ],
     createdAt: '26/01/2025',
     updatedAt: '26/01/2025'
   }
 ];
 
-// --- Components ---
+// --- Components (Design System Compliant) ---
 
 const StatusBadge = ({ status }: { status: FindingStatus }) => {
-  const styles = {
-    draft: 'bg-stone-100 text-stone-600 border-stone-200',
-    open: 'bg-stone-50 text-stone-700 border-stone-200',
-    pending_client: 'bg-blue-50 text-blue-700 border-blue-200',
-    client_replied: 'bg-stone-50 text-stone-700 border-stone-200',
-    closed: 'bg-stone-50 text-stone-600 border-stone-200',
-  };
+  const style = DS.status[status];
 
   const labels = {
     draft: 'Borrador',
@@ -260,32 +445,52 @@ const StatusBadge = ({ status }: { status: FindingStatus }) => {
   };
 
   return (
-    <span className={`px-2.5 py-1 rounded-md text-xs font-medium border ${styles[status]}`}>
+    <span className={`px-2.5 py-1 rounded text-[11px] font-medium border ${style.bg} ${style.text} ${style.border}`}>
       {labels[status]}
     </span>
   );
 };
 
-const TypeIcon = ({ type }: { type: FindingType }) => {
+const TypeIcon = ({ type, size = 'sm' }: { type: FindingType; size?: 'sm' | 'md' }) => {
+  const sizeClass = size === 'sm' ? 'w-4 h-4' : 'w-5 h-5';
+  const iconColor = DS.findingType[type].icon;
+  
   switch (type) {
-    case 'error': return <AlertCircle className="w-4 h-4 text-rose-500" />;
-    case 'control': return <ShieldAlert className="w-4 h-4 text-orange-500" />;
-    case 'info': return <Info className="w-4 h-4 text-blue-500" />;
+    case 'error': return <AlertCircle className={`${sizeClass} ${iconColor}`} />;
+    case 'control': return <ShieldAlert className={`${sizeClass} ${iconColor}`} />;
+    case 'info': return <Info className={`${sizeClass} ${iconColor}`} />;
   }
+};
+
+const TypeBadge = ({ type }: { type: FindingType }) => {
+  const style = DS.findingType[type];
+  const labels = {
+    error: 'Error',
+    control: 'Control',
+    info: 'Información',
+  };
+
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-medium ${style.bg} ${style.text} ${style.border} border`}>
+      <TypeIcon type={type} size="sm" />
+      {labels[type]}
+    </span>
+  );
 };
 
 const PriorityBadge = ({ priority }: { priority?: 'low' | 'medium' | 'high' }) => {
   if (!priority) return null;
   
-  const styles = {
-    low: 'bg-stone-50 text-stone-600 border-stone-200',
-    medium: 'bg-stone-100 text-stone-700 border-stone-300',
-    high: 'bg-stone-900 text-white border-stone-900',
+  const style = DS.priority[priority];
+  const labels = {
+    low: 'Baja',
+    medium: 'Media',
+    high: 'Alta',
   };
 
   return (
-    <span className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border ${styles[priority]}`}>
-      {priority === 'high' ? 'Alta' : priority === 'medium' ? 'Media' : 'Baja'}
+    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${style.bg} ${style.text} ${style.border}`}>
+      {labels[priority]}
     </span>
   );
 };
@@ -453,11 +658,11 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
         className="w-full flex flex-col bg-white overflow-hidden"
       >
         {/* Header */}
-        <div className="px-8 py-4 border-b border-stone-200 bg-white">
+        <div className="px-8 py-4 border-b border-neutral-200 bg-white">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-serif text-stone-900">Hallazgos & Ajustes</h2>
+            <h2 className="text-xl font-serif text-neutral-900">Hallazgos & ajustes</h2>
             <button 
-              className="p-2 text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors"
+              className="p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg transition-colors"
               title="Nuevo hallazgo"
             >
               <Plus className="w-4 h-4" />
@@ -466,13 +671,13 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
 
           {/* Search */}
           <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
             <input 
               type="text" 
               placeholder="Buscar por código, título..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-900 placeholder:text-stone-400 focus:ring-1 focus:ring-stone-900/20 focus:border-stone-300 focus:bg-white transition-all"
+              className="w-full pl-10 pr-4 py-2 bg-neutral-50 border border-neutral-200 rounded-lg text-sm text-neutral-900 placeholder:text-neutral-400 focus:ring-1 focus:ring-neutral-900/20 focus:border-neutral-300 focus:bg-white transition-all"
             />
           </div>
 
@@ -480,13 +685,13 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
           <div className="flex items-center justify-between">
             <button 
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 text-xs font-medium text-stone-600 hover:text-stone-900 transition-colors"
+              className="flex items-center gap-2 text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
             >
               <Filter className="w-3.5 h-3.5" />
               Filtros
               {showFilters ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
             </button>
-            <span className="text-xs text-stone-500 font-medium">{filteredFindings.length} hallazgos</span>
+            <span className="text-xs text-neutral-500 font-medium">{filteredFindings.length} hallazgos</span>
           </div>
 
           {/* Expanded Filters */}
@@ -496,11 +701,11 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="mt-4 space-y-4 overflow-hidden border-t border-stone-100 pt-4"
+                className="mt-4 space-y-4 overflow-hidden border-t border-neutral-100 pt-4"
               >
                 {/* Status Filter */}
                 <div>
-                  <label className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider mb-2 block">Estado</label>
+                  <label className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-2 block">Estado</label>
                   <div className="flex flex-wrap gap-2">
                     {['all', 'open', 'pending_client', 'client_replied', 'closed'].map(st => (
                       <button 
@@ -508,8 +713,8 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                         onClick={() => setFilterStatus(st)}
                         className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-all ${
                           filterStatus === st 
-                          ? 'bg-stone-900 text-white shadow-sm' 
-                          : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                          ? 'bg-neutral-900 text-white shadow-sm' 
+                          : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                         }`}
                       >
                         {st === 'all' ? 'Todos' : st === 'open' ? 'Abierto' : st === 'pending_client' ? 'Pendiente' : st === 'client_replied' ? 'Respondido' : 'Cerrado'}
@@ -520,7 +725,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
 
                 {/* Type Filter */}
                 <div>
-                  <label className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider mb-2 block">Tipo</label>
+                  <label className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-2 block">Tipo</label>
                   <div className="flex flex-wrap gap-2">
                     {['all', 'error', 'control', 'info'].map(tp => (
                       <button 
@@ -528,8 +733,8 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                         onClick={() => setFilterType(tp)}
                         className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-all flex items-center gap-1.5 ${
                           filterType === tp 
-                          ? 'bg-stone-900 text-white shadow-sm' 
-                          : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                          ? 'bg-neutral-900 text-white shadow-sm' 
+                          : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
                         }`}
                       >
                         {tp !== 'all' && <TypeIcon type={tp as FindingType} />}
@@ -547,7 +752,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
           <AnimatePresence mode="popLayout">
             {filteredFindings.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-stone-400 py-12">
+              <div className="flex flex-col items-center justify-center h-full text-neutral-400 py-12">
                 <AlertCircle className="w-12 h-12 mb-3 opacity-20" />
                 <p className="text-sm">No se encontraron hallazgos</p>
               </div>
@@ -566,40 +771,40 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                   }}
                   className={`group p-4 rounded-lg cursor-pointer border transition-all ${
                     selectedId === finding.id 
-                    ? 'bg-white border-stone-900 shadow-sm' 
-                    : 'bg-white border-stone-200 hover:border-stone-300 hover:shadow-sm'
+                    ? 'bg-white border-neutral-900 shadow-sm' 
+                    : 'bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-sm'
                   }`}
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-2.5">
-                      <span className="text-xs font-mono text-stone-700 bg-stone-50 px-2 py-1 rounded font-semibold border border-stone-200">{finding.code}</span>
+                      <span className="text-xs font-mono text-neutral-700 bg-neutral-50 px-2 py-1 rounded font-semibold border border-neutral-200">{finding.code}</span>
                       <PriorityBadge priority={finding.priority} />
                     </div>
                     <StatusBadge status={finding.status} />
                   </div>
                   
                   {finding.area && (
-                    <div className="text-xs font-medium text-stone-500 mb-2">
+                    <div className="text-xs font-medium text-neutral-500 mb-2">
                       Área: {finding.area}
                     </div>
                   )}
                   
-                  <h3 className="text-lg font-serif font-semibold text-stone-900 mb-3 leading-relaxed line-clamp-2">{finding.title}</h3>
+                  <h3 className="text-lg font-serif font-semibold text-neutral-900 mb-3 leading-relaxed line-clamp-2">{finding.title}</h3>
                   
-                  <div className="flex items-center justify-between pt-3 border-t border-stone-100">
-                    <div className="flex items-center gap-2.5 text-xs text-stone-500">
+                  <div className="flex items-center justify-between pt-3 border-t border-neutral-100">
+                    <div className="flex items-center gap-2.5 text-xs text-neutral-500">
                       <TypeIcon type={finding.type} />
                       <span className="truncate max-w-[140px] font-medium">{finding.responsible}</span>
                       {finding.messages.length > 0 && (
-                        <div className="flex items-center gap-1 text-stone-400">
-                          <span className="text-stone-300">•</span>
+                        <div className="flex items-center gap-1 text-neutral-400">
+                          <span className="text-neutral-300">•</span>
                           <MessageSquare className="w-3.5 h-3.5" />
                           <span className="font-medium">{finding.messages.length}</span>
                         </div>
                       )}
                     </div>
                     {finding.amount && (
-                      <span className="text-sm font-semibold text-stone-900 font-mono">
+                      <span className="text-sm font-semibold text-neutral-900 font-mono">
                         {finding.amount > 0 ? '+' : ''}{finding.amount.toLocaleString('es-ES', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2 })}
                       </span>
                     )}
@@ -609,12 +814,12 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                   {finding.complianceTags.length > 0 && (
                     <div className="flex gap-1.5 mt-3 flex-wrap">
                       {finding.complianceTags.slice(0, 2).map(tag => (
-                        <span key={tag} className="px-2 py-0.5 bg-stone-50 text-stone-600 text-[10px] font-medium rounded border border-stone-200">
+                        <span key={tag} className="px-2 py-0.5 bg-neutral-50 text-neutral-600 text-[10px] font-medium rounded border border-neutral-200">
                           {tag}
                         </span>
                       ))}
                       {finding.complianceTags.length > 2 && (
-                        <span className="px-2 py-0.5 bg-stone-100 text-stone-500 text-[10px] font-medium rounded">
+                        <span className="px-2 py-0.5 bg-neutral-100 text-neutral-500 text-[10px] font-medium rounded">
                           +{finding.complianceTags.length - 2}
                         </span>
                       )}
@@ -648,46 +853,46 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', damping: 30, stiffness: 300 }}
                 key={selectedFinding.id}
-                className="fixed right-0 top-16 h-[calc(100vh-64px)] w-full lg:w-[600px] flex flex-col bg-white border-l border-stone-200 shadow-xl z-[60] overflow-hidden"
+                className="fixed right-0 top-16 h-[calc(100vh-64px)] w-full lg:w-[600px] flex flex-col bg-white border-l border-neutral-200 shadow-xl z-[60] overflow-hidden"
               >
               {/* Detail Header */}
-              <div className="border-b border-stone-200 bg-white shrink-0">
+              <div className="border-b border-neutral-200 bg-white shrink-0">
                 <div className="px-8 pt-4 pb-4 lg:pt-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-3">
                         <button 
                           onClick={() => setSelectedId(null)}
-                          className="p-2 -ml-2 hover:bg-stone-100 rounded-lg transition-colors"
+                          className="p-2 -ml-2 hover:bg-neutral-100 rounded-lg transition-colors"
                         >
-                          <ArrowLeft className="w-5 h-5 text-stone-600" />
+                          <ArrowLeft className="w-5 h-5 text-neutral-600" />
                         </button>
-                        <span className="text-2xl font-serif font-bold text-stone-900 font-mono tracking-tight">{selectedFinding.code}</span>
+                        <span className="text-2xl font-serif font-bold text-neutral-900 font-mono tracking-tight">{selectedFinding.code}</span>
                         <StatusBadge status={selectedFinding.status} />
                         <PriorityBadge priority={selectedFinding.priority} />
                       </div>
-                      <h1 className="text-3xl font-serif text-stone-900 leading-tight">{selectedFinding.title}</h1>
+                      <h1 className="text-3xl font-serif text-neutral-900 leading-tight">{selectedFinding.title}</h1>
                     </div>
                     
                     <div className="flex items-center gap-2 ml-6">
-                      <button className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors">
+                      <button className="p-2 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors">
                         <MoreHorizontal className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between gap-6 pt-4 border-t border-stone-100">
+                  <div className="flex items-center justify-between gap-6 pt-4 border-t border-neutral-100">
                     <div className="flex items-center gap-6">
-                      <div className="flex items-center gap-2 text-xs text-stone-600">
-                        <User className="w-4 h-4 text-stone-400" />
+                      <div className="flex items-center gap-2 text-xs text-neutral-600">
+                        <User className="w-4 h-4 text-neutral-400" />
                         <span className="font-medium">{selectedFinding.responsible}</span>
                       </div>
                       {selectedFinding.complianceTags.length > 0 && (
                         <>
-                          <div className="h-4 w-px bg-stone-200" />
+                          <div className="h-4 w-px bg-neutral-200" />
                           <div className="flex gap-2">
                             {selectedFinding.complianceTags.map(tag => (
-                              <span key={tag} className="px-2.5 py-1 bg-stone-50 text-stone-600 text-[10px] font-medium rounded border border-stone-200">
+                              <span key={tag} className="px-2.5 py-1 bg-neutral-50 text-neutral-600 text-[10px] font-medium rounded border border-neutral-200">
                                 {tag}
                               </span>
                             ))}
@@ -696,15 +901,15 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                       )}
                       {unreadMessagesCount > 0 && (
                         <>
-                          <div className="h-4 w-px bg-stone-200" />
-                          <span className="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded border border-blue-200">
+                          <div className="h-4 w-px bg-neutral-200" />
+                          <span className="px-2.5 py-1 bg-[#F7F9F7] text-[#4A5D4A] text-xs font-medium rounded border border-[#E0E5E0]">
                             {unreadMessagesCount} nuevo{unreadMessagesCount > 1 ? 's' : ''}
                           </span>
                         </>
                       )}
                     </div>
                     
-                    <button className="flex items-center gap-2 px-4 py-2 bg-stone-900 text-white text-xs font-medium rounded-lg hover:bg-stone-800 transition-all shrink-0">
+                    <button className="flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white text-xs font-medium rounded-lg hover:bg-neutral-800 transition-all shrink-0">
                       <CheckCircle2 className="w-4 h-4" />
                       Marcar Revisado
                     </button>
@@ -713,13 +918,13 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
               </div>
 
               {/* Detail Tabs */}
-              <div className="border-b border-stone-200 bg-white px-8 shrink-0">
+              <div className="border-b border-neutral-200 bg-white px-8 shrink-0">
                 <div className="flex gap-1">
                   {[
                     { id: 'overview', label: 'Resumen', icon: Eye },
                     { id: 'adjustment', label: 'Ajuste', icon: Scale },
                     { id: 'messages', label: `Mensajes${unreadMessagesCount > 0 ? ` (${unreadMessagesCount})` : ''}`, icon: MessageSquare },
-                    { id: 'comments', label: 'Comentarios', icon: Users }
+                    { id: 'comments', label: 'Tareas', icon: CheckCircle }
                   ].map(tab => {
                     const Icon = tab.icon;
                     return (
@@ -728,8 +933,8 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                         onClick={() => setActiveDetailTab(tab.id as any)}
                         className={`flex items-center gap-2 px-5 py-4 text-sm font-medium border-b-2 transition-colors ${
                           activeDetailTab === tab.id
-                            ? 'border-stone-900 text-stone-900'
-                            : 'border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300'
+                            ? 'border-neutral-900 text-neutral-900'
+                            : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -741,7 +946,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
               </div>
 
               {/* Detail Content (Scrollable) */}
-              <div className="flex-1 overflow-y-auto bg-stone-50">
+              <div className="flex-1 overflow-y-auto bg-neutral-50">
               <AnimatePresence mode="wait">
                 {/* Overview Tab */}
                 {activeDetailTab === 'overview' && (
@@ -753,33 +958,33 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                     className="p-8 space-y-8"
                   >
                     {/* Description Section */}
-                    <div className="bg-white rounded-lg border border-stone-200 p-8">
+                    <div className="bg-white rounded-lg border border-neutral-200 p-8">
                       <div className="flex justify-between items-start mb-6">
-                        <h4 className="text-base font-serif font-semibold text-stone-900 flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-stone-400" />
-                          Descripción del Hallazgo
+                        <h4 className="text-base font-serif font-semibold text-neutral-900 flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-neutral-400" />
+                          Descripción del hallazgo
                         </h4>
                         {!isEditingDescription ? (
                           <button 
                             onClick={() => setIsEditingDescription(true)}
-                            className="text-xs text-stone-400 hover:text-stone-600 flex items-center gap-1 transition-colors"
+                            className="text-xs text-neutral-400 hover:text-neutral-600 flex items-center gap-1 transition-colors"
                           >
                             <Edit3 className="w-3 h-3" /> Editar
                           </button>
                         ) : (
                           <div className="flex gap-2">
-                            <button 
-                              onClick={handleSaveDescription}
-                              className="text-xs text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition-colors"
-                            >
-                              <CheckCircle className="w-3 h-3" /> Guardar
-                            </button>
+                          <button 
+                            onClick={handleSaveDescription}
+                            className="text-xs text-[#4A5D4A] hover:text-[#3D4D3D] flex items-center gap-1 transition-colors"
+                          >
+                            <CheckCircle className="w-3 h-3" /> Guardar
+                          </button>
                             <button 
                               onClick={() => {
                                 setIsEditingDescription(false);
                                 setEditedDescription(selectedFinding.description);
                               }}
-                              className="text-xs text-stone-400 hover:text-stone-600 flex items-center gap-1 transition-colors"
+                              className="text-xs text-neutral-400 hover:text-neutral-600 flex items-center gap-1 transition-colors"
                             >
                               <XCircle className="w-3 h-3" /> Cancelar
                             </button>
@@ -791,36 +996,36 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                         <textarea
                           value={editedDescription}
                           onChange={(e) => setEditedDescription(e.target.value)}
-                          className="w-full min-h-[140px] p-4 text-sm text-stone-700 border border-stone-300 rounded-lg focus:ring-1 focus:ring-stone-900/20 focus:border-stone-400 resize-none leading-relaxed"
+                          className="w-full min-h-[140px] p-4 text-sm text-neutral-700 border border-neutral-300 rounded-lg focus:ring-1 focus:ring-neutral-900/20 focus:border-neutral-400 resize-none leading-relaxed"
                           placeholder="Describe el hallazgo..."
                         />
                       ) : (
-                        <p className="text-sm text-stone-700 leading-relaxed whitespace-pre-wrap">
+                        <p className="text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap">
                           {selectedFinding.description}
                         </p>
                       )}
 
                       {/* Key Metrics */}
-                      <div className="grid grid-cols-3 gap-8 mt-8 pt-8 border-t border-stone-100">
+                      <div className="grid grid-cols-3 gap-8 mt-8 pt-8 border-t border-neutral-100">
                         <div>
-                          <div className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider mb-2">Importe</div>
-                          <div className="text-xl font-bold text-stone-900 font-mono">
+                          <div className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-2">Importe</div>
+                          <div className="text-xl font-bold text-neutral-900 font-mono">
                             {selectedFinding.amount ? (
                               (selectedFinding.amount > 0 ? '+' : '') + selectedFinding.amount.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })
                             ) : (
-                              <span className="text-stone-400 font-normal">N/A</span>
+                              <span className="text-neutral-400 font-normal">N/A</span>
                             )}
                           </div>
                         </div>
                         <div>
-                          <div className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider mb-2">Filas Afectadas</div>
-                          <div className="text-xl font-bold text-stone-900">
+                          <div className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-2">Filas afectadas</div>
+                          <div className="text-xl font-bold text-neutral-900">
                             {selectedFinding.affectedRows.length}
                           </div>
                         </div>
                         <div>
-                          <div className="text-[10px] font-semibold text-stone-500 uppercase tracking-wider mb-2">Documentos</div>
-                          <div className="text-xl font-bold text-stone-900">
+                          <div className="text-[10px] font-semibold text-neutral-500 uppercase tracking-wider mb-2">Documentos</div>
+                          <div className="text-xl font-bold text-neutral-900">
                             {selectedFinding.documents.length}
                           </div>
                         </div>
@@ -829,20 +1034,20 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
 
                     {/* Affected Data Table */}
                     {selectedFinding.affectedRows.length > 0 && (
-                      <div className="bg-white rounded-lg border border-stone-200 overflow-hidden">
-                        <div className="px-6 py-4 border-b border-stone-200 bg-stone-50 flex items-center justify-between">
-                          <h5 className="text-sm font-serif font-semibold text-stone-900 flex items-center gap-2">
-                            <FileCheck className="w-4 h-4 text-stone-400" />
-                            Datos Afectados
+                      <div className="bg-white rounded-lg border border-neutral-200 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-neutral-200 bg-neutral-50 flex items-center justify-between">
+                          <h5 className="text-sm font-serif font-semibold text-neutral-900 flex items-center gap-2">
+                            <FileCheck className="w-4 h-4 text-neutral-400" />
+                            Datos afectados
                           </h5>
-                          <button className="text-xs font-medium text-stone-600 hover:text-stone-900 flex items-center gap-2 transition-colors">
+                          <button className="text-xs font-medium text-neutral-600 hover:text-neutral-900 flex items-center gap-2 transition-colors">
                             <Download className="w-4 h-4" />
                             Exportar
                           </button>
                         </div>
                         <div className="overflow-x-auto">
                           <table className="w-full text-xs text-left">
-                            <thead className="bg-stone-50 text-stone-500 border-b border-stone-200">
+                            <thead className="bg-neutral-50 text-neutral-500 border-b border-neutral-200">
                               <tr>
                                 <th className="px-4 py-3 font-medium">Factura</th>
                                 <th className="px-4 py-3 font-medium">Proveedor</th>
@@ -850,36 +1055,49 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                                 <th className="px-4 py-3 font-medium text-right">Importe</th>
                                 <th className="px-4 py-3 font-medium">Discrepancia</th>
                                 <th className="px-4 py-3 font-medium text-center">Estado</th>
+                                <th className="px-4 py-3 font-medium text-center">Acciones</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-stone-100">
+                            <tbody className="divide-y divide-neutral-100">
                               {selectedFinding.affectedRows.map(row => (
-                                <tr key={row.id} className="hover:bg-stone-50/50 transition-colors">
-                                  <td className="px-4 py-3 font-medium text-stone-900 font-mono">{row.invoiceNo}</td>
-                                  <td className="px-4 py-3 text-stone-600">{row.supplier}</td>
-                                  <td className="px-4 py-3 text-stone-500">{row.date}</td>
-                                  <td className="px-4 py-3 text-stone-900 font-mono text-right">{row.amount.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</td>
+                                <tr key={row.id} className="hover:bg-neutral-50/50 transition-colors">
+                                  <td className="px-4 py-3 font-medium text-neutral-900 font-mono">{row.invoiceNo}</td>
+                                  <td className="px-4 py-3 text-neutral-600">{row.supplier}</td>
+                                  <td className="px-4 py-3 text-neutral-500">{row.date}</td>
+                                  <td className="px-4 py-3 text-neutral-900 font-mono text-right">{row.amount.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</td>
                                   <td className="px-4 py-3">
-                                    <span className="px-2 py-0.5 bg-rose-50 text-rose-700 rounded text-[10px] font-medium border border-rose-100">
+                                    <span className="px-2 py-0.5 bg-[#FBF8F7] text-[#8B5A50] rounded text-[10px] font-medium border border-[#E8E0DE]">
                                       {row.discrepancy}
                                     </span>
                                   </td>
                                   <td className="px-4 py-3 text-center">
                                     {row.status === 'pending' && (
-                                      <span className="px-2 py-0.5 bg-amber-50 text-amber-700 rounded text-[10px] font-medium border border-amber-100">
+                                      <span className="px-2 py-0.5 bg-[#FDFAF6] text-[#8B7355] rounded text-[10px] font-medium border border-[#EDE5D8]">
                                         Pendiente
                                       </span>
                                     )}
                                     {row.status === 'resolved' && (
-                                      <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[10px] font-medium border border-emerald-100">
+                                      <span className="px-2 py-0.5 bg-[#F7F9F7] text-[#4A5D4A] rounded text-[10px] font-medium border border-[#E0E5E0]">
                                         Resuelto
                                       </span>
                                     )}
                                     {row.status === 'explained' && (
-                                      <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-[10px] font-medium border border-blue-100">
+                                      <span className="px-2 py-0.5 bg-[#F7F9FA] text-[#4A5D6A] rounded text-[10px] font-medium border border-[#E0E5E8]">
                                         Explicado
                                       </span>
                                     )}
+                                  </td>
+                                  <td className="px-4 py-3 text-center">
+                                    <button 
+                                      onClick={() => alert(`Conectando con SAP para obtener factura ${row.invoiceNo}...`)}
+                                      className="inline-flex items-center gap-1.5 px-2 py-1 bg-[#4A5D6A] text-white rounded text-[10px] font-medium hover:bg-[#3A4D5A] transition-colors"
+                                    >
+                                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                        <path d="M9 12h6M12 9v6"/>
+                                      </svg>
+                                      Obtener de SAP
+                                    </button>
                                   </td>
                                 </tr>
                               ))}
@@ -891,36 +1109,36 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                     
                     {/* Linked Documents */}
                     {selectedFinding.documents.length > 0 && (
-                      <div className="bg-white rounded-lg border border-stone-200 p-8">
-                        <h5 className="text-sm font-serif font-semibold text-stone-900 mb-6 flex items-center gap-2">
-                          <Paperclip className="w-4 h-4 text-stone-400" />
-                          Documentos Vinculados
+                      <div className="bg-white rounded-lg border border-neutral-200 p-8">
+                        <h5 className="text-sm font-serif font-semibold text-neutral-900 mb-6 flex items-center gap-2">
+                          <Paperclip className="w-4 h-4 text-neutral-400" />
+                          Documentos vinculados
                         </h5>
                         <div className="grid grid-cols-1 gap-3">
                           {selectedFinding.documents.map((doc, i) => (
                             <div 
                               key={i} 
-                              className="flex items-center justify-between p-4 bg-stone-50 border border-stone-200 rounded-lg hover:border-stone-300 hover:bg-white cursor-pointer transition-all group"
+                              className="flex items-center justify-between p-4 bg-neutral-50 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-white cursor-pointer transition-all group"
                             >
                               <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 bg-stone-100 rounded flex items-center justify-center border border-stone-200">
-                                  <FileText className="w-5 h-5 text-stone-500" />
+                                <div className="w-10 h-10 bg-neutral-100 rounded flex items-center justify-center border border-neutral-200">
+                                  <FileText className="w-5 h-5 text-neutral-500" />
                                 </div>
                                 <div>
-                                  <div className="text-sm font-medium text-stone-900 mb-1">{doc.name}</div>
-                                  <div className="text-xs text-stone-500 flex items-center gap-2">
+                                  <div className="text-sm font-medium text-neutral-900 mb-1">{doc.name}</div>
+                                  <div className="text-xs text-neutral-500 flex items-center gap-2">
                                     <span>{doc.size || 'N/A'}</span>
-                                    <span className="text-stone-300">•</span>
+                                    <span className="text-neutral-300">•</span>
                                     <span>{doc.date}</span>
                                   </div>
                                 </div>
                               </div>
                               <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button className="p-2 hover:bg-stone-100 rounded-lg transition-colors">
-                                  <Eye className="w-4 h-4 text-stone-600" />
+                                <button className="p-2 hover:bg-neutral-100 rounded-lg transition-colors">
+                                  <Eye className="w-4 h-4 text-neutral-600" />
                                 </button>
-                                <button className="p-2 hover:bg-stone-100 rounded-lg transition-colors">
-                                  <Download className="w-4 h-4 text-stone-600" />
+                                <button className="p-2 hover:bg-neutral-100 rounded-lg transition-colors">
+                                  <Download className="w-4 h-4 text-neutral-600" />
                                 </button>
                               </div>
                             </div>
@@ -940,34 +1158,34 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                     exit={{ opacity: 0, y: -10 }}
                     className="p-8"
                   >
-                    <div className="bg-white rounded-lg border border-stone-200 overflow-hidden max-w-4xl">
-                      <div className="px-8 py-6 border-b border-stone-200 bg-stone-50 flex justify-between items-center">
+                    <div className="bg-white rounded-lg border border-neutral-200 overflow-hidden max-w-4xl">
+                      <div className="px-8 py-6 border-b border-neutral-200 bg-neutral-50 flex justify-between items-center">
                         <div>
-                          <h4 className="text-base font-serif font-semibold text-stone-900 flex items-center gap-2 mb-1">
-                            <Scale className="w-4 h-4 text-stone-400" />
-                            Propuesta de Ajuste Contable
+                          <h4 className="text-base font-serif font-semibold text-neutral-900 flex items-center gap-2 mb-1">
+                            <Scale className="w-4 h-4 text-neutral-400" />
+                            Propuesta de ajuste contable
                           </h4>
-                          <p className="text-xs text-stone-500 mt-1">Asiento sugerido para corregir el hallazgo</p>
+                          <p className="text-xs text-neutral-500 mt-1">Asiento sugerido para corregir el hallazgo</p>
                         </div>
-                        <button className="px-4 py-2 bg-stone-900 text-white text-xs font-medium rounded-lg hover:bg-stone-800 transition-colors">
-                          Guardar Ajuste
+                        <button className="px-4 py-2 bg-neutral-900 text-white text-xs font-medium rounded-lg hover:bg-neutral-800 transition-colors">
+                          Guardar ajuste
                         </button>
                       </div>
                       
                       <div className="p-8">
                         {/* Description */}
                         <div className="mb-8">
-                          <label className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-3 block">Descripción del Ajuste</label>
+                          <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3 block">Descripción del ajuste</label>
                           <input 
                             type="text" 
                             defaultValue={selectedFinding.adjustment?.description || 'Ajuste por ' + selectedFinding.title.toLowerCase()}
-                            className="w-full text-sm border-stone-200 rounded-lg bg-stone-50 p-4 focus:ring-1 focus:ring-stone-900/20 focus:border-stone-300 focus:bg-white transition-all"
+                            className="w-full text-sm border-neutral-200 rounded-lg bg-neutral-50 p-4 focus:ring-1 focus:ring-neutral-900/20 focus:border-neutral-300 focus:bg-white transition-all"
                             placeholder="Descripción del ajuste..."
                           />
                         </div>
 
                         {/* Accounting Entry Header */}
-                        <div className="grid grid-cols-12 gap-4 mb-4 text-xs font-semibold text-stone-500 uppercase tracking-wider border-b border-stone-200 pb-3">
+                        <div className="grid grid-cols-12 gap-4 mb-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider border-b border-neutral-200 pb-3">
                           <div className="col-span-6">Cuenta / Descripción</div>
                           <div className="col-span-3 text-right">Debe</div>
                           <div className="col-span-3 text-right">Haber</div>
@@ -979,20 +1197,20 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                             <input 
                               type="text" 
                               defaultValue={selectedFinding.adjustment?.debitAccount || '600.000 Compras de mercaderías'} 
-                              className="w-full text-sm border-stone-200 rounded-lg bg-stone-50 p-2.5 focus:ring-2 focus:ring-stone-900/10 focus:border-stone-900 focus:bg-white transition-all font-medium"
+                              className="w-full text-sm border-neutral-200 rounded-lg bg-neutral-50 p-2.5 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900 focus:bg-white transition-all font-medium"
                             />
                           </div>
                           <div className="col-span-3">
                             <input 
                               type="text" 
                               defaultValue={selectedFinding.amount ? selectedFinding.amount.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0,00'} 
-                              className="w-full text-sm text-right font-mono border-stone-200 rounded-lg bg-stone-50 p-2.5 focus:ring-2 focus:ring-stone-900/10 focus:border-stone-900 focus:bg-white transition-all"
+                              className="w-full text-sm text-right font-mono border-neutral-200 rounded-lg bg-neutral-50 p-2.5 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900 focus:bg-white transition-all"
                               placeholder="0,00"
                             />
                           </div>
                           <div className="col-span-3">
-                            <div className="w-full h-10 bg-stone-50 rounded-lg border border-stone-200 border-dashed flex items-center justify-center">
-                              <span className="text-stone-300 text-xs">-</span>
+                            <div className="w-full h-10 bg-neutral-50 rounded-lg border border-neutral-200 border-dashed flex items-center justify-center">
+                              <span className="text-neutral-300 text-xs">-</span>
                             </div>
                           </div>
                         </div>
@@ -1003,29 +1221,29 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                             <input 
                               type="text" 
                               defaultValue={selectedFinding.adjustment?.creditAccount || '400.000 Proveedores'} 
-                              className="w-full text-sm border-stone-200 rounded-lg bg-stone-50 p-2.5 focus:ring-2 focus:ring-stone-900/10 focus:border-stone-900 focus:bg-white transition-all font-medium"
+                              className="w-full text-sm border-neutral-200 rounded-lg bg-neutral-50 p-2.5 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900 focus:bg-white transition-all font-medium"
                             />
                           </div>
                           <div className="col-span-3">
-                            <div className="w-full h-10 bg-stone-50 rounded-lg border border-stone-200 border-dashed flex items-center justify-center">
-                              <span className="text-stone-300 text-xs">-</span>
+                            <div className="w-full h-10 bg-neutral-50 rounded-lg border border-neutral-200 border-dashed flex items-center justify-center">
+                              <span className="text-neutral-300 text-xs">-</span>
                             </div>
                           </div>
                           <div className="col-span-3">
                             <input 
                               type="text" 
                               defaultValue={selectedFinding.amount ? selectedFinding.amount.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0,00'} 
-                              className="w-full text-sm text-right font-mono border-stone-200 rounded-lg bg-stone-50 p-2.5 focus:ring-2 focus:ring-stone-900/10 focus:border-stone-900 focus:bg-white transition-all"
+                              className="w-full text-sm text-right font-mono border-neutral-200 rounded-lg bg-neutral-50 p-2.5 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900 focus:bg-white transition-all"
                               placeholder="0,00"
                             />
                           </div>
                         </div>
 
                         {/* Balance Check */}
-                        <div className="mt-8 pt-6 border-t border-stone-200">
+                        <div className="mt-8 pt-6 border-t border-neutral-200">
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-stone-600 font-medium">Balance del asiento:</span>
-                            <span className="font-mono font-semibold text-stone-900">
+                            <span className="text-neutral-600 font-medium">Balance del asiento:</span>
+                            <span className="font-mono font-semibold text-neutral-900">
                               {selectedFinding.amount ? (
                                 selectedFinding.amount.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' }) + ' = ' +
                                 selectedFinding.amount.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })
@@ -1052,22 +1270,22 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                         {/* Messages Header */}
                         <div className="mb-8 flex items-center justify-between">
                           <div>
-                            <h4 className="text-base font-serif font-semibold text-stone-900 flex items-center gap-2 mb-1">
-                              <MessageSquare className="w-4 h-4 text-stone-400" />
+                            <h4 className="text-base font-serif font-semibold text-neutral-900 flex items-center gap-2 mb-1">
+                              <MessageSquare className="w-4 h-4 text-neutral-400" />
                               Comunicación con Cliente
                             </h4>
-                            <p className="text-xs text-stone-500 mt-1">Los mensajes se sincronizan con el Portal del Cliente</p>
+                            <p className="text-xs text-neutral-500 mt-1">Los mensajes se sincronizan con el Portal del Cliente</p>
                           </div>
-                          <div className="flex items-center gap-2 px-3 py-1.5 bg-stone-50 border border-stone-200 rounded-lg">
-                            <div className="w-2 h-2 rounded-full bg-stone-400" />
-                            <span className="text-xs font-medium text-stone-600">Portal Activo</span>
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg">
+                            <div className="w-2 h-2 rounded-full bg-neutral-400" />
+                            <span className="text-xs font-medium text-neutral-600">Portal Activo</span>
                           </div>
                         </div>
 
                         {/* Messages List */}
                         <div className="space-y-4 mb-6">
                           {selectedFinding.messages.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-12 text-stone-400">
+                            <div className="flex flex-col items-center justify-center py-12 text-neutral-400">
                               <MessageSquare className="w-12 h-12 mb-3 opacity-20" />
                               <p className="text-sm mb-1">No hay mensajes aún</p>
                               <p className="text-xs">Inicia la conversación para solicitar evidencias al cliente</p>
@@ -1081,21 +1299,21 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                                 className={`flex flex-col max-w-[75%] ${msg.sender === 'auditor' ? 'ml-auto items-end' : 'mr-auto items-start'}`}
                               >
                                 <div className="flex items-baseline gap-2 mb-1.5">
-                                  <span className="text-xs font-semibold text-stone-900">{msg.senderName}</span>
-                                  <span className="text-[10px] text-stone-400">{msg.timestamp}</span>
+                                  <span className="text-xs font-semibold text-neutral-900">{msg.senderName}</span>
+                                  <span className="text-[10px] text-neutral-400">{msg.timestamp}</span>
                                   {msg.sender === 'client' && !msg.isRead && (
-                                    <span className="px-1.5 py-0.5 bg-blue-500 text-white text-[9px] font-medium rounded">Nuevo</span>
+                                    <span className="px-1.5 py-0.5 bg-neutral-900 text-white text-[9px] font-medium rounded">Nuevo</span>
                                   )}
                                 </div>
                                 <div className={`p-4 rounded-2xl shadow-sm ${
                                   msg.sender === 'auditor' 
-                                  ? 'bg-stone-900 text-white rounded-tr-sm' 
-                                  : 'bg-white border border-stone-200 text-stone-700 rounded-tl-sm'
+                                  ? 'bg-neutral-900 text-white rounded-tr-sm' 
+                                  : 'bg-white border border-neutral-200 text-neutral-700 rounded-tl-sm'
                                 }`}>
                                   <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                                   {msg.attachments && msg.attachments.length > 0 && (
                                     <div className={`mt-3 pt-3 flex flex-wrap gap-2 ${
-                                      msg.sender === 'auditor' ? 'border-t border-white/20' : 'border-t border-stone-100'
+                                      msg.sender === 'auditor' ? 'border-t border-white/20' : 'border-t border-neutral-100'
                                     }`}>
                                       {msg.attachments.map((att, i) => (
                                         <div 
@@ -1103,7 +1321,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                                           className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs ${
                                             msg.sender === 'auditor' 
                                             ? 'bg-white/10 text-white hover:bg-white/20' 
-                                            : 'bg-stone-50 text-stone-700 hover:bg-stone-100 border border-stone-200'
+                                            : 'bg-neutral-50 text-neutral-700 hover:bg-neutral-100 border border-neutral-200'
                                           } cursor-pointer transition-colors`}
                                         >
                                           <Paperclip className="w-3.5 h-3.5" />
@@ -1124,7 +1342,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                     </div>
 
                     {/* Input Area */}
-                    <div className="border-t border-stone-200 bg-white p-8">
+                    <div className="border-t border-neutral-200 bg-white p-8">
                       <div className="max-w-4xl mx-auto">
                         {/* Attached Files Preview */}
                         {attachedFiles.length > 0 && (
@@ -1132,16 +1350,16 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                             {attachedFiles.map((file, index) => (
                               <div 
                                 key={index}
-                                className="flex items-center gap-2 px-3 py-1.5 bg-stone-100 border border-stone-200 rounded-lg text-xs"
+                                className="flex items-center gap-2 px-3 py-1.5 bg-neutral-100 border border-neutral-200 rounded-lg text-xs"
                               >
-                                <Paperclip className="w-3 h-3 text-stone-500" />
-                                <span className="text-stone-700">{file.name}</span>
-                                <span className="text-stone-400">({file.size})</span>
+                                <Paperclip className="w-3 h-3 text-neutral-500" />
+                                <span className="text-neutral-700">{file.name}</span>
+                                <span className="text-neutral-400">({file.size})</span>
                                 <button 
                                   onClick={() => removeAttachment(index)}
-                                  className="ml-1 p-0.5 hover:bg-stone-200 rounded"
+                                  className="ml-1 p-0.5 hover:bg-neutral-200 rounded"
                                 >
-                                  <X className="w-3 h-3 text-stone-500" />
+                                  <X className="w-3 h-3 text-neutral-500" />
                                 </button>
                               </div>
                             ))}
@@ -1159,7 +1377,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                               }
                             }}
                             placeholder="Escribe una pregunta para el cliente..."
-                            className="w-full pl-4 pr-24 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-stone-900/10 focus:border-stone-900 transition-all resize-none text-sm min-h-[80px] focus:bg-white"
+                            className="w-full pl-4 pr-24 py-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900 transition-all resize-none text-sm min-h-[80px] focus:bg-white"
                             rows={3}
                           />
                           <div className="absolute right-3 bottom-3 flex items-center gap-1">
@@ -1172,7 +1390,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                             />
                             <button 
                               onClick={() => fileInputRef.current?.click()}
-                              className="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
+                              className="p-2 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors"
                               title="Adjuntar archivo"
                             >
                               <Paperclip className="w-4 h-4" />
@@ -1182,8 +1400,8 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                               disabled={!newMessage.trim() || isSending}
                               className={`p-2 rounded-lg transition-all ${
                                 newMessage.trim() && !isSending
-                                ? 'bg-stone-900 text-white hover:bg-stone-800 shadow-sm' 
-                                : 'bg-stone-100 text-stone-300 cursor-not-allowed'
+                                ? 'bg-neutral-900 text-white hover:bg-neutral-800 shadow-sm' 
+                                : 'bg-neutral-100 text-neutral-300 cursor-not-allowed'
                               }`}
                             >
                               {isSending ? (
@@ -1194,7 +1412,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                             </button>
                           </div>
                         </div>
-                        <p className="text-[10px] text-stone-400 mt-2 text-center">
+                        <p className="text-[10px] text-neutral-400 mt-2 text-center">
                           Al enviar, se creará una tarea en el Portal del Cliente vinculada a este hallazgo
                         </p>
                       </div>
@@ -1202,7 +1420,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                   </motion.div>
                 )}
 
-                {/* Internal Comments Tab */}
+                {/* Pending Tasks Tab */}
                 {activeDetailTab === 'comments' && (
                   <motion.div
                     key="comments"
@@ -1212,39 +1430,125 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
                     className="p-8"
                   >
                     <div className="max-w-4xl mx-auto space-y-8">
-                      <div className="bg-white rounded-lg border border-stone-200 p-8">
-                        <h4 className="text-base font-serif font-semibold text-stone-900 flex items-center gap-2 mb-6">
-                          <Users className="w-4 h-4 text-stone-400" />
-                          Comentarios Internos
-                        </h4>
+                      <div className="bg-white rounded-lg border border-neutral-200 p-8">
+                        <div className="flex items-center justify-between mb-6">
+                          <h4 className="text-base font-serif font-semibold text-neutral-900 flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4 text-neutral-400" />
+                            Tareas Pendientes
+                          </h4>
+                          <span className="text-xs text-neutral-500 bg-neutral-100 px-2.5 py-1 rounded-full font-medium">
+                            {selectedFinding.pendingTasks.filter(t => t.status !== 'completed').length} pendiente{selectedFinding.pendingTasks.filter(t => t.status !== 'completed').length !== 1 ? 's' : ''}
+                          </span>
+                        </div>
                         
-                        {/* Comments List */}
+                        {/* Tasks List */}
                         <div className="space-y-4 mb-8">
-                          {selectedFinding.internalComments.length === 0 ? (
-                            <div className="text-center py-12 text-stone-400">
-                              <Users className="w-10 h-10 mx-auto mb-3 opacity-20" />
-                              <p className="text-sm">No hay comentarios internos</p>
+                          {selectedFinding.pendingTasks.length === 0 ? (
+                            <div className="text-center py-12 text-neutral-400">
+                              <CheckCircle className="w-10 h-10 mx-auto mb-3 opacity-20" />
+                              <p className="text-sm mb-1">No hay tareas pendientes</p>
+                              <p className="text-xs">Añade tareas para hacer seguimiento de este hallazgo</p>
                             </div>
                           ) : (
-                            selectedFinding.internalComments.map(comment => (
-                              <div key={comment.id} className="p-5 bg-stone-50 border border-stone-200 rounded-lg">
+                            selectedFinding.pendingTasks.map(task => (
+                              <div 
+                                key={task.id} 
+                                className={`p-5 border rounded-lg transition-all ${
+                                  task.status === 'completed' 
+                                    ? 'bg-neutral-50 border-neutral-200 opacity-60' 
+                                    : 'bg-white border-neutral-200 hover:border-neutral-300 hover:shadow-sm'
+                                }`}
+                              >
                                 <div className="flex items-start justify-between mb-3">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center text-xs font-bold text-stone-600">
-                                      {comment.user.charAt(0)}
+                                  <div className="flex items-start gap-3">
+                                    <button 
+                                      className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                                        task.status === 'completed'
+                                          ? 'bg-neutral-900 border-neutral-900 text-white'
+                                          : task.status === 'in_progress'
+                                          ? 'border-[#8B7355] bg-[#FDFAF6]'
+                                          : 'border-neutral-300 hover:border-neutral-400'
+                                      }`}
+                                    >
+                                      {task.status === 'completed' && <CheckCircle className="w-3 h-3" />}
+                                      {task.status === 'in_progress' && <Clock className="w-3 h-3 text-[#8B7355]" />}
+                                    </button>
+                                    <div className="flex-1">
+                                      <h5 className={`text-sm font-semibold mb-1 ${task.status === 'completed' ? 'text-neutral-500 line-through' : 'text-neutral-900'}`}>
+                                        {task.title}
+                                      </h5>
+                                      {task.description && (
+                                        <p className="text-xs text-neutral-500 leading-relaxed">{task.description}</p>
+                                      )}
                                     </div>
-                                    <span className="text-xs font-semibold text-stone-900">{comment.user}</span>
                                   </div>
-                                  <span className="text-[10px] text-stone-400">{comment.date}</span>
+                                  <div className="flex items-center gap-2">
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                                      task.priority === 'high' 
+                                        ? 'bg-neutral-900 text-white border-neutral-900'
+                                        : task.priority === 'medium'
+                                        ? 'bg-neutral-100 text-neutral-700 border-neutral-300'
+                                        : 'bg-neutral-50 text-neutral-600 border-neutral-200'
+                                    }`}>
+                                      {task.priority === 'high' ? 'Alta' : task.priority === 'medium' ? 'Media' : 'Baja'}
+                                    </span>
+                                  </div>
                                 </div>
-                                <p className="text-sm text-stone-700 leading-relaxed">{comment.text}</p>
+                                
+                                <div className="flex items-center justify-between pt-3 border-t border-neutral-100">
+                                  <div className="flex items-center gap-4 text-xs text-neutral-500">
+                                    <div className="flex items-center gap-1.5">
+                                      <User className="w-3.5 h-3.5" />
+                                      <span className="font-medium">{task.assignee}</span>
+                                    </div>
+                                    {task.dueDate && (
+                                      <div className="flex items-center gap-1.5">
+                                        <Calendar className="w-3.5 h-3.5" />
+                                        <span>{task.dueDate}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${
+                                    task.status === 'completed'
+                                      ? 'bg-[#F7F9F7] text-[#4A5D4A] border border-[#E0E5E0]'
+                                      : task.status === 'in_progress'
+                                      ? 'bg-[#FDFAF6] text-[#8B7355] border border-[#EDE5D8]'
+                                      : 'bg-neutral-100 text-neutral-600 border border-neutral-200'
+                                  }`}>
+                                    {task.status === 'completed' ? 'Completada' : task.status === 'in_progress' ? 'En progreso' : 'Pendiente'}
+                                  </span>
+                                </div>
                               </div>
                             ))
                           )}
                         </div>
 
-                        {/* Add Comment */}
-                        <InternalCommentInput onAdd={handleAddInternalComment} />
+                        {/* Add Task */}
+                        <AddTaskInput 
+                          onAdd={(title, assignee, priority) => {
+                            const newTask: PendingTask = {
+                              id: Date.now().toString(),
+                              title,
+                              assignee,
+                              priority,
+                              status: 'pending',
+                              createdAt: new Date().toLocaleDateString('es-ES'),
+                              relatedFindingId: selectedFinding.id
+                            };
+                            
+                            const updatedFindings = findings.map(f => {
+                              if (f.id === selectedId) {
+                                return {
+                                  ...f,
+                                  pendingTasks: [...f.pendingTasks, newTask]
+                                };
+                              }
+                              return f;
+                            });
+                            
+                            setFindings(updatedFindings);
+                          }} 
+                        />
                       </div>
                     </div>
                   </motion.div>
@@ -1261,7 +1565,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
   );
 };
 
-// Internal Comment Input Component
+// Internal Comment Input Component (Legacy - kept for compatibility)
 const InternalCommentInput = ({ onAdd }: { onAdd: (comment: string) => void }) => {
   const [comment, setComment] = useState('');
 
@@ -1273,7 +1577,7 @@ const InternalCommentInput = ({ onAdd }: { onAdd: (comment: string) => void }) =
   };
 
   return (
-    <div className="border-t border-stone-200 pt-4">
+    <div className="border-t border-neutral-200 pt-4">
       <div className="flex gap-2">
         <textarea
           value={comment}
@@ -1285,7 +1589,7 @@ const InternalCommentInput = ({ onAdd }: { onAdd: (comment: string) => void }) =
             }
           }}
           placeholder="Añade un comentario interno..."
-          className="flex-1 text-sm border-stone-200 rounded-lg bg-white p-3 focus:ring-2 focus:ring-stone-900/10 focus:border-stone-900 resize-none min-h-[60px]"
+          className="flex-1 text-sm border-neutral-200 rounded-lg bg-white p-3 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900 resize-none min-h-[60px]"
           rows={2}
         />
         <button
@@ -1293,12 +1597,112 @@ const InternalCommentInput = ({ onAdd }: { onAdd: (comment: string) => void }) =
           disabled={!comment.trim()}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             comment.trim()
-              ? 'bg-stone-900 text-white hover:bg-stone-800'
-              : 'bg-stone-100 text-stone-300 cursor-not-allowed'
+              ? 'bg-neutral-900 text-white hover:bg-neutral-800'
+              : 'bg-neutral-100 text-neutral-300 cursor-not-allowed'
           }`}
         >
           <Send className="w-4 h-4" />
         </button>
+      </div>
+    </div>
+  );
+};
+
+// Add Task Input Component
+const AddTaskInput = ({ onAdd }: { onAdd: (title: string, assignee: string, priority: 'low' | 'medium' | 'high') => void }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [title, setTitle] = useState('');
+  const [assignee, setAssignee] = useState('');
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
+
+  const handleSubmit = () => {
+    if (title.trim() && assignee.trim()) {
+      onAdd(title, assignee, priority);
+      setTitle('');
+      setAssignee('');
+      setPriority('medium');
+      setIsExpanded(false);
+    }
+  };
+
+  if (!isExpanded) {
+    return (
+      <button
+        onClick={() => setIsExpanded(true)}
+        className="w-full py-3 border-2 border-dashed border-neutral-200 rounded-lg text-sm text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50 transition-all flex items-center justify-center gap-2"
+      >
+        <Plus className="w-4 h-4" />
+        Añadir nueva tarea
+      </button>
+    );
+  }
+
+  return (
+    <div className="border border-neutral-200 rounded-lg p-4 bg-neutral-50">
+      <div className="space-y-4">
+        <div>
+          <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 block">Título de la tarea</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Ej: Solicitar documentación adicional..."
+            className="w-full text-sm border-neutral-200 rounded-lg bg-white p-3 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
+            autoFocus
+          />
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 block">Asignado a</label>
+            <input
+              type="text"
+              value={assignee}
+              onChange={(e) => setAssignee(e.target.value)}
+              placeholder="Nombre del responsable"
+              className="w-full text-sm border-neutral-200 rounded-lg bg-white p-3 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
+            />
+          </div>
+          
+          <div>
+            <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 block">Prioridad</label>
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+              className="w-full text-sm border-neutral-200 rounded-lg bg-white p-3 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
+            >
+              <option value="low">Baja</option>
+              <option value="medium">Media</option>
+              <option value="high">Alta</option>
+            </select>
+          </div>
+        </div>
+        
+        <div className="flex justify-end gap-2 pt-2">
+          <button
+            onClick={() => {
+              setIsExpanded(false);
+              setTitle('');
+              setAssignee('');
+              setPriority('medium');
+            }}
+            className="px-4 py-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={!title.trim() || !assignee.trim()}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+              title.trim() && assignee.trim()
+                ? 'bg-neutral-900 text-white hover:bg-neutral-800'
+                : 'bg-neutral-100 text-neutral-300 cursor-not-allowed'
+            }`}
+          >
+            <Plus className="w-4 h-4" />
+            Añadir tarea
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -156,20 +156,20 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
   return (
     <div className="space-y-6 animate-fade-in">
        {/* Header */}
-       <div className="flex items-center gap-4 pb-6 border-b border-stone-200">
+       <div className="flex items-center gap-4 pb-6 border-b border-neutral-200">
           <button
              onClick={onBack}
-             className="p-2 rounded-full hover:bg-stone-100 text-stone-400 hover:text-stone-900 transition-colors"
+             className="p-2 rounded-full hover:bg-neutral-100 text-neutral-400 hover:text-neutral-900 transition-colors"
           >
              <ChevronLeft className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-3">
-             <div className="w-10 h-10 rounded-full bg-amber-50 border border-amber-100 flex items-center justify-center">
-                <Scale className="w-5 h-5 text-amber-700" />
+             <div className="w-10 h-10 rounded-full bg-[#FDFAF6] border border-[#EDE5D8] flex items-center justify-center">
+                <Scale className="w-5 h-5 text-[#8B7355]" />
              </div>
              <div>
-                <h2 className="text-2xl font-serif text-stone-900">Cuadre básico de Proveedores</h2>
-                <span className="text-xs text-stone-400 font-mono">Reconciler · Ejecutado 15/03 09:15</span>
+                <h2 className="text-2xl font-serif text-neutral-900">Cuadre básico de Proveedores</h2>
+                <span className="text-xs text-neutral-400 font-mono">Reconciler · Ejecutado 15/03 09:15</span>
              </div>
           </div>
        </div>
@@ -177,30 +177,30 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
        {/* Analytics Panel */}
        <div className="grid grid-cols-3 gap-6">
           {/* Summary KPI */}
-          <div className="col-span-2 bg-stone-50 border border-stone-200 rounded-sm p-6">
-              <h3 className="text-sm font-serif text-stone-900 mb-4">Resumen del cuadre</h3>
+          <div className="col-span-2 bg-neutral-50 border border-neutral-200 rounded-sm p-6">
+              <h3 className="text-sm font-serif text-neutral-900 mb-4">Resumen del cuadre</h3>
               
               {/* Main Reconciliation Summary */}
-              <div className="bg-white border border-stone-200 rounded-sm p-4 mb-6">
+              <div className="bg-white border border-neutral-200 rounded-sm p-4 mb-6">
                   <div className="grid grid-cols-3 gap-4">
                       <div>
-                          <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-1">Saldo Libro Mayor</span>
-                          <div className="text-2xl font-serif text-stone-900 tabular-nums">{totalLedgerBalance.toLocaleString('es-ES')} €</div>
-                          <span className="text-[10px] text-stone-500">Cuentas 400/410</span>
+                          <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-1">Saldo Libro Mayor</span>
+                          <div className="text-2xl font-serif text-neutral-900 tabular-nums">{totalLedgerBalance.toLocaleString('es-ES')} €</div>
+                          <span className="text-[10px] text-neutral-500">Cuentas 400/410</span>
                       </div>
                       <div>
-                          <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-1">Saldo Submayor</span>
-                          <div className="text-2xl font-serif text-stone-900 tabular-nums">{totalSubledgerBalance.toLocaleString('es-ES')} €</div>
-                          <span className="text-[10px] text-stone-500">Suma proveedores</span>
+                          <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-1">Saldo Submayor</span>
+                          <div className="text-2xl font-serif text-neutral-900 tabular-nums">{totalSubledgerBalance.toLocaleString('es-ES')} €</div>
+                          <span className="text-[10px] text-neutral-500">Suma proveedores</span>
                       </div>
                       <div>
-                          <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-1">Diferencia</span>
+                          <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-1">Diferencia</span>
                           <div className={`text-2xl font-serif tabular-nums ${
-                              totalDiscrepancy === 0 ? 'text-emerald-600' : 'text-rose-600'
+                              totalDiscrepancy === 0 ? 'text-[#4A5D4A]' : 'text-[#8B5A50]'
                           }`}>
                               {totalDiscrepancy > 0 ? '+' : ''}{totalDiscrepancy.toLocaleString('es-ES')} €
                           </div>
-                          <span className="text-[10px] text-stone-500">
+                          <span className="text-[10px] text-neutral-500">
                               {totalDiscrepancy === 0 ? 'Cuadre correcto' : `${((totalDiscrepancy / totalLedgerBalance) * 100).toFixed(2)}% del saldo`}
                           </span>
                       </div>
@@ -209,35 +209,35 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
               
               <div className="flex items-center gap-8 mb-6">
                   <div>
-                      <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-1">Desajuste total</span>
-                      <div className="text-3xl font-serif text-stone-900 tabular-nums">{totalDiscrepancy.toLocaleString('es-ES')} €</div>
-                      <span className="text-[10px] text-stone-500">{discrepancies.length} proveedores con diferencias</span>
+                      <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-1">Desajuste total</span>
+                      <div className="text-3xl font-serif text-neutral-900 tabular-nums">{totalDiscrepancy.toLocaleString('es-ES')} €</div>
+                      <span className="text-[10px] text-neutral-500">{discrepancies.length} proveedores con diferencias</span>
                   </div>
-                  <div className="h-8 w-px bg-stone-200"></div>
+                  <div className="h-8 w-px bg-neutral-200"></div>
                   <div>
-                      <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-1">Material (&gt;0,9 M€)</span>
-                      <div className="text-3xl font-serif text-rose-600 tabular-nums">{materialDiscrepancy.toLocaleString('es-ES')} €</div>
-                      <span className="text-[10px] text-stone-500">{discrepancies.filter(d => d.status === 'material').length} proveedores afectados</span>
+                      <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-1">Material (&gt;0,9 M€)</span>
+                      <div className="text-3xl font-serif text-[#8B5A50] tabular-nums">{materialDiscrepancy.toLocaleString('es-ES')} €</div>
+                      <span className="text-[10px] text-neutral-500">{discrepancies.filter(d => d.status === 'material').length} proveedores afectados</span>
                   </div>
               </div>
 
               {/* Visual Bar Chart */}
               <div className="space-y-2">
-                  <div className="flex justify-between text-[10px] uppercase tracking-wider font-medium text-stone-500">
+                  <div className="flex justify-between text-[10px] uppercase tracking-wider font-medium text-neutral-500">
                       <span>Distribución de diferencias</span>
                       <span>Total: {totalDiscrepancy.toLocaleString('es-ES')} €</span>
                   </div>
                   <div className="h-4 flex rounded-sm overflow-hidden">
-                      <div style={{ width: `${(materialDiscrepancy / totalDiscrepancy) * 100}%` }} className="bg-rose-400"></div>
-                      <div style={{ width: `${(immaterialDiscrepancy / totalDiscrepancy) * 100}%` }} className="bg-stone-300"></div>
+                      <div style={{ width: `${(materialDiscrepancy / totalDiscrepancy) * 100}%` }} className="bg-[#8B5A50]"></div>
+                      <div style={{ width: `${(immaterialDiscrepancy / totalDiscrepancy) * 100}%` }} className="bg-neutral-300"></div>
                   </div>
-                  <div className="flex gap-4 justify-end text-[10px] text-stone-500">
+                  <div className="flex gap-4 justify-end text-[10px] text-neutral-500">
                       <div className="flex items-center gap-1.5">
-                          <div className="w-2 h-2 rounded-full bg-rose-400"></div>
+                          <div className="w-2 h-2 rounded-full bg-[#8B5A50]"></div>
                           <span>Material ({Math.round((materialDiscrepancy / totalDiscrepancy) * 100)}%)</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                          <div className="w-2 h-2 rounded-full bg-stone-300"></div>
+                          <div className="w-2 h-2 rounded-full bg-neutral-300"></div>
                           <span>Inmaterial ({Math.round((immaterialDiscrepancy / totalDiscrepancy) * 100)}%)</span>
                       </div>
                   </div>
@@ -245,37 +245,37 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
           </div>
 
           {/* Action Card */}
-          <div className="bg-white border border-stone-200 rounded-sm p-6 shadow-sm flex flex-col justify-between">
+          <div className="bg-white border border-neutral-200 rounded-sm p-6 shadow-sm flex flex-col justify-between">
               <div>
-                  <div className="w-10 h-10 bg-rose-50 rounded-full flex items-center justify-center mb-4">
-                      <AlertTriangle className="w-5 h-5 text-rose-600" />
+                  <div className="w-10 h-10 bg-[#FBF8F7] rounded-full flex items-center justify-center mb-4">
+                      <AlertTriangle className="w-5 h-5 text-[#8B5A50]" />
                   </div>
-                  <h4 className="text-sm font-medium text-stone-900 mb-2">Acción requerida</h4>
-                  <p className="text-xs text-stone-500 leading-relaxed">
+                  <h4 className="text-sm font-medium text-neutral-900 mb-2">Acción requerida</h4>
+                  <p className="text-xs text-neutral-500 leading-relaxed">
                       Se han detectado 2 diferencias materiales que requieren justificación o ajuste.
                   </p>
               </div>
-              <button className="w-full mt-4 py-2 bg-stone-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors flex items-center justify-center gap-2">
+              <button className="w-full mt-4 py-2 bg-neutral-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors flex items-center justify-center gap-2">
                   Revisar hallazgos <ArrowRight className="w-3.5 h-3.5" />
               </button>
           </div>
        </div>
 
        {/* Discrepancies Table */}
-       <div className="bg-white border border-stone-200 rounded-sm overflow-hidden shadow-sm">
-          <div className="px-6 py-4 border-b border-stone-200 bg-stone-50 flex justify-between items-center">
-             <h3 className="text-sm font-serif text-stone-900">Diferencias por proveedor</h3>
+       <div className="bg-white border border-neutral-200 rounded-sm overflow-hidden shadow-sm">
+          <div className="px-6 py-4 border-b border-neutral-200 bg-neutral-50 flex justify-between items-center">
+             <h3 className="text-sm font-serif text-neutral-900">Diferencias por proveedor</h3>
              <div className="flex gap-2">
-                <button className="p-1.5 text-stone-400 hover:text-stone-900 border border-transparent hover:border-stone-200 rounded">
+                <button className="p-1.5 text-neutral-400 hover:text-neutral-900 border border-transparent hover:border-neutral-200 rounded">
                    <Filter className="w-4 h-4" />
                 </button>
-                <button className="p-1.5 text-stone-400 hover:text-stone-900 border border-transparent hover:border-stone-200 rounded">
+                <button className="p-1.5 text-neutral-400 hover:text-neutral-900 border border-transparent hover:border-neutral-200 rounded">
                    <Download className="w-4 h-4" />
                 </button>
              </div>
           </div>
           <table className="w-full text-left">
-             <thead className="bg-stone-50 text-[10px] text-stone-500 font-sans uppercase tracking-wider border-b border-stone-200">
+             <thead className="bg-neutral-50 text-[10px] text-neutral-500 font-sans uppercase tracking-wider border-b border-neutral-200">
                 <tr>
                    <th className="px-6 py-3 font-medium">Proveedor</th>
                    <th className="px-6 py-3 font-medium text-right">Diferencia</th>
@@ -284,28 +284,28 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                    <th className="px-6 py-3 font-medium text-right">Acción</th>
                 </tr>
              </thead>
-             <tbody className="divide-y divide-stone-100">
+             <tbody className="divide-y divide-neutral-100">
                 {discrepancies.map((disc, i) => (
-                   <tr key={i} className="hover:bg-stone-50/50 transition-colors">
+                   <tr key={i} className="hover:bg-neutral-50/50 transition-colors">
                       <td className="px-6 py-4">
-                         <div className="font-medium text-sm text-stone-900">{disc.vendor}</div>
+                         <div className="font-medium text-sm text-neutral-900">{disc.vendor}</div>
                       </td>
                       <td className="px-6 py-4 text-right">
                          <span className={`font-mono text-sm tabular-nums ${
-                            disc.status === 'material' ? 'font-semibold text-rose-700' : 'text-stone-900'
+                            disc.status === 'material' ? 'font-semibold text-[#8B5A50]' : 'text-neutral-900'
                          }`}>
                             {disc.difference.toLocaleString('es-ES')} €
                          </span>
                       </td>
                       <td className="px-6 py-4 text-center">
                          <div className="flex items-center justify-center gap-2">
-                            <span className="text-xs text-stone-600 font-mono">{disc.invoices.length}</span>
+                            <span className="text-xs text-neutral-600 font-mono">{disc.invoices.length}</span>
                             <button 
                                onClick={() => {
                                   setSelectedVendor(disc.vendor);
                                   setShowInvoiceModal(true);
                                }}
-                               className="p-1 text-stone-400 hover:text-stone-900 hover:bg-stone-50 rounded transition-colors"
+                               className="p-1 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-50 rounded transition-colors"
                                title="Ver facturas"
                             >
                                <Eye className="w-3.5 h-3.5" />
@@ -314,12 +314,12 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                       </td>
                       <td className="px-6 py-4 text-center">
                          {disc.status === 'material' ? (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
+                            <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#8B5A50] bg-[#FBF8F7] px-2 py-0.5 rounded border border-[#E8E0DE]">
                                <AlertTriangle className="w-3 h-3" />
                                Material
                             </span>
                          ) : (
-                            <span className="text-[10px] text-stone-400">Inmaterial</span>
+                            <span className="text-[10px] text-neutral-400">Inmaterial</span>
                          )}
                       </td>
                       <td className="px-6 py-4 text-right">
@@ -329,7 +329,7 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                                   setSelectedVendor(disc.vendor);
                                   setShowAddFindingModal(true);
                                }}
-                               className="px-3 py-1.5 bg-white border border-stone-200 text-stone-700 text-xs font-medium rounded-sm hover:bg-stone-50 hover:border-stone-300 transition-colors flex items-center gap-1.5"
+                               className="px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 text-xs font-medium rounded-sm hover:bg-neutral-50 hover:border-neutral-300 transition-colors flex items-center gap-1.5"
                             >
                                <Plus className="w-3 h-3" />
                                Añadir hallazgo
@@ -349,7 +349,7 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-6"
+                className="fixed inset-0 bg-neutral-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-6"
                 style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
                 onClick={() => {
                    setShowInvoiceModal(false);
@@ -361,44 +361,44 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                    animate={{ scale: 1, opacity: 1, y: 0 }}
                    exit={{ scale: 0.98, opacity: 0, y: 10 }}
                    transition={{ type: "spring", duration: 0.4, bounce: 0 }}
-                   className="bg-white rounded-sm border border-stone-200 shadow-2xl max-w-3xl w-full flex flex-col relative z-[101]"
+                   className="bg-white rounded-sm border border-neutral-200 shadow-2xl max-w-3xl w-full flex flex-col relative z-[101]"
                    onClick={(e) => e.stopPropagation()}
                 >
                    {/* Header */}
-                   <div className="px-5 py-3 border-b border-stone-200 flex items-center justify-between">
+                   <div className="px-5 py-3 border-b border-neutral-200 flex items-center justify-between">
                       <div>
-                         <h3 className="text-sm font-serif text-stone-900">Detalle de facturas</h3>
-                         <p className="text-[11px] text-stone-500 mt-0.5 font-sans">{selectedDiscrepancy.vendor}</p>
+                         <h3 className="text-sm font-serif text-neutral-900">Detalle de facturas</h3>
+                         <p className="text-[11px] text-neutral-500 mt-0.5 font-sans">{selectedDiscrepancy.vendor}</p>
                       </div>
                       <button
                          onClick={() => {
                             setShowInvoiceModal(false);
                             setSelectedVendor(null);
                          }}
-                         className="p-1.5 hover:bg-stone-50 rounded-sm transition-colors text-stone-400 hover:text-stone-900"
+                         className="p-1.5 hover:bg-neutral-50 rounded-sm transition-colors text-neutral-400 hover:text-neutral-900"
                       >
                          <X className="w-4 h-4" />
                       </button>
                    </div>
 
                    {/* Summary - Compact */}
-                   <div className="px-5 py-3 border-b border-stone-200 bg-white">
+                   <div className="px-5 py-3 border-b border-neutral-200 bg-white">
                       <div className="grid grid-cols-3 gap-3">
                          <div>
-                            <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-0.5">Libro Mayor</span>
-                            <div className="text-base font-serif text-stone-900 tabular-nums">
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Libro Mayor</span>
+                            <div className="text-base font-serif text-neutral-900 tabular-nums">
                                {selectedDiscrepancy.ledgerBalance.toLocaleString('es-ES')} €
                             </div>
                          </div>
                          <div>
-                            <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-0.5">Submayor</span>
-                            <div className="text-base font-serif text-stone-900 tabular-nums">
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Submayor</span>
+                            <div className="text-base font-serif text-neutral-900 tabular-nums">
                                {selectedDiscrepancy.subledgerBalance.toLocaleString('es-ES')} €
                             </div>
                          </div>
                          <div>
-                            <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-0.5">Diferencia</span>
-                            <div className="text-base font-serif text-rose-600 tabular-nums font-semibold">
+                            <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Diferencia</span>
+                            <div className="text-base font-serif text-[#8B5A50] tabular-nums font-semibold">
                                +{selectedDiscrepancy.difference.toLocaleString('es-ES')} €
                             </div>
                          </div>
@@ -415,10 +415,10 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                                   key={invoice.id}
                                   className={`border rounded-sm p-3 ${
                                      invoice.status === 'not_in_ledger' 
-                                        ? 'border-rose-200 bg-rose-50/50' 
+                                        ? 'border-[#E8E0DE] bg-[#FBF8F7]/50' 
                                         : invoice.status === 'amount_mismatch'
-                                        ? 'border-amber-200 bg-amber-50/50'
-                                        : 'border-stone-200 bg-white'
+                                        ? 'border-[#EDE5D8] bg-[#FDFAF6]/50'
+                                        : 'border-neutral-200 bg-white'
                                   }`}
                                >
                                   <div className="flex items-center justify-between gap-4">
@@ -426,50 +426,50 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                                         <div className="flex items-center gap-2 mb-1">
                                            {hasError ? (
                                               <AlertTriangle className={`w-3.5 h-3.5 shrink-0 ${
-                                                 invoice.status === 'not_in_ledger' ? 'text-rose-600' : 'text-amber-600'
+                                                 invoice.status === 'not_in_ledger' ? 'text-[#8B5A50]' : 'text-[#8B7355]'
                                               }`} />
                                            ) : (
-                                              <FileText className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                                              <FileText className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
                                            )}
-                                           <span className="font-medium text-xs font-mono text-stone-900">
+                                           <span className="font-medium text-xs font-mono text-neutral-900">
                                               {invoice.invoiceNumber}
                                            </span>
                                            {invoice.status === 'not_in_ledger' && (
-                                              <span className="text-[9px] font-medium text-rose-700 bg-rose-100 px-1.5 py-0.5 rounded-sm border border-rose-200">
+                                              <span className="text-[9px] font-medium text-[#8B5A50] bg-[#F0E8E6] px-1.5 py-0.5 rounded-sm border border-[#E8E0DE]">
                                                  No registrada
                                               </span>
                                            )}
                                            {invoice.status === 'amount_mismatch' && (
-                                              <span className="text-[9px] font-medium text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-sm border border-amber-200">
+                                              <span className="text-[9px] font-medium text-[#8B7355] bg-[#F5EDE0] px-1.5 py-0.5 rounded-sm border border-[#EDE5D8]">
                                                  Importe no coincide
                                               </span>
                                            )}
                                         </div>
-                                        <p className="text-[11px] text-stone-600 mb-1">{invoice.description}</p>
-                                        <div className="flex items-center gap-2 text-[10px] text-stone-500">
+                                        <p className="text-[11px] text-neutral-600 mb-1">{invoice.description}</p>
+                                        <div className="flex items-center gap-2 text-[10px] text-neutral-500">
                                            <Calendar className="w-3 h-3" />
                                            <span>{new Date(invoice.date).toLocaleDateString('es-ES')}</span>
                                         </div>
                                      </div>
                                      <div className="flex items-center gap-3 shrink-0">
                                         <div className="text-right">
-                                           <div className="text-sm font-serif text-stone-900 tabular-nums">
+                                           <div className="text-sm font-serif text-neutral-900 tabular-nums">
                                               {invoice.amount.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                                            </div>
                                            {invoice.ledgerAmount !== undefined && (
                                               <div className={`text-xs font-serif tabular-nums mt-0.5 ${
-                                                 invoice.ledgerAmount !== invoice.amount ? 'text-amber-600 font-semibold' : 'text-stone-500'
+                                                 invoice.ledgerAmount !== invoice.amount ? 'text-[#8B7355] font-semibold' : 'text-neutral-500'
                                               }`}>
                                                  Libro: {invoice.ledgerAmount.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                                               </div>
                                            )}
                                            {invoice.ledgerAmount !== undefined && invoice.ledgerAmount !== invoice.amount && (
-                                              <div className="text-[10px] text-rose-600 font-medium mt-0.5">
+                                              <div className="text-[10px] text-[#8B5A50] font-medium mt-0.5">
                                                  Dif: {(invoice.amount - invoice.ledgerAmount).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €
                                               </div>
                                            )}
                                            {invoice.status === 'not_in_ledger' && (
-                                              <div className="text-[10px] text-rose-600 font-medium mt-0.5">
+                                              <div className="text-[10px] text-[#8B5A50] font-medium mt-0.5">
                                                  No encontrada
                                               </div>
                                            )}
@@ -477,8 +477,8 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                                         {(invoice.status === 'not_in_ledger' || invoice.status === 'amount_mismatch') && (
                                            <button className={`px-2.5 py-1 text-white text-[10px] font-medium rounded-sm transition-colors flex items-center gap-1 ${
                                               invoice.status === 'not_in_ledger' 
-                                                 ? 'bg-rose-600 hover:bg-rose-700' 
-                                                 : 'bg-amber-600 hover:bg-amber-700'
+                                                 ? 'bg-[#8B5A50] hover:bg-[#6B4A42]' 
+                                                 : 'bg-[#8B7355] hover:bg-[#6B5A45]'
                                            }`}>
                                               <Plus className="w-3 h-3" />
                                               Hallazgo
@@ -493,10 +493,10 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                    </div>
 
                    {/* Footer */}
-                   <div className="px-5 py-2.5 border-t border-stone-200 bg-stone-50 flex items-center justify-between">
-                      <div className="text-[11px] text-stone-500 font-sans">
+                   <div className="px-5 py-2.5 border-t border-neutral-200 bg-neutral-50 flex items-center justify-between">
+                      <div className="text-[11px] text-neutral-500 font-sans">
                          {selectedDiscrepancy.invoices.length} factura{selectedDiscrepancy.invoices.length !== 1 ? 's' : ''} · 
-                         Diferencia: <span className="font-semibold text-stone-900 font-mono">{selectedDiscrepancy.difference.toLocaleString('es-ES')} €</span>
+                         Diferencia: <span className="font-semibold text-neutral-900 font-mono">{selectedDiscrepancy.difference.toLocaleString('es-ES')} €</span>
                       </div>
                       <div className="flex gap-2">
                          <button
@@ -504,7 +504,7 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                                setShowInvoiceModal(false);
                                setSelectedVendor(null);
                             }}
-                            className="px-3 py-1 bg-white border border-stone-200 text-stone-700 hover:border-stone-900 hover:text-stone-900 text-[11px] font-medium rounded-sm transition-colors"
+                            className="px-3 py-1 bg-white border border-neutral-200 text-neutral-700 hover:border-neutral-900 hover:text-neutral-900 text-[11px] font-medium rounded-sm transition-colors"
                          >
                             Cerrar
                          </button>
@@ -522,7 +522,7 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-6"
+                className="fixed inset-0 bg-neutral-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-6"
                 style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
                 onClick={() => {
                    setShowAddFindingModal(false);
@@ -536,14 +536,14 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                    animate={{ scale: 1, opacity: 1, y: 0 }}
                    exit={{ scale: 0.98, opacity: 0, y: 10 }}
                    transition={{ type: "spring", duration: 0.4, bounce: 0 }}
-                   className="bg-white rounded-sm border border-stone-200 shadow-2xl max-w-2xl w-full flex flex-col relative z-[101]"
+                   className="bg-white rounded-sm border border-neutral-200 shadow-2xl max-w-2xl w-full flex flex-col relative z-[101]"
                    onClick={(e) => e.stopPropagation()}
                 >
                    {/* Header */}
-                   <div className="px-5 py-3 border-b border-stone-200 flex items-center justify-between">
+                   <div className="px-5 py-3 border-b border-neutral-200 flex items-center justify-between">
                       <div>
-                         <h3 className="text-sm font-serif text-stone-900">Añadir hallazgo</h3>
-                         <p className="text-[11px] text-stone-500 mt-0.5 font-sans">{selectedDiscrepancy.vendor}</p>
+                         <h3 className="text-sm font-serif text-neutral-900">Añadir hallazgo</h3>
+                         <p className="text-[11px] text-neutral-500 mt-0.5 font-sans">{selectedDiscrepancy.vendor}</p>
                       </div>
                       <button
                          onClick={() => {
@@ -552,7 +552,7 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                             setFindingTitle('');
                             setFindingDescription('');
                          }}
-                         className="p-1.5 hover:bg-stone-50 rounded-sm transition-colors text-stone-400 hover:text-stone-900"
+                         className="p-1.5 hover:bg-neutral-50 rounded-sm transition-colors text-neutral-400 hover:text-neutral-900"
                       >
                          <X className="w-4 h-4" />
                       </button>
@@ -561,19 +561,19 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                    {/* Form */}
                    <div className="px-5 py-4 space-y-4">
                       {/* Summary Info */}
-                      <div className="bg-stone-50 border border-stone-200 rounded-sm p-3">
+                      <div className="bg-neutral-50 border border-neutral-200 rounded-sm p-3">
                          <div className="grid grid-cols-2 gap-3 text-xs">
                             <div>
-                               <span className="text-stone-500">Diferencia:</span>
+                               <span className="text-neutral-500">Diferencia:</span>
                                <span className={`ml-2 font-mono font-semibold ${
-                                  selectedDiscrepancy.status === 'material' ? 'text-rose-700' : 'text-stone-900'
+                                  selectedDiscrepancy.status === 'material' ? 'text-[#8B5A50]' : 'text-neutral-900'
                                }`}>
                                   {selectedDiscrepancy.difference.toLocaleString('es-ES')} €
                                </span>
                             </div>
                             <div>
-                               <span className="text-stone-500">Facturas afectadas:</span>
-                               <span className="ml-2 font-mono font-semibold text-stone-900">
+                               <span className="text-neutral-500">Facturas afectadas:</span>
+                               <span className="ml-2 font-mono font-semibold text-neutral-900">
                                   {selectedDiscrepancy.invoices.length}
                                </span>
                             </div>
@@ -582,21 +582,21 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
 
                       {/* Title */}
                       <div>
-                         <label className="block text-xs font-medium text-stone-700 mb-1.5">
-                            Título del hallazgo <span className="text-rose-600">*</span>
+                         <label className="block text-xs font-medium text-neutral-700 mb-1.5">
+                            Título del hallazgo <span className="text-[#8B5A50]">*</span>
                          </label>
                          <input
                             type="text"
                             value={findingTitle}
                             onChange={(e) => setFindingTitle(e.target.value)}
                             placeholder="Ej: Diferencias en facturas no reflejadas al cierre"
-                            className="w-full px-3 py-2 text-sm border border-stone-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-stone-900 focus:border-stone-900"
+                            className="w-full px-3 py-2 text-sm border border-neutral-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900"
                          />
                       </div>
 
                       {/* Description */}
                       <div>
-                         <label className="block text-xs font-medium text-stone-700 mb-1.5">
+                         <label className="block text-xs font-medium text-neutral-700 mb-1.5">
                             Descripción
                          </label>
                          <textarea
@@ -604,10 +604,10 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                             onChange={(e) => setFindingDescription(e.target.value)}
                             placeholder="Describe el hallazgo en detalle..."
                             rows={4}
-                            className="w-full px-3 py-2 text-sm border border-stone-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-stone-900 focus:border-stone-900 resize-none"
+                            className="w-full px-3 py-2 text-sm border border-neutral-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-neutral-900 focus:border-neutral-900 resize-none"
                          />
                          {!findingDescription && (
-                            <p className="text-[10px] text-stone-400 mt-1">
+                            <p className="text-[10px] text-neutral-400 mt-1">
                                Si no se proporciona, se generará automáticamente basado en la discrepancia.
                             </p>
                          )}
@@ -615,7 +615,7 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
 
                       {/* Priority */}
                       <div>
-                         <label className="block text-xs font-medium text-stone-700 mb-1.5">
+                         <label className="block text-xs font-medium text-neutral-700 mb-1.5">
                             Prioridad
                          </label>
                          <div className="flex gap-2">
@@ -626,11 +626,11 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                                   className={`px-3 py-1.5 text-xs font-medium rounded-sm border transition-colors ${
                                      findingPriority === priority
                                         ? priority === 'high'
-                                           ? 'bg-stone-900 text-white border-stone-900'
+                                           ? 'bg-neutral-900 text-white border-neutral-900'
                                            : priority === 'medium'
-                                           ? 'bg-stone-100 text-stone-700 border-stone-300'
-                                           : 'bg-stone-50 text-stone-600 border-stone-200'
-                                        : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                                           ? 'bg-neutral-100 text-neutral-700 border-neutral-300'
+                                           : 'bg-neutral-50 text-neutral-600 border-neutral-200'
+                                        : 'bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50'
                                   }`}
                                >
                                   {priority === 'high' ? 'Alta' : priority === 'medium' ? 'Media' : 'Baja'}
@@ -641,27 +641,27 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
 
                       {/* Affected Invoices Preview */}
                       <div>
-                         <label className="block text-xs font-medium text-stone-700 mb-1.5">
+                         <label className="block text-xs font-medium text-neutral-700 mb-1.5">
                             Facturas afectadas ({selectedDiscrepancy.invoices.length})
                          </label>
-                         <div className="border border-stone-200 rounded-sm max-h-32 overflow-y-auto">
+                         <div className="border border-neutral-200 rounded-sm max-h-32 overflow-y-auto">
                             {selectedDiscrepancy.invoices.map((invoice) => (
-                               <div key={invoice.id} className="px-3 py-2 border-b border-stone-100 last:border-0 flex items-center justify-between text-xs">
+                               <div key={invoice.id} className="px-3 py-2 border-b border-neutral-100 last:border-0 flex items-center justify-between text-xs">
                                   <div className="flex items-center gap-2">
-                                     <FileText className="w-3 h-3 text-stone-400" />
-                                     <span className="font-mono text-stone-900">{invoice.invoiceNumber}</span>
+                                     <FileText className="w-3 h-3 text-neutral-400" />
+                                     <span className="font-mono text-neutral-900">{invoice.invoiceNumber}</span>
                                      {invoice.status === 'not_in_ledger' && (
-                                        <span className="text-[9px] text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100">
+                                        <span className="text-[9px] text-[#8B5A50] bg-[#FBF8F7] px-1.5 py-0.5 rounded border border-[#E8E0DE]">
                                            No registrada
                                         </span>
                                      )}
                                      {invoice.status === 'amount_mismatch' && (
-                                        <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">
+                                        <span className="text-[9px] text-[#8B7355] bg-[#FDFAF6] px-1.5 py-0.5 rounded border border-[#EDE5D8]">
                                            Importe no coincide
                                         </span>
                                      )}
                                   </div>
-                                  <span className="font-mono text-stone-600">
+                                  <span className="font-mono text-neutral-600">
                                      {invoice.amount.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €
                                   </span>
                                </div>
@@ -671,8 +671,8 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                    </div>
 
                    {/* Footer */}
-                   <div className="px-5 py-3 border-t border-stone-200 bg-stone-50 flex items-center justify-between">
-                      <div className="text-[11px] text-stone-500 font-sans">
+                   <div className="px-5 py-3 border-t border-neutral-200 bg-neutral-50 flex items-center justify-between">
+                      <div className="text-[11px] text-neutral-500 font-sans">
                          El hallazgo se creará con estado "Borrador"
                       </div>
                       <div className="flex gap-2">
@@ -683,14 +683,14 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                                setFindingTitle('');
                                setFindingDescription('');
                             }}
-                            className="px-3 py-1.5 bg-white border border-stone-200 text-stone-700 hover:border-stone-900 hover:text-stone-900 text-xs font-medium rounded-sm transition-colors"
+                            className="px-3 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:border-neutral-900 hover:text-neutral-900 text-xs font-medium rounded-sm transition-colors"
                          >
                             Cancelar
                          </button>
                          <button
                             onClick={handleAddFinding}
                             disabled={!findingTitle.trim()}
-                            className="px-3 py-1.5 bg-stone-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+                            className="px-3 py-1.5 bg-neutral-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
                          >
                             <Plus className="w-3 h-3" />
                             Crear hallazgo

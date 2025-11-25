@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, BarChart3, TrendingUp, TrendingDown, Play, FileText, Sparkles, Loader2, CheckCircle, AlertTriangle, ArrowRight, Download, Send, RefreshCw } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { ChevronLeft, TrendingUp, TrendingDown, FileText, Sparkles, Loader2, CheckCircle, AlertTriangle, Download, Send, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface EngagementAnalyticalReviewProps {
@@ -111,21 +111,16 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
   return (
     <div className="space-y-6 animate-fade-in h-full flex flex-col">
        {/* Header */}
-       <div className="flex items-center gap-4 pb-6 border-b border-stone-200 shrink-0">
+       <div className="flex items-center gap-4 pb-6 border-b border-neutral-200 shrink-0">
           <button
              onClick={onBack}
-             className="p-2 rounded-full hover:bg-stone-100 text-stone-400 hover:text-stone-900 transition-colors"
+             className="p-2 rounded-sm hover:bg-neutral-100 text-neutral-400 hover:text-neutral-900 transition-colors"
           >
              <ChevronLeft className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-3">
-             <div className="w-10 h-10 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-stone-600" />
-             </div>
-             <div>
-                <h2 className="text-2xl font-serif text-stone-900">Revisión Analítica</h2>
-                <span className="text-xs text-stone-400 font-mono">Comparative Analyzer</span>
-             </div>
+          <div>
+             <h2 className="text-xl font-serif text-neutral-900">Revisión Analítica</h2>
+             <span className="text-[10px] text-neutral-400 uppercase tracking-wider">Comparativa año anterior</span>
           </div>
        </div>
 
@@ -133,18 +128,18 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
           {/* Left Column: Analysis */}
           <div className="col-span-7 flex flex-col gap-6 overflow-y-auto pr-2">
               {/* Summary Stats */}
-              <div className="grid grid-cols-3 gap-px bg-stone-200 border border-stone-200 rounded-sm overflow-hidden">
+              <div className="grid grid-cols-3 gap-px bg-neutral-200 border border-neutral-200 rounded-sm overflow-hidden">
                   <div className="bg-white p-4">
-                      <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-1">Saldo 2024</span>
-                      <div className="text-2xl font-serif text-stone-900 tabular-nums">{(totalCurrent/1000000).toFixed(2)} M€</div>
+                      <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-1">Saldo 2024</span>
+                      <div className="text-2xl font-serif text-neutral-900 tabular-nums">{(totalCurrent/1000000).toFixed(2)} M€</div>
                   </div>
                   <div className="bg-white p-4">
-                      <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-1">Saldo 2023</span>
-                      <div className="text-2xl font-serif text-stone-500 tabular-nums">{(totalPrevious/1000000).toFixed(2)} M€</div>
+                      <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-1">Saldo 2023</span>
+                      <div className="text-2xl font-serif text-neutral-500 tabular-nums">{(totalPrevious/1000000).toFixed(2)} M€</div>
                   </div>
                   <div className="bg-white p-4">
-                      <span className="text-[10px] text-stone-400 uppercase tracking-wider font-sans block mb-1">Variación</span>
-                      <div className={`text-2xl font-serif tabular-nums flex items-center gap-2 ${parseFloat(totalVariationPercent) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                      <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-1">Variación</span>
+                      <div className={`text-2xl font-serif tabular-nums flex items-center gap-2 ${parseFloat(totalVariationPercent) >= 0 ? 'text-[#4A5D4A]' : 'text-[#8B5A50]'}`}>
                         {parseFloat(totalVariationPercent) >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
                         {totalVariationPercent}%
                       </div>
@@ -153,27 +148,25 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
 
               {/* Action Button */}
               {!analysisComplete && (
-                <div className="bg-stone-50 border border-stone-200 rounded-sm p-6 text-center">
-                  <BarChart3 className="w-12 h-12 text-stone-300 mx-auto mb-4" />
-                  <h3 className="text-sm font-serif text-stone-900 mb-2">Comparativa Proveedores 2024 vs 2023</h3>
-                  <p className="text-xs text-stone-500 mb-4 max-w-md mx-auto">
-                    Compara el saldo de proveedores contra el año anterior para identificar variaciones significativas que requieran investigación adicional.
-                  </p>
+                <div className="bg-neutral-50 border border-neutral-200 rounded-sm p-5 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm font-medium text-neutral-900 mb-1">Comparativa Proveedores 2024 vs 2023</h3>
+                    <p className="text-xs text-neutral-500">
+                      Identifica variaciones significativas comparando saldos con el ejercicio anterior.
+                    </p>
+                  </div>
                   <button 
                     onClick={runAnalysis}
                     disabled={isAnalysisRunning}
-                    className="px-6 py-2 bg-stone-900 text-white text-sm font-medium rounded-sm hover:bg-black transition-colors flex items-center gap-2 mx-auto disabled:opacity-50"
+                    className="px-5 py-2 bg-neutral-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors flex items-center gap-2 disabled:opacity-50 shrink-0"
                   >
                     {isAnalysisRunning ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Analizando datos...
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        Analizando...
                       </>
                     ) : (
-                      <>
-                        <Play className="w-4 h-4" />
-                        Ejecutar análisis comparativo
-                      </>
+                      'Ejecutar análisis'
                     )}
                   </button>
                 </div>
@@ -184,14 +177,14 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white border border-stone-200 rounded-sm overflow-hidden shadow-sm"
+                  className="bg-white border border-neutral-200 rounded-sm overflow-hidden shadow-sm"
                 >
-                  <div className="px-4 py-3 border-b border-stone-200 bg-stone-50 flex justify-between items-center">
-                    <h3 className="text-xs font-medium font-serif text-stone-900">Desglose por categoría</h3>
-                    <span className="text-[10px] text-stone-400">Umbral significativo: ±15%</span>
+                  <div className="px-4 py-3 border-b border-neutral-200 bg-neutral-50 flex justify-between items-center">
+                    <h3 className="text-xs font-medium font-serif text-neutral-900">Desglose por categoría</h3>
+                    <span className="text-[10px] text-neutral-400">Umbral significativo: ±15%</span>
                   </div>
                   <table className="w-full text-left">
-                    <thead className="bg-stone-50 text-[10px] text-stone-500 font-sans uppercase tracking-wider border-b border-stone-200">
+                    <thead className="bg-neutral-50 text-[10px] text-neutral-500 font-sans uppercase tracking-wider border-b border-neutral-200">
                         <tr>
                           <th className="px-4 py-2 font-medium">Categoría</th>
                           <th className="px-4 py-2 font-medium text-right">2024</th>
@@ -200,30 +193,30 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
                           <th className="px-4 py-2 font-medium text-center">Estado</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-stone-100">
+                    <tbody className="divide-y divide-neutral-100">
                         {comparisonData.map((row, i) => (
                           <motion.tr 
                             key={i} 
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className={`hover:bg-stone-50 transition-colors ${row.isSignificant ? 'bg-amber-50/30' : ''}`}
+                            className={`hover:bg-neutral-50 transition-colors ${row.isSignificant ? 'bg-[#FDFAF6]/30' : ''}`}
                           >
                               <td className="px-4 py-3">
-                                <div className="text-xs text-stone-900 font-medium">{row.category}</div>
+                                <div className="text-xs text-neutral-900 font-medium">{row.category}</div>
                               </td>
                               <td className="px-4 py-3 text-right">
-                                <span className="font-mono text-xs tabular-nums text-stone-900">
+                                <span className="font-mono text-xs tabular-nums text-neutral-900">
                                     {(row.currentYear/1000).toLocaleString('es-ES')} K€
                                 </span>
                               </td>
                               <td className="px-4 py-3 text-right">
-                                <span className="font-mono text-xs tabular-nums text-stone-500">
+                                <span className="font-mono text-xs tabular-nums text-neutral-500">
                                     {(row.previousYear/1000).toLocaleString('es-ES')} K€
                                 </span>
                               </td>
                               <td className="px-4 py-3 text-right">
-                                <div className={`flex items-center justify-end gap-1 ${row.variation >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                <div className={`flex items-center justify-end gap-1 ${row.variation >= 0 ? 'text-[#4A5D4A]' : 'text-[#8B5A50]'}`}>
                                   {row.variation >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                                   <span className="font-mono text-xs tabular-nums font-medium">
                                       {row.variationPercent >= 0 ? '+' : ''}{row.variationPercent.toFixed(2)}%
@@ -232,12 +225,12 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
                               </td>
                               <td className="px-4 py-3 text-center">
                                 {row.isSignificant ? (
-                                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#8B7355] bg-[#FDFAF6] px-2 py-0.5 rounded border border-[#EDE5D8]">
                                     <AlertTriangle className="w-3 h-3" />
                                     Revisar
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#4A5D4A] bg-[#F7F9F7] px-2 py-0.5 rounded border border-[#E0E5E0]">
                                     <CheckCircle className="w-3 h-3" />
                                     OK
                                   </span>
@@ -249,15 +242,15 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
                   </table>
                   
                   {/* Generate Report CTA */}
-                  <div className="px-4 py-4 border-t border-stone-200 bg-stone-50 flex justify-between items-center">
-                    <div className="flex items-center gap-2 text-xs text-stone-500">
-                      <AlertTriangle className="w-4 h-4 text-amber-500" />
+                  <div className="px-4 py-4 border-t border-neutral-200 bg-neutral-50 flex justify-between items-center">
+                    <div className="flex items-center gap-2 text-xs text-neutral-500">
+                      <AlertTriangle className="w-4 h-4 text-[#8B7355]" />
                       <span>{comparisonData.filter(d => d.isSignificant).length} categorías requieren revisión</span>
                     </div>
                     <button 
                       onClick={generateReport}
                       disabled={isGeneratingReport || generatedText.length > 0}
-                      className="px-4 py-2 bg-stone-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors flex items-center gap-2 disabled:opacity-50"
+                      className="px-4 py-2 bg-neutral-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors flex items-center gap-2 disabled:opacity-50"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
                       Generar informe con IA
@@ -268,26 +261,26 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
           </div>
 
           {/* Right Column: AI Report */}
-          <div className="col-span-5 bg-stone-50 border border-stone-200 rounded-sm overflow-hidden flex flex-col">
-            <div className="px-4 py-3 border-b border-stone-200 bg-white flex justify-between items-center shrink-0">
+          <div className="col-span-5 bg-neutral-50 border border-neutral-200 rounded-sm overflow-hidden flex flex-col">
+            <div className="px-4 py-3 border-b border-neutral-200 bg-white flex justify-between items-center shrink-0">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-purple-500" />
-                <span className="text-xs font-medium text-stone-900">Informe Generado por IA</span>
+                <Sparkles className="w-4 h-4 text-neutral-500" />
+                <span className="text-xs font-medium text-neutral-900">Informe Generado por IA</span>
               </div>
               {generatedText.length > 0 && !isGeneratingReport && (
                 <div className="flex items-center gap-2">
-                  <button className="p-1.5 text-stone-400 hover:text-stone-900 hover:bg-stone-100 rounded transition-colors">
+                  <button className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded transition-colors">
                     <Download className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => setShowSendModal(true)}
-                    className="p-1.5 text-stone-400 hover:text-stone-900 hover:bg-stone-100 rounded transition-colors"
+                    className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded transition-colors"
                   >
                     <Send className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => { setGeneratedText(''); generateReport(); }}
-                    className="p-1.5 text-stone-400 hover:text-stone-900 hover:bg-stone-100 rounded transition-colors"
+                    className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded transition-colors"
                   >
                     <RefreshCw className="w-4 h-4" />
                   </button>
@@ -298,15 +291,15 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
             <div ref={reportRef} className="flex-1 overflow-y-auto p-6">
               {!analysisComplete && !isGeneratingReport && (
                 <div className="text-center py-12">
-                  <FileText className="w-12 h-12 text-stone-300 mx-auto mb-4" />
-                  <p className="text-xs text-stone-400">Ejecuta el análisis para generar el informe</p>
+                  <FileText className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
+                  <p className="text-xs text-neutral-400">Ejecuta el análisis para generar el informe</p>
                 </div>
               )}
               
               {analysisComplete && generatedText.length === 0 && !isGeneratingReport && (
                 <div className="text-center py-12">
-                  <Sparkles className="w-12 h-12 text-purple-200 mx-auto mb-4" />
-                  <p className="text-xs text-stone-400">Pulsa "Generar informe con IA" para crear el análisis</p>
+                  <Sparkles className="w-12 h-12 text-neutral-200 mx-auto mb-4" />
+                  <p className="text-xs text-neutral-400">Pulsa "Generar informe con IA" para crear el análisis</p>
                 </div>
               )}
 
@@ -318,22 +311,22 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
                 >
                   {/* AI Writing Indicator */}
                   {isGeneratingReport && (
-                    <div className="flex items-center gap-2 text-xs text-purple-600 mb-4 pb-4 border-b border-stone-200">
+                    <div className="flex items-center gap-2 text-xs text-neutral-600 mb-4 pb-4 border-b border-neutral-200">
                       <div className="flex space-x-1">
                         <motion.div
                           animate={{ opacity: [0.3, 1, 0.3] }}
                           transition={{ repeat: Infinity, duration: 1, delay: 0 }}
-                          className="w-1.5 h-1.5 bg-purple-500 rounded-full"
+                          className="w-1.5 h-1.5 bg-neutral-900 rounded-full"
                         />
                         <motion.div
                           animate={{ opacity: [0.3, 1, 0.3] }}
                           transition={{ repeat: Infinity, duration: 1, delay: 0.2 }}
-                          className="w-1.5 h-1.5 bg-purple-500 rounded-full"
+                          className="w-1.5 h-1.5 bg-neutral-900 rounded-full"
                         />
                         <motion.div
                           animate={{ opacity: [0.3, 1, 0.3] }}
                           transition={{ repeat: Infinity, duration: 1, delay: 0.4 }}
-                          className="w-1.5 h-1.5 bg-purple-500 rounded-full"
+                          className="w-1.5 h-1.5 bg-neutral-900 rounded-full"
                         />
                       </div>
                       <span>Auditia AI está escribiendo...</span>
@@ -341,30 +334,30 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
                   )}
                   
                   {/* Rendered Markdown-like content */}
-                  <div className="text-xs text-stone-700 whitespace-pre-wrap leading-relaxed font-mono">
+                  <div className="text-xs text-neutral-700 whitespace-pre-wrap leading-relaxed font-mono">
                     {generatedText.split('\n').map((line, i) => {
                       if (line.startsWith('## ')) {
-                        return <h2 key={i} className="text-lg font-serif text-stone-900 mt-6 mb-4 font-normal">{line.replace('## ', '')}</h2>;
+                        return <h2 key={i} className="text-lg font-serif text-neutral-900 mt-6 mb-4 font-normal">{line.replace('## ', '')}</h2>;
                       }
                       if (line.startsWith('### ')) {
-                        return <h3 key={i} className="text-sm font-medium text-stone-800 mt-4 mb-2">{line.replace('### ', '')}</h3>;
+                        return <h3 key={i} className="text-sm font-medium text-neutral-800 mt-4 mb-2">{line.replace('### ', '')}</h3>;
                       }
                       if (line.startsWith('**') && line.endsWith('**')) {
-                        return <p key={i} className="font-semibold text-stone-900 mt-3">{line.replace(/\*\*/g, '')}</p>;
+                        return <p key={i} className="font-semibold text-neutral-900 mt-3">{line.replace(/\*\*/g, '')}</p>;
                       }
                       if (line.startsWith('- ')) {
-                        return <li key={i} className="ml-4 text-stone-600">{line.replace('- ', '')}</li>;
+                        return <li key={i} className="ml-4 text-neutral-600">{line.replace('- ', '')}</li>;
                       }
                       if (line.startsWith('---')) {
-                        return <hr key={i} className="my-4 border-stone-200" />;
+                        return <hr key={i} className="my-4 border-neutral-200" />;
                       }
                       if (line.startsWith('*') && line.endsWith('*')) {
-                        return <p key={i} className="text-stone-400 italic text-[10px]">{line.replace(/\*/g, '')}</p>;
+                        return <p key={i} className="text-neutral-400 italic text-[10px]">{line.replace(/\*/g, '')}</p>;
                       }
                       if (line.trim() === '') {
                         return <br key={i} />;
                       }
-                      return <p key={i} className="text-stone-600 font-sans">{line}</p>;
+                      return <p key={i} className="text-neutral-600 font-sans">{line}</p>;
                     })}
                     
                     {/* Blinking cursor when typing */}
@@ -372,7 +365,7 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
                       <motion.span
                         animate={{ opacity: [1, 0, 1] }}
                         transition={{ repeat: Infinity, duration: 0.8 }}
-                        className="inline-block w-2 h-4 bg-purple-500 ml-0.5"
+                        className="inline-block w-2 h-4 bg-neutral-900 ml-0.5"
                       />
                     )}
                   </div>
@@ -382,10 +375,10 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
 
             {/* Send to Client Footer */}
             {generatedText.length > 0 && !isGeneratingReport && (
-              <div className="px-4 py-3 border-t border-stone-200 bg-white shrink-0">
+              <div className="px-4 py-3 border-t border-neutral-200 bg-white shrink-0">
                 <button 
                   onClick={() => setShowSendModal(true)}
-                  className="w-full px-4 py-2 bg-stone-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors flex items-center justify-center gap-2"
+                  className="w-full px-4 py-2 bg-neutral-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors flex items-center justify-center gap-2"
                 >
                   <Send className="w-3.5 h-3.5" />
                   Enviar al cliente para revisión
@@ -412,27 +405,27 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
                className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6"
                onClick={e => e.stopPropagation()}
              >
-               <h3 className="text-lg font-serif text-stone-900 mb-2">Enviar informe al cliente</h3>
-               <p className="text-sm text-stone-500 mb-4">
+               <h3 className="text-lg font-serif text-neutral-900 mb-2">Enviar informe al cliente</h3>
+               <p className="text-sm text-neutral-500 mb-4">
                  El informe de revisión analítica será enviado al cliente para su revisión. 
                  Se creará automáticamente una solicitud de confirmación.
                </p>
                
-               <div className="bg-stone-50 border border-stone-200 rounded-lg p-4 mb-4">
-                 <div className="text-xs text-stone-500 mb-2">Destinatario:</div>
-                 <div className="text-sm font-medium text-stone-900">Marta García (CFO) - Grupo Alfa</div>
+               <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 mb-4">
+                 <div className="text-xs text-neutral-500 mb-2">Destinatario:</div>
+                 <div className="text-sm font-medium text-neutral-900">Marta García (CFO) - Grupo Alfa</div>
                </div>
                
                <div className="flex gap-3">
                  <button
                    onClick={() => setShowSendModal(false)}
-                   className="flex-1 px-4 py-2 border border-stone-200 text-stone-600 text-sm font-medium rounded-lg hover:bg-stone-50 transition-colors"
+                   className="flex-1 px-4 py-2 border border-neutral-200 text-neutral-600 text-sm font-medium rounded-lg hover:bg-neutral-50 transition-colors"
                  >
                    Cancelar
                  </button>
                  <button
                    onClick={() => setShowSendModal(false)}
-                   className="flex-1 px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2"
+                   className="flex-1 px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2"
                  >
                    <Send className="w-4 h-4" />
                    Enviar

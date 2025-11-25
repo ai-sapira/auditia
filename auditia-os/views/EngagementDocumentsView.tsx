@@ -83,7 +83,7 @@ export const EngagementDocumentsView: React.FC = () => {
     },
     {
       id: 'papelestrabajo',
-      name: 'Papeles de Trabajo',
+      name: 'Papeles de trabajo',
       documents: [
         { id: 'd13', name: 'WP_AP_LeadSchedule.xlsx', type: 'xlsx', size: '234 KB', uploadedAt: '20/03/2025', uploadedBy: 'Alejandro R.', source: 'auditor', area: 'Proveedores' },
         { id: 'd14', name: 'WP_AP_Circularizaciones.xlsx', type: 'xlsx', size: '189 KB', uploadedAt: '21/03/2025', uploadedBy: 'Alejandro R.', source: 'auditor', area: 'Proveedores' },
@@ -104,22 +104,22 @@ export const EngagementDocumentsView: React.FC = () => {
 
   const getFileIcon = (type: string) => {
     switch (type) {
-      case 'pdf': return <FileText className="w-5 h-5 text-rose-500" />;
-      case 'xlsx': return <FileSpreadsheet className="w-5 h-5 text-emerald-500" />;
-      case 'csv': return <Database className="w-5 h-5 text-blue-500" />;
-      case 'image': return <Image className="w-5 h-5 text-purple-500" />;
-      default: return <File className="w-5 h-5 text-stone-400" />;
+      case 'pdf': return <FileText className="w-5 h-5 text-[#8B5A50]" />;
+      case 'xlsx': return <FileSpreadsheet className="w-5 h-5 text-[#4A5D4A]" />;
+      case 'csv': return <Database className="w-5 h-5 text-[#4A5D6A]" />;
+      case 'image': return <Image className="w-5 h-5 text-neutral-500" />;
+      default: return <File className="w-5 h-5 text-neutral-400" />;
     }
   };
 
   const getSourceBadge = (source: string) => {
     switch (source) {
       case 'client':
-        return <span className="text-[10px] px-2 py-0.5 bg-blue-50 text-blue-600 rounded border border-blue-100">Cliente</span>;
+        return <span className="text-[10px] px-2 py-0.5 bg-[#F7F9FA] text-[#4A5D6A] rounded border border-[#E0E5E8]100">Cliente</span>;
       case 'auditor':
-        return <span className="text-[10px] px-2 py-0.5 bg-purple-50 text-purple-600 rounded border border-purple-100">Auditor</span>;
+        return <span className="text-[10px] px-2 py-0.5 bg-neutral-50 text-neutral-600 rounded border border-neutral-100">Auditor</span>;
       case 'erp':
-        return <span className="text-[10px] px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded border border-emerald-100">SAP/ERP</span>;
+        return <span className="text-[10px] px-2 py-0.5 bg-[#F7F9F7] text-[#4A5D4A] rounded border border-[#E0E5E0]100">SAP/ERP</span>;
       default:
         return null;
     }
@@ -143,24 +143,24 @@ export const EngagementDocumentsView: React.FC = () => {
   return (
     <div className="flex-1 flex h-full bg-white animate-fade-in overflow-hidden">
       {/* Sidebar - Folder Tree */}
-      <div className="w-72 border-r border-stone-200 flex flex-col bg-stone-50/30">
-        <div className="p-4 border-b border-stone-200">
-          <h2 className="text-lg font-serif font-bold text-stone-900 mb-4">Documentos</h2>
-          <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors">
+      <div className="w-72 border-r border-neutral-200 flex flex-col bg-neutral-50/30">
+        <div className="p-4 border-b border-neutral-200">
+          <h2 className="text-lg font-serif font-bold text-neutral-900 mb-4">Documentos</h2>
+          <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors">
             <Upload className="w-4 h-4" />
             Subir documento
           </button>
         </div>
 
         {/* Stats */}
-        <div className="px-4 py-3 border-b border-stone-200 grid grid-cols-2 gap-2">
-          <div className="bg-white rounded-lg p-2 border border-stone-100">
-            <span className="text-[10px] text-stone-400 uppercase block">Total</span>
-            <span className="text-lg font-serif text-stone-900">{stats.total}</span>
+        <div className="px-4 py-3 border-b border-neutral-200 grid grid-cols-2 gap-2">
+          <div className="bg-white rounded-lg p-2 border border-neutral-100">
+            <span className="text-[10px] text-neutral-400 uppercase block">Total</span>
+            <span className="text-lg font-serif text-neutral-900">{stats.total}</span>
           </div>
-          <div className="bg-white rounded-lg p-2 border border-stone-100">
-            <span className="text-[10px] text-blue-500 uppercase block">Cliente</span>
-            <span className="text-lg font-serif text-blue-600">{stats.fromClient}</span>
+          <div className="bg-white rounded-lg p-2 border border-neutral-100">
+            <span className="text-[10px] text-[#4A5D6A] uppercase block">Cliente</span>
+            <span className="text-lg font-serif text-[#4A5D6A]">{stats.fromClient}</span>
           </div>
         </div>
 
@@ -169,7 +169,7 @@ export const EngagementDocumentsView: React.FC = () => {
           <button 
             onClick={() => setSelectedFolder('all')}
             className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors mb-2 ${
-              selectedFolder === 'all' ? 'bg-stone-900 text-white' : 'text-stone-700 hover:bg-stone-100'
+              selectedFolder === 'all' ? 'bg-neutral-900 text-white' : 'text-neutral-700 hover:bg-neutral-100'
             }`}
           >
             <FolderOpen className="w-4 h-4" />
@@ -185,19 +185,19 @@ export const EngagementDocumentsView: React.FC = () => {
                     setSelectedFolder(folder.id);
                   }}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                    selectedFolder === folder.id ? 'bg-stone-100 text-stone-900' : 'text-stone-600 hover:bg-stone-50'
+                    selectedFolder === folder.id ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-600 hover:bg-neutral-50'
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     {expandedFolders.includes(folder.id) ? (
-                      <ChevronDown className="w-3.5 h-3.5 text-stone-400" />
+                      <ChevronDown className="w-3.5 h-3.5 text-neutral-400" />
                     ) : (
-                      <ChevronRight className="w-3.5 h-3.5 text-stone-400" />
+                      <ChevronRight className="w-3.5 h-3.5 text-neutral-400" />
                     )}
-                    <FolderOpen className="w-4 h-4 text-amber-500" />
+                    <FolderOpen className="w-4 h-4 text-[#8B7355]" />
                     <span>{folder.name}</span>
                   </div>
-                  <span className="text-[10px] text-stone-400 bg-stone-100 px-1.5 py-0.5 rounded">
+                  <span className="text-[10px] text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded">
                     {folder.documents.length}
                   </span>
                 </button>
@@ -205,7 +205,7 @@ export const EngagementDocumentsView: React.FC = () => {
             ))}
           </div>
 
-          <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-stone-400 hover:text-stone-600 mt-4 transition-colors">
+          <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-neutral-400 hover:text-neutral-600 mt-4 transition-colors">
             <FolderPlus className="w-4 h-4" />
             Nueva carpeta
           </button>
@@ -215,19 +215,19 @@ export const EngagementDocumentsView: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-stone-200 flex justify-between items-center shrink-0">
+        <div className="px-6 py-4 border-b border-neutral-200 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-4">
             <div className="relative w-64">
-              <Search className="absolute left-3 top-2.5 w-4 h-4 text-stone-400" />
+              <Search className="absolute left-3 top-2.5 w-4 h-4 text-neutral-400" />
               <input 
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar documentos..." 
-                className="w-full bg-stone-50 border border-stone-200 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-stone-400 transition-colors"
+                className="w-full bg-neutral-50 border border-neutral-200 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-neutral-400 transition-colors"
               />
             </div>
-            <button className="flex items-center gap-2 px-3 py-2 border border-stone-200 rounded-lg text-sm text-stone-600 hover:bg-stone-50 transition-colors">
+            <button className="flex items-center gap-2 px-3 py-2 border border-neutral-200 rounded-lg text-sm text-neutral-600 hover:bg-neutral-50 transition-colors">
               <Filter className="w-4 h-4" />
               Filtros
             </button>
@@ -235,13 +235,13 @@ export const EngagementDocumentsView: React.FC = () => {
           <div className="flex items-center gap-2">
             <button 
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-stone-100 text-stone-900' : 'text-stone-400 hover:text-stone-600'}`}
+              className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
             >
               <List className="w-4 h-4" />
             </button>
             <button 
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-stone-100 text-stone-900' : 'text-stone-400 hover:text-stone-600'}`}
+              className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
             >
               <Grid className="w-4 h-4" />
             </button>
@@ -251,10 +251,10 @@ export const EngagementDocumentsView: React.FC = () => {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           {viewMode === 'list' ? (
-            <div className="bg-white border border-stone-200 rounded-lg overflow-hidden">
+            <div className="bg-white border border-neutral-200 rounded-lg overflow-hidden">
               <table className="w-full">
-                <thead className="bg-stone-50 border-b border-stone-200">
-                  <tr className="text-[10px] text-stone-500 uppercase tracking-wider">
+                <thead className="bg-neutral-50 border-b border-neutral-200">
+                  <tr className="text-[10px] text-neutral-500 uppercase tracking-wider">
                     <th className="text-left px-4 py-3 font-medium">Nombre</th>
                     <th className="text-left px-4 py-3 font-medium">Origen</th>
                     <th className="text-left px-4 py-3 font-medium">Área</th>
@@ -264,23 +264,23 @@ export const EngagementDocumentsView: React.FC = () => {
                     <th className="text-right px-4 py-3 font-medium">Acciones</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-100">
+                <tbody className="divide-y divide-neutral-100">
                   {displayDocuments.map((doc) => (
                     <motion.tr 
                       key={doc.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="hover:bg-stone-50 transition-colors"
+                      className="hover:bg-neutral-50 transition-colors"
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           {getFileIcon(doc.type)}
                           <div>
-                            <span className="text-sm text-stone-900 block">{doc.name}</span>
+                            <span className="text-sm text-neutral-900 block">{doc.name}</span>
                             {doc.tags && doc.tags.length > 0 && (
                               <div className="flex gap-1 mt-1">
                                 {doc.tags.map((tag, i) => (
-                                  <span key={i} className="text-[9px] px-1.5 py-0.5 bg-stone-100 text-stone-500 rounded">{tag}</span>
+                                  <span key={i} className="text-[9px] px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded">{tag}</span>
                                 ))}
                               </div>
                             )}
@@ -289,26 +289,26 @@ export const EngagementDocumentsView: React.FC = () => {
                       </td>
                       <td className="px-4 py-3">{getSourceBadge(doc.source)}</td>
                       <td className="px-4 py-3">
-                        <span className="text-xs text-stone-600">{doc.area}</span>
+                        <span className="text-xs text-neutral-600">{doc.area}</span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-xs text-stone-600">{doc.uploadedBy}</span>
+                        <span className="text-xs text-neutral-600">{doc.uploadedBy}</span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-xs font-mono text-stone-500">{doc.uploadedAt}</span>
+                        <span className="text-xs font-mono text-neutral-500">{doc.uploadedAt}</span>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <span className="text-xs font-mono text-stone-500">{doc.size}</span>
+                        <span className="text-xs font-mono text-neutral-500">{doc.size}</span>
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-1">
-                          <button className="p-1.5 hover:bg-stone-100 rounded transition-colors text-stone-400 hover:text-stone-600">
+                          <button className="p-1.5 hover:bg-neutral-100 rounded transition-colors text-neutral-400 hover:text-neutral-600">
                             <Eye className="w-4 h-4" />
                           </button>
-                          <button className="p-1.5 hover:bg-stone-100 rounded transition-colors text-stone-400 hover:text-stone-600">
+                          <button className="p-1.5 hover:bg-neutral-100 rounded transition-colors text-neutral-400 hover:text-neutral-600">
                             <Download className="w-4 h-4" />
                           </button>
-                          <button className="p-1.5 hover:bg-stone-100 rounded transition-colors text-stone-400 hover:text-stone-600">
+                          <button className="p-1.5 hover:bg-neutral-100 rounded transition-colors text-neutral-400 hover:text-neutral-600">
                             <MoreHorizontal className="w-4 h-4" />
                           </button>
                         </div>
@@ -325,26 +325,26 @@ export const EngagementDocumentsView: React.FC = () => {
                   key={doc.id}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-white border border-stone-200 rounded-lg p-4 hover:shadow-sm transition-all cursor-pointer group"
+                  className="bg-white border border-neutral-200 rounded-lg p-4 hover:shadow-sm transition-all cursor-pointer group"
                 >
                   <div className="flex items-start justify-between mb-3">
                     {getFileIcon(doc.type)}
-                    <button className="p-1 opacity-0 group-hover:opacity-100 transition-opacity text-stone-400 hover:text-stone-600">
+                    <button className="p-1 opacity-0 group-hover:opacity-100 transition-opacity text-neutral-400 hover:text-neutral-600">
                       <MoreHorizontal className="w-4 h-4" />
                     </button>
                   </div>
-                  <h4 className="text-sm font-medium text-stone-900 mb-2 line-clamp-2">{doc.name}</h4>
-                  <div className="flex items-center justify-between text-[10px] text-stone-400">
+                  <h4 className="text-sm font-medium text-neutral-900 mb-2 line-clamp-2">{doc.name}</h4>
+                  <div className="flex items-center justify-between text-[10px] text-neutral-400">
                     <span>{doc.size}</span>
                     <span>{doc.uploadedAt}</span>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-stone-100 flex items-center justify-between">
+                  <div className="mt-3 pt-3 border-t border-neutral-100 flex items-center justify-between">
                     {getSourceBadge(doc.source)}
                     <div className="flex gap-1">
-                      <button className="p-1 text-stone-400 hover:text-stone-600">
+                      <button className="p-1 text-neutral-400 hover:text-neutral-600">
                         <Eye className="w-3.5 h-3.5" />
                       </button>
-                      <button className="p-1 text-stone-400 hover:text-stone-600">
+                      <button className="p-1 text-neutral-400 hover:text-neutral-600">
                         <Download className="w-3.5 h-3.5" />
                       </button>
                     </div>

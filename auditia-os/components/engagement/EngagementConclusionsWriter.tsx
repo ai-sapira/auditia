@@ -1,30 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   ChevronLeft, 
   FileText, 
   Sparkles, 
-  Loader2, 
   CheckCircle, 
   AlertTriangle, 
   Download, 
   Send, 
   RefreshCw,
-  BookOpen,
-  ClipboardCheck,
-  CircleDot,
-  Mail,
-  BarChart3,
-  AlertCircle,
-  ArrowRight,
-  Clock,
-  User,
-  PenTool,
-  Lightbulb,
   CheckCircle2,
-  XCircle,
-  Eye,
-  Copy,
-  Wand2
+  Copy
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -40,7 +25,6 @@ interface TestResult {
   status: 'completed' | 'issues' | 'pending';
   findings: number;
   coverage: number;
-  icon: React.ElementType;
 }
 
 interface Finding {
@@ -66,11 +50,11 @@ export const EngagementConclusionsWriter: React.FC<EngagementConclusionsWriterPr
 
   // Mock data for the engagement results
   const testResults: TestResult[] = [
-    { id: 'reconciler', name: 'Cuadre básico Proveedores', type: 'reconciliation', status: 'issues', findings: 3, coverage: 100, icon: ClipboardCheck },
-    { id: 'riskmapper', name: 'Mapa de riesgos', type: 'reconciliation', status: 'completed', findings: 0, coverage: 100, icon: BarChart3 },
-    { id: 'circularizer', name: 'Circularizaciones', type: 'circularization', status: 'completed', findings: 1, coverage: 78, icon: Mail },
-    { id: 'tester', name: 'Muestreo Alternativo', type: 'sampling', status: 'completed', findings: 2, coverage: 85, icon: CircleDot },
-    { id: 'analytical', name: 'Revisión Analítica', type: 'analytical', status: 'issues', findings: 2, coverage: 100, icon: BarChart3 },
+    { id: 'reconciler', name: 'Cuadre básico Proveedores', type: 'reconciliation', status: 'issues', findings: 3, coverage: 100 },
+    { id: 'riskmapper', name: 'Mapa de riesgos', type: 'reconciliation', status: 'completed', findings: 0, coverage: 100 },
+    { id: 'circularizer', name: 'Circularizaciones', type: 'circularization', status: 'completed', findings: 1, coverage: 78 },
+    { id: 'tester', name: 'Prueba Alternativa', type: 'sampling', status: 'completed', findings: 2, coverage: 85 },
+    { id: 'analytical', name: 'Revisión Analítica', type: 'analytical', status: 'issues', findings: 2, coverage: 100 },
   ];
 
   const findings: Finding[] = [
@@ -82,12 +66,12 @@ export const EngagementConclusionsWriter: React.FC<EngagementConclusionsWriterPr
   ];
 
   const sections = [
-    { id: 'scope', name: 'Alcance del trabajo', icon: BookOpen },
-    { id: 'methodology', name: 'Metodología aplicada', icon: ClipboardCheck },
-    { id: 'tests', name: 'Pruebas realizadas', icon: CheckCircle },
-    { id: 'findings', name: 'Hallazgos identificados', icon: AlertTriangle },
-    { id: 'conclusion', name: 'Conclusiones', icon: Lightbulb },
-    { id: 'opinion', name: 'Opinión de auditoría', icon: PenTool },
+    { id: 'scope', name: 'Alcance del trabajo' },
+    { id: 'methodology', name: 'Metodología aplicada' },
+    { id: 'tests', name: 'Pruebas realizadas' },
+    { id: 'findings', name: 'Hallazgos identificados' },
+    { id: 'conclusion', name: 'Conclusiones' },
+    { id: 'opinion', name: 'Opinión de auditoría' },
   ];
 
   // The mega-detailed report that will be typed out
@@ -130,7 +114,7 @@ Se ha aplicado un enfoque combinado de pruebas sustantivas y procedimientos anal
 | Cuadre básico | Conciliación entre submayor, mayor y balance | 100% |
 | Mapa de riesgos | Clasificación de proveedores por nivel de riesgo | 100% |
 | Circularización | Confirmación directa con proveedores seleccionados | 78% del saldo |
-| Muestreo alternativo | Verificación documental de facturas | 85 transacciones |
+| Prueba alternativa | Verificación documental de facturas | 85 transacciones |
 | Revisión analítica | Comparación interanual de saldos | 100% |
 
 ---
@@ -170,7 +154,7 @@ Las diferencias identificadas en las respuestas han sido:
 
 **Conclusión:** El nivel de respuesta y conformidad es satisfactorio. Las diferencias identificadas no son materiales.
 
-### 3.3 Muestreo Alternativo
+### 3.3 Prueba Alternativa
 
 **Estado: Completado**
 
@@ -332,21 +316,38 @@ Ref: INF-2024-GALFA-PROV-001`;
     setGenerationProgress(0);
     setCurrentSection(0);
 
-    let index = 0;
+    // Split report into lines for cleaner typing effect
+    const lines = fullReport.split('\n');
+    let lineIndex = 0;
+    let charIndex = 0;
     const totalLength = fullReport.length;
+    let currentText = '';
     
     const typingInterval = setInterval(() => {
-      if (index < totalLength) {
-        // Variable chunk size for realistic effect
-        const baseChunkSize = 8;
-        const variance = Math.floor(Math.random() * 6) - 2;
-        const chunkSize = Math.max(1, baseChunkSize + variance);
+      if (lineIndex < lines.length) {
+        const currentLine = lines[lineIndex];
         
-        setGeneratedText(prev => prev + fullReport.slice(index, index + chunkSize));
-        index += chunkSize;
+        if (charIndex < currentLine.length) {
+          // Add characters within the current line (faster for longer lines)
+          const charsToAdd = Math.min(
+            Math.floor(Math.random() * 4) + 3, // 3-6 chars at a time
+            currentLine.length - charIndex
+          );
+          charIndex += charsToAdd;
+          currentText = lines.slice(0, lineIndex).join('\n') + 
+                       (lineIndex > 0 ? '\n' : '') + 
+                       currentLine.slice(0, charIndex);
+        } else {
+          // Move to next line
+          lineIndex++;
+          charIndex = 0;
+          currentText = lines.slice(0, lineIndex).join('\n');
+        }
         
-        // Update progress
-        const progress = index / totalLength;
+        setGeneratedText(currentText);
+        
+        // Update progress based on character count
+        const progress = currentText.length / totalLength;
         setGenerationProgress(progress);
         
         // Update current section
@@ -365,9 +366,10 @@ Ref: INF-2024-GALFA-PROV-001`;
         clearInterval(typingInterval);
         setIsGenerating(false);
         setIsTyping(false);
+        setGeneratedText(fullReport); // Ensure complete text
         setCurrentStep('editing');
       }
-    }, 15);
+    }, 12);
   };
 
   const toggleSection = (sectionId: string) => {
@@ -384,105 +386,133 @@ Ref: INF-2024-GALFA-PROV-001`;
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Render markdown-like content
+  // Process inline formatting (bold, italic) in a line
+  const processInlineFormatting = (text: string): React.ReactNode => {
+    // Handle **bold** text
+    const parts: React.ReactNode[] = [];
+    let remaining = text;
+    let key = 0;
+    
+    while (remaining.length > 0) {
+      const boldMatch = remaining.match(/\*\*([^*]+)\*\*/);
+      if (boldMatch && boldMatch.index !== undefined) {
+        // Add text before bold
+        if (boldMatch.index > 0) {
+          parts.push(<span key={key++}>{remaining.slice(0, boldMatch.index)}</span>);
+        }
+        // Add bold text
+        parts.push(<strong key={key++} className="font-semibold text-neutral-900">{boldMatch[1]}</strong>);
+        remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
+      } else {
+        // No more bold, add remaining text
+        parts.push(<span key={key++}>{remaining}</span>);
+        break;
+      }
+    }
+    
+    return parts.length > 0 ? <>{parts}</> : text;
+  };
+
+  // Render markdown-like content with improved parsing
   const renderContent = (text: string) => {
-    return text.split('\n').map((line, i) => {
+    // Only process complete lines (ignore incomplete last line during typing)
+    const lines = text.split('\n');
+    const lastLine = lines[lines.length - 1];
+    const isLastLineComplete = text.endsWith('\n') || !isTyping;
+    
+    return lines.map((line, i) => {
+      // Skip incomplete last line during typing
+      if (i === lines.length - 1 && !isLastLineComplete && isTyping) {
+        return <span key={i} className="text-neutral-600 text-[13px]">{line}<span className="animate-pulse">|</span></span>;
+      }
+      
       // Main title
       if (line.startsWith('# ')) {
-        return <h1 key={i} className="text-2xl font-serif text-stone-900 mb-4 pb-2 border-b-2 border-stone-900">{line.replace('# ', '')}</h1>;
+        return <h1 key={i} className="text-2xl font-serif text-neutral-900 mb-4 pb-2 border-b-2 border-neutral-900">{line.slice(2)}</h1>;
       }
       // Section titles
       if (line.startsWith('## ')) {
-        const isNumber = /^\d\./.test(line.replace('## ', ''));
-        return <h2 key={i} className={`text-lg font-serif text-stone-900 mt-8 mb-3 ${isNumber ? 'bg-stone-100 px-3 py-2 -mx-3' : ''}`}>{line.replace('## ', '')}</h2>;
+        const content = line.slice(3);
+        const isNumber = /^\d\./.test(content);
+        return <h2 key={i} className={`text-lg font-serif text-neutral-900 mt-8 mb-3 ${isNumber ? 'bg-neutral-100 px-3 py-2 -mx-3' : ''}`}>{content}</h2>;
       }
       // Subsection
       if (line.startsWith('### ')) {
-        return <h3 key={i} className="text-sm font-semibold text-stone-800 mt-5 mb-2">{line.replace('### ', '')}</h3>;
+        return <h3 key={i} className="text-sm font-semibold text-neutral-800 mt-5 mb-2">{line.slice(4)}</h3>;
       }
       // Horizontal rule
       if (line.startsWith('---')) {
-        return <hr key={i} className="my-6 border-stone-200" />;
+        return <hr key={i} className="my-6 border-neutral-200" />;
       }
-      // Bold text
-      if (line.startsWith('**') && line.includes(':**')) {
-        const parts = line.split(':**');
+      // Skip table separator lines
+      if (line.match(/^\|[\s\-:|]+\|$/)) {
+        return null;
+      }
+      // Table rows
+      if (line.startsWith('|') && line.endsWith('|')) {
+        const cells = line.slice(1, -1).split('|').map(c => c.trim());
+        const isHeader = i > 0 && lines[i - 1]?.startsWith('|') && lines[i + 1]?.match(/^\|[\s\-:|]+\|$/);
         return (
-          <p key={i} className="mt-2">
-            <span className="font-semibold text-stone-900">{parts[0].replace(/\*\*/g, '')}:</span>
-            <span className="text-stone-600">{parts[1]?.replace(/\*\*/g, '')}</span>
-          </p>
+          <div key={i} className={`grid gap-2 text-xs py-2 border-b border-neutral-100 ${isHeader ? 'font-semibold bg-neutral-50 text-neutral-800' : 'text-neutral-600'}`} style={{ gridTemplateColumns: `repeat(${cells.length}, minmax(0, 1fr))` }}>
+            {cells.map((cell, j) => (
+              <span key={j} className="px-2">{processInlineFormatting(cell)}</span>
+            ))}
+          </div>
         );
       }
       // List items with checkmarks
       if (line.startsWith('- ✓') || line.startsWith('- ⚠')) {
         const isCheck = line.includes('✓');
+        const content = line.replace(/^- [✓⚠]\s*/, '');
         return (
-          <div key={i} className={`flex items-start gap-2 ml-4 my-1 ${isCheck ? 'text-emerald-700' : 'text-amber-700'}`}>
+          <div key={i} className={`flex items-start gap-2 ml-4 my-1 ${isCheck ? 'text-[#4A5D4A]' : 'text-[#8B7355]'}`}>
             {isCheck ? <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" /> : <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />}
-            <span className="text-stone-600">{line.replace('- ✓ ', '').replace('- ⚠ ', '')}</span>
+            <span className="text-neutral-600">{processInlineFormatting(content)}</span>
           </div>
         );
       }
       // Regular list items
       if (line.startsWith('- ')) {
-        return <li key={i} className="ml-6 text-stone-600 list-disc my-1">{line.replace('- ', '')}</li>;
+        return <li key={i} className="ml-6 text-neutral-600 list-disc my-1">{processInlineFormatting(line.slice(2))}</li>;
       }
       // Numbered list
       if (/^\d+\.\s/.test(line)) {
-        return <li key={i} className="ml-6 text-stone-600 list-decimal my-1">{line.replace(/^\d+\.\s/, '')}</li>;
+        return <li key={i} className="ml-6 text-neutral-600 list-decimal my-1">{processInlineFormatting(line.replace(/^\d+\.\s/, ''))}</li>;
       }
-      // Table rows (simplified rendering)
-      if (line.startsWith('|') && !line.includes('---')) {
-        const cells = line.split('|').filter(c => c.trim());
-        const isHeader = line.includes('Procedimiento') || line.includes('Categoría') || line.includes('Referencia');
-        return (
-          <div key={i} className={`grid grid-cols-${cells.length} gap-2 text-xs py-1 border-b border-stone-100 ${isHeader ? 'font-semibold bg-stone-50 text-stone-700' : 'text-stone-600'}`}>
-            {cells.map((cell, j) => (
-              <span key={j} className="px-2 truncate">{cell.trim()}</span>
-            ))}
-          </div>
-        );
-      }
-      // Italics at end (signature)
-      if (line.startsWith('*') && line.endsWith('*') && !line.startsWith('**')) {
-        return <p key={i} className="text-stone-400 italic text-[11px] mt-1">{line.replace(/\*/g, '')}</p>;
-      }
-      // Regular checkmarks and warnings
+      // Standalone checkmarks and warnings
       if (line.startsWith('✓ ')) {
-        return <p key={i} className="text-emerald-700 flex items-center gap-2 my-1"><CheckCircle2 className="w-4 h-4" />{line.replace('✓ ', '')}</p>;
+        return <p key={i} className="text-[#4A5D4A] flex items-center gap-2 my-1"><CheckCircle2 className="w-4 h-4" />{processInlineFormatting(line.slice(2))}</p>;
       }
       if (line.startsWith('⚠ ')) {
-        return <p key={i} className="text-amber-700 flex items-center gap-2 my-1"><AlertTriangle className="w-4 h-4" />{line.replace('⚠ ', '')}</p>;
+        return <p key={i} className="text-[#8B7355] flex items-center gap-2 my-1"><AlertTriangle className="w-4 h-4" />{processInlineFormatting(line.slice(2))}</p>;
+      }
+      // Italics (signature lines)
+      if (line.startsWith('*') && line.endsWith('*') && !line.startsWith('**')) {
+        return <p key={i} className="text-neutral-400 italic text-[11px] mt-1">{line.slice(1, -1)}</p>;
       }
       // Empty line
       if (line.trim() === '') {
         return <div key={i} className="h-2" />;
       }
-      // Regular paragraph
-      return <p key={i} className="text-stone-600 text-[13px] leading-relaxed my-1">{line}</p>;
+      // Regular paragraph with inline formatting
+      return <p key={i} className="text-neutral-600 text-[13px] leading-relaxed my-1">{processInlineFormatting(line)}</p>;
     });
   };
 
   return (
     <div className="space-y-6 animate-fade-in h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between pb-6 border-b border-stone-200 shrink-0">
+      <div className="flex items-center justify-between pb-6 border-b border-neutral-200 shrink-0">
         <div className="flex items-center gap-4">
           <button
             onClick={onBack}
-            className="p-2 rounded-full hover:bg-stone-100 text-stone-400 hover:text-stone-900 transition-colors"
+            className="p-2 rounded-sm hover:bg-neutral-100 text-neutral-400 hover:text-neutral-900 transition-colors"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg">
-              <PenTool className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-serif text-stone-900">Redactar Conclusiones</h2>
-              <span className="text-xs text-stone-400">Generación automática de informe de auditoría con IA</span>
-            </div>
+          <div>
+            <h2 className="text-xl font-serif text-neutral-900">Redactar Conclusiones</h2>
+            <span className="text-[10px] text-neutral-400 uppercase tracking-wider">Generación automática con IA</span>
           </div>
         </div>
         
@@ -490,14 +520,14 @@ Ref: INF-2024-GALFA-PROV-001`;
           <div className="flex items-center gap-2">
             <button 
               onClick={copyToClipboard}
-              className="px-3 py-1.5 text-xs font-medium bg-stone-100 text-stone-700 rounded hover:bg-stone-200 transition-colors inline-flex items-center gap-1.5"
+              className="px-3 py-1.5 text-xs font-medium bg-neutral-100 text-neutral-700 rounded-sm hover:bg-neutral-200 transition-colors inline-flex items-center gap-1.5"
             >
-              {copied ? <CheckCircle className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+              {copied ? <CheckCircle className="w-3 h-3 text-[#4A5D4A]" /> : <Copy className="w-3 h-3" />}
               {copied ? 'Copiado' : 'Copiar'}
             </button>
             <button 
               onClick={() => setShowExportModal(true)}
-              className="px-4 py-1.5 text-xs font-medium bg-stone-900 text-white rounded hover:bg-black transition-colors inline-flex items-center gap-1.5"
+              className="px-4 py-1.5 text-xs font-medium bg-neutral-900 text-white rounded-sm hover:bg-black transition-colors inline-flex items-center gap-1.5"
             >
               <Download className="w-3 h-3" />
               Exportar a Word
@@ -515,99 +545,89 @@ Ref: INF-2024-GALFA-PROV-001`;
         >
           {/* Data Summary */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="bg-white border border-stone-200 rounded-sm p-4 shadow-sm">
-              <span className="text-[10px] text-stone-400 uppercase tracking-wider block mb-1">Pruebas Completadas</span>
-              <div className="text-3xl font-serif text-stone-900">5</div>
-              <span className="text-xs text-emerald-600 font-medium">100% ejecutadas</span>
+            <div className="bg-white border border-neutral-200 rounded-sm p-4 shadow-sm">
+              <span className="text-[10px] text-neutral-400 uppercase tracking-wider block mb-1">Pruebas Completadas</span>
+              <div className="text-3xl font-serif text-neutral-900">5</div>
+              <span className="text-xs text-[#4A5D4A] font-medium">100% ejecutadas</span>
             </div>
-            <div className="bg-white border border-stone-200 rounded-sm p-4 shadow-sm">
-              <span className="text-[10px] text-stone-400 uppercase tracking-wider block mb-1">Hallazgos Totales</span>
-              <div className="text-3xl font-serif text-amber-600">5</div>
-              <span className="text-xs text-stone-500">1 alta, 2 media, 2 baja</span>
+            <div className="bg-white border border-neutral-200 rounded-sm p-4 shadow-sm">
+              <span className="text-[10px] text-neutral-400 uppercase tracking-wider block mb-1">Hallazgos Totales</span>
+              <div className="text-3xl font-serif text-[#8B7355]">5</div>
+              <span className="text-xs text-neutral-500">1 alta, 2 media, 2 baja</span>
             </div>
-            <div className="bg-white border border-stone-200 rounded-sm p-4 shadow-sm">
-              <span className="text-[10px] text-stone-400 uppercase tracking-wider block mb-1">Cobertura Promedio</span>
-              <div className="text-3xl font-serif text-stone-900">92%</div>
-              <span className="text-xs text-stone-500">del saldo auditado</span>
+            <div className="bg-white border border-neutral-200 rounded-sm p-4 shadow-sm">
+              <span className="text-[10px] text-neutral-400 uppercase tracking-wider block mb-1">Cobertura Promedio</span>
+              <div className="text-3xl font-serif text-neutral-900">92%</div>
+              <span className="text-xs text-neutral-500">del saldo auditado</span>
             </div>
-            <div className="bg-white border border-stone-200 rounded-sm p-4 shadow-sm">
-              <span className="text-[10px] text-stone-400 uppercase tracking-wider block mb-1">Ajustes Propuestos</span>
-              <div className="text-3xl font-serif text-stone-900">€57.7K</div>
-              <span className="text-xs text-emerald-600">No material</span>
+            <div className="bg-white border border-neutral-200 rounded-sm p-4 shadow-sm">
+              <span className="text-[10px] text-neutral-400 uppercase tracking-wider block mb-1">Ajustes Propuestos</span>
+              <div className="text-3xl font-serif text-neutral-900">€57.7K</div>
+              <span className="text-xs text-[#4A5D4A]">No material</span>
             </div>
           </div>
 
           {/* Test Results Review */}
-          <div className="bg-white border border-stone-200 rounded-sm overflow-hidden shadow-sm">
-            <div className="px-5 py-4 border-b border-stone-200 bg-stone-50">
-              <h3 className="text-sm font-serif text-stone-900">Resultados de pruebas a incluir</h3>
-              <p className="text-xs text-stone-500">Estos datos se utilizarán para generar el informe</p>
+          <div className="bg-white border border-neutral-200 rounded-sm overflow-hidden shadow-sm">
+            <div className="px-5 py-4 border-b border-neutral-200 bg-neutral-50">
+              <h3 className="text-sm font-serif text-neutral-900">Resultados de pruebas a incluir</h3>
+              <p className="text-xs text-neutral-500">Estos datos se utilizarán para generar el informe</p>
             </div>
-            <div className="divide-y divide-stone-100">
-              {testResults.map((test) => {
-                const Icon = test.icon;
-                return (
-                  <div key={test.id} className="px-5 py-4 flex items-center justify-between hover:bg-stone-50 transition-colors">
+            <div className="divide-y divide-neutral-100">
+              {testResults.map((test) => (
+                  <div key={test.id} className="px-5 py-3.5 flex items-center justify-between hover:bg-neutral-50 transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        test.status === 'completed' ? 'bg-emerald-50 text-emerald-600' :
-                        test.status === 'issues' ? 'bg-amber-50 text-amber-600' :
-                        'bg-stone-100 text-stone-400'
-                      }`}>
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium text-stone-900">{test.name}</h4>
-                        <div className="flex items-center gap-3 mt-0.5">
+                      <div className="flex-1">
+                        <h4 className="text-sm text-neutral-900">{test.name}</h4>
+                        <div className="flex items-center gap-3 mt-1">
                           <span className={`text-[10px] px-2 py-0.5 rounded border font-medium ${
-                            test.status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                            test.status === 'issues' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                            'bg-stone-50 text-stone-500 border-stone-200'
+                            test.status === 'completed' ? 'bg-[#F7F9F7] text-[#4A5D4A] border-[#E0E5E0]' :
+                            test.status === 'issues' ? 'bg-[#FDFAF6] text-[#8B7355] border-[#EDE5D8]' :
+                            'bg-neutral-50 text-neutral-500 border-neutral-200'
                           }`}>
                             {test.status === 'completed' ? 'Completado' : test.status === 'issues' ? 'Con incidencias' : 'Pendiente'}
                           </span>
-                          <span className="text-xs text-stone-400">
+                          <span className="text-xs text-neutral-400">
                             {test.findings} hallazgos • {test.coverage}% cobertura
                           </span>
                         </div>
                       </div>
                     </div>
-                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                    <CheckCircle2 className="w-4 h-4 text-[#4A5D4A]" />
                   </div>
-                );
-              })}
+              ))}
             </div>
           </div>
 
           {/* Findings Review */}
-          <div className="bg-white border border-stone-200 rounded-sm overflow-hidden shadow-sm">
-            <div className="px-5 py-4 border-b border-stone-200 bg-stone-50">
-              <h3 className="text-sm font-serif text-stone-900">Hallazgos identificados</h3>
-              <p className="text-xs text-stone-500">Se incluirán en la sección de hallazgos del informe</p>
+          <div className="bg-white border border-neutral-200 rounded-sm overflow-hidden shadow-sm">
+            <div className="px-5 py-4 border-b border-neutral-200 bg-neutral-50">
+              <h3 className="text-sm font-serif text-neutral-900">Hallazgos identificados</h3>
+              <p className="text-xs text-neutral-500">Se incluirán en la sección de hallazgos del informe</p>
             </div>
-            <div className="divide-y divide-stone-100">
+            <div className="divide-y divide-neutral-100">
               {findings.map((finding) => (
-                <div key={finding.id} className="px-5 py-3 flex items-center justify-between hover:bg-stone-50 transition-colors">
+                <div key={finding.id} className="px-5 py-3 flex items-center justify-between hover:bg-neutral-50 transition-colors">
                   <div className="flex items-center gap-3">
                     <span className={`w-2 h-2 rounded-full ${
-                      finding.severity === 'high' ? 'bg-rose-500' :
-                      finding.severity === 'medium' ? 'bg-amber-500' :
-                      'bg-emerald-500'
+                      finding.severity === 'high' ? 'bg-[#FBF8F7]0' :
+                      finding.severity === 'medium' ? 'bg-[#FDFAF6]0' :
+                      'bg-[#F7F9F7]0'
                     }`} />
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono text-stone-400">{finding.id}</span>
-                        <span className="text-sm text-stone-900">{finding.title}</span>
+                        <span className="text-xs font-mono text-neutral-400">{finding.id}</span>
+                        <span className="text-sm text-neutral-900">{finding.title}</span>
                       </div>
                       {finding.amount && (
-                        <span className="text-xs text-stone-500">€{finding.amount.toLocaleString()}</span>
+                        <span className="text-xs text-neutral-500">€{finding.amount.toLocaleString()}</span>
                       )}
                     </div>
                   </div>
                   <span className={`text-[10px] px-2 py-0.5 rounded border font-medium ${
-                    finding.status === 'resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                    finding.status === 'pending_client' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                    'bg-amber-50 text-amber-700 border-amber-200'
+                    finding.status === 'resolved' ? 'bg-[#F7F9F7] text-[#4A5D4A] border-[#E0E5E0]' :
+                    finding.status === 'pending_client' ? 'bg-[#F7F9FA] text-[#4A5D6A] border-[#E0E5E8]' :
+                    'bg-[#FDFAF6] text-[#8B7355] border-[#EDE5D8]'
                   }`}>
                     {finding.status === 'resolved' ? 'Resuelto' : finding.status === 'pending_client' ? 'Pte. cliente' : 'Abierto'}
                   </span>
@@ -617,38 +637,28 @@ Ref: INF-2024-GALFA-PROV-001`;
           </div>
 
           {/* Section Selection */}
-          <div className="bg-white border border-stone-200 rounded-sm overflow-hidden shadow-sm">
-            <div className="px-5 py-4 border-b border-stone-200 bg-stone-50">
-              <h3 className="text-sm font-serif text-stone-900">Secciones del informe</h3>
-              <p className="text-xs text-stone-500">Selecciona las secciones que deseas incluir</p>
+          <div className="bg-white border border-neutral-200 rounded-sm overflow-hidden shadow-sm">
+            <div className="px-5 py-4 border-b border-neutral-200 bg-neutral-50">
+              <h3 className="text-sm font-serif text-neutral-900">Secciones del informe</h3>
+              <p className="text-xs text-neutral-500">Selecciona las secciones que deseas incluir</p>
             </div>
-            <div className="p-5 grid grid-cols-3 gap-3">
+            <div className="p-5 grid grid-cols-3 gap-2">
               {sections.map((section) => {
                 const isSelected = selectedSections.includes(section.id);
-                const Icon = section.icon;
                 return (
                   <button
                     key={section.id}
                     onClick={() => toggleSection(section.id)}
-                    className={`p-4 rounded-lg border-2 transition-all text-left ${
+                    className={`px-4 py-3 rounded-sm border transition-all text-left flex items-center justify-between ${
                       isSelected 
-                        ? 'border-violet-500 bg-violet-50' 
-                        : 'border-stone-200 hover:border-stone-300'
+                        ? 'border-neutral-400 bg-neutral-50' 
+                        : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50/50'
                     }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                        isSelected ? 'bg-violet-500 text-white' : 'bg-stone-100 text-stone-400'
-                      }`}>
-                        <Icon className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <span className={`text-sm font-medium ${isSelected ? 'text-violet-900' : 'text-stone-700'}`}>
-                          {section.name}
-                        </span>
-                        {isSelected && <CheckCircle className="w-4 h-4 text-violet-500 inline ml-2" />}
-                      </div>
-                    </div>
+                    <span className={`text-xs ${isSelected ? 'text-neutral-900 font-medium' : 'text-neutral-600'}`}>
+                      {section.name}
+                    </span>
+                    {isSelected && <CheckCircle className="w-3.5 h-3.5 text-[#4A5D4A]" />}
                   </button>
                 );
               })}
@@ -656,18 +666,18 @@ Ref: INF-2024-GALFA-PROV-001`;
           </div>
 
           {/* Generate Button */}
-          <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-sm p-6 text-white text-center">
-            <Wand2 className="w-12 h-12 mx-auto mb-4 opacity-80" />
-            <h3 className="text-lg font-serif mb-2">Todo listo para generar</h3>
-            <p className="text-sm opacity-80 mb-4 max-w-md mx-auto">
-              La IA analizará todos los datos del encargo y generará un informe de conclusiones completo y profesional.
-            </p>
+          <div className="border border-neutral-200 rounded-sm p-6 bg-neutral-50 flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-neutral-900 mb-1">Todo listo para generar</h3>
+              <p className="text-xs text-neutral-500">
+                Se generará un informe completo basado en los datos seleccionados.
+              </p>
+            </div>
             <button 
               onClick={startGeneration}
-              className="px-8 py-3 bg-white text-violet-700 text-sm font-semibold rounded-lg hover:bg-stone-100 transition-colors inline-flex items-center gap-2 shadow-lg"
+              className="px-5 py-2.5 bg-neutral-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors inline-flex items-center gap-2"
             >
-              <Sparkles className="w-5 h-5" />
-              Generar Informe con IA
+              Generar Informe
             </button>
           </div>
         </motion.div>
@@ -679,16 +689,16 @@ Ref: INF-2024-GALFA-PROV-001`;
           {/* Left: Progress Panel */}
           <div className="w-72 shrink-0 flex flex-col gap-4">
             {/* Generation Progress */}
-            <div className="bg-white border border-stone-200 rounded-sm p-4 shadow-sm">
+            <div className="bg-white border border-neutral-200 rounded-sm p-4 shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] text-stone-400 uppercase tracking-wider">Progreso</span>
-                <span className="text-sm font-mono font-semibold text-stone-900">
+                <span className="text-[10px] text-neutral-400 uppercase tracking-wider">Progreso</span>
+                <span className="text-sm font-mono font-semibold text-neutral-900">
                   {Math.round(generationProgress * 100)}%
                 </span>
               </div>
-              <div className="h-2 bg-stone-100 rounded-full overflow-hidden mb-4">
+              <div className="h-2 bg-neutral-100 rounded-full overflow-hidden mb-4">
                 <motion.div 
-                  className="h-full bg-gradient-to-r from-violet-500 to-purple-600 rounded-full"
+                  className="h-full bg-neutral-900 rounded-full"
                   animate={{ width: `${generationProgress * 100}%` }}
                   transition={{ duration: 0.3 }}
                 />
@@ -700,14 +710,14 @@ Ref: INF-2024-GALFA-PROV-001`;
                   <div key={i} className="flex items-center gap-2">
                     <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
                       currentSection > i 
-                        ? 'bg-emerald-500 text-white' 
+                        ? 'bg-[#F7F9F7]0 text-white' 
                         : currentSection === i 
-                        ? 'bg-violet-500 text-white animate-pulse' 
-                        : 'bg-stone-100 text-stone-400'
+                        ? 'bg-neutral-500 text-white animate-pulse' 
+                        : 'bg-neutral-100 text-neutral-400'
                     }`}>
                       {currentSection > i ? '✓' : i + 1}
                     </div>
-                    <span className={`text-xs ${currentSection >= i ? 'text-stone-900 font-medium' : 'text-stone-400'}`}>
+                    <span className={`text-xs ${currentSection >= i ? 'text-neutral-900 font-medium' : 'text-neutral-400'}`}>
                       {section.name}
                     </span>
                   </div>
@@ -718,13 +728,13 @@ Ref: INF-2024-GALFA-PROV-001`;
             {/* AI Status */}
             <div className={`border rounded-sm p-4 transition-all ${
               isTyping 
-                ? 'bg-violet-50 border-violet-200' 
-                : 'bg-emerald-50 border-emerald-200'
+                ? 'bg-neutral-50 border-neutral-200' 
+                : 'bg-[#F7F9F7] border-[#E0E5E0]'
             }`}>
               <div className="flex items-center gap-3">
                 {isTyping ? (
                   <>
-                    <div className="w-10 h-10 rounded-full bg-violet-500 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-neutral-500 flex items-center justify-center">
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
@@ -733,18 +743,18 @@ Ref: INF-2024-GALFA-PROV-001`;
                       </motion.div>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-violet-900">IA escribiendo...</span>
-                      <p className="text-xs text-violet-600">Redactando sección {currentSection + 1} de {sectionMarkers.length}</p>
+                      <span className="text-sm font-medium text-neutral-900">IA escribiendo...</span>
+                      <p className="text-xs text-neutral-600">Redactando sección {currentSection + 1} de {sectionMarkers.length}</p>
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-[#F7F9F7]0 flex items-center justify-center">
                       <CheckCircle className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-emerald-900">Generación completada</span>
-                      <p className="text-xs text-emerald-600">Informe listo para revisión</p>
+                      <span className="text-sm font-medium text-[#4A5D4A]">Generación completada</span>
+                      <p className="text-xs text-[#4A5D4A]">Informe listo para revisión</p>
                     </div>
                   </>
                 )}
@@ -753,16 +763,16 @@ Ref: INF-2024-GALFA-PROV-001`;
 
             {/* Quick Stats */}
             {currentStep === 'editing' && (
-              <div className="bg-white border border-stone-200 rounded-sm p-4 shadow-sm space-y-3">
-                <h4 className="text-[10px] text-stone-400 uppercase tracking-wider">Estadísticas del informe</h4>
+              <div className="bg-white border border-neutral-200 rounded-sm p-4 shadow-sm space-y-3">
+                <h4 className="text-[10px] text-neutral-400 uppercase tracking-wider">Estadísticas del informe</h4>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <span className="text-2xl font-serif text-stone-900">{generatedText.split(' ').length}</span>
-                    <span className="text-xs text-stone-500 block">palabras</span>
+                    <span className="text-2xl font-serif text-neutral-900">{generatedText.split(' ').length}</span>
+                    <span className="text-xs text-neutral-500 block">palabras</span>
                   </div>
                   <div>
-                    <span className="text-2xl font-serif text-stone-900">{Math.ceil(generatedText.split(' ').length / 200)}</span>
-                    <span className="text-xs text-stone-500 block">min. lectura</span>
+                    <span className="text-2xl font-serif text-neutral-900">{Math.ceil(generatedText.split(' ').length / 200)}</span>
+                    <span className="text-xs text-neutral-500 block">min. lectura</span>
                   </div>
                 </div>
               </div>
@@ -773,14 +783,14 @@ Ref: INF-2024-GALFA-PROV-001`;
               <div className="space-y-2">
                 <button 
                   onClick={() => { setGeneratedText(''); startGeneration(); }}
-                  className="w-full px-4 py-2 text-xs font-medium bg-stone-100 text-stone-700 rounded hover:bg-stone-200 transition-colors inline-flex items-center justify-center gap-2"
+                  className="w-full px-4 py-2 text-xs font-medium bg-neutral-100 text-neutral-700 rounded hover:bg-neutral-200 transition-colors inline-flex items-center justify-center gap-2"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   Regenerar informe
                 </button>
                 <button 
                   onClick={() => setShowExportModal(true)}
-                  className="w-full px-4 py-2 text-xs font-medium bg-violet-600 text-white rounded hover:bg-violet-700 transition-colors inline-flex items-center justify-center gap-2"
+                  className="w-full px-4 py-2 text-xs font-medium bg-neutral-600 text-white rounded hover:bg-neutral-700 transition-colors inline-flex items-center justify-center gap-2"
                 >
                   <Send className="w-3.5 h-3.5" />
                   Enviar para revisión
@@ -790,36 +800,36 @@ Ref: INF-2024-GALFA-PROV-001`;
           </div>
 
           {/* Right: Report Content */}
-          <div className="flex-1 bg-white border border-stone-200 rounded-sm overflow-hidden flex flex-col shadow-lg">
+          <div className="flex-1 bg-white border border-neutral-200 rounded-sm overflow-hidden flex flex-col shadow-lg">
             {/* Document Header */}
-            <div className="px-6 py-4 border-b border-stone-200 bg-stone-50 flex justify-between items-center shrink-0">
+            <div className="px-6 py-4 border-b border-neutral-200 bg-neutral-50 flex justify-between items-center shrink-0">
               <div className="flex items-center gap-3">
-                <FileText className="w-5 h-5 text-stone-400" />
+                <FileText className="w-5 h-5 text-neutral-400" />
                 <div>
-                  <span className="text-sm font-serif text-stone-900">Informe de Conclusiones</span>
-                  <span className="text-[10px] text-stone-400 block">INF-2024-GALFA-PROV-001</span>
+                  <span className="text-sm font-serif text-neutral-900">Informe de Conclusiones</span>
+                  <span className="text-[10px] text-neutral-400 block">INF-2024-GALFA-PROV-001</span>
                 </div>
               </div>
               {isTyping && (
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-violet-100 rounded-full">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-100 rounded-full">
                   <div className="flex space-x-1">
                     <motion.div
                       animate={{ scale: [1, 1.3, 1] }}
                       transition={{ repeat: Infinity, duration: 0.6, delay: 0 }}
-                      className="w-1.5 h-1.5 bg-violet-500 rounded-full"
+                      className="w-1.5 h-1.5 bg-neutral-500 rounded-full"
                     />
                     <motion.div
                       animate={{ scale: [1, 1.3, 1] }}
                       transition={{ repeat: Infinity, duration: 0.6, delay: 0.15 }}
-                      className="w-1.5 h-1.5 bg-violet-500 rounded-full"
+                      className="w-1.5 h-1.5 bg-neutral-500 rounded-full"
                     />
                     <motion.div
                       animate={{ scale: [1, 1.3, 1] }}
                       transition={{ repeat: Infinity, duration: 0.6, delay: 0.3 }}
-                      className="w-1.5 h-1.5 bg-violet-500 rounded-full"
+                      className="w-1.5 h-1.5 bg-neutral-500 rounded-full"
                     />
                   </div>
-                  <span className="text-xs text-violet-700 font-medium">Escribiendo</span>
+                  <span className="text-xs text-neutral-700 font-medium">Escribiendo</span>
                 </div>
               )}
             </div>
@@ -838,7 +848,7 @@ Ref: INF-2024-GALFA-PROV-001`;
                   <motion.span
                     animate={{ opacity: [1, 0, 1] }}
                     transition={{ repeat: Infinity, duration: 0.6 }}
-                    className="inline-block w-2.5 h-5 bg-violet-500 ml-0.5 rounded-sm"
+                    className="inline-block w-2.5 h-5 bg-neutral-500 ml-0.5 rounded-sm"
                   />
                 )}
               </div>
@@ -864,47 +874,47 @@ Ref: INF-2024-GALFA-PROV-001`;
               className="bg-white rounded-lg shadow-2xl max-w-md w-full"
               onClick={e => e.stopPropagation()}
             >
-              <div className="px-6 py-5 border-b border-stone-100">
-                <h3 className="text-lg font-serif text-stone-900">Exportar informe</h3>
-                <p className="text-sm text-stone-500">Selecciona el formato de exportación</p>
+              <div className="px-6 py-5 border-b border-neutral-100">
+                <h3 className="text-lg font-serif text-neutral-900">Exportar informe</h3>
+                <p className="text-sm text-neutral-500">Selecciona el formato de exportación</p>
               </div>
 
               <div className="p-6 space-y-3">
-                <button className="w-full p-4 border border-stone-200 rounded-lg hover:border-violet-300 hover:bg-violet-50 transition-all text-left flex items-center gap-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold text-lg">
+                <button className="w-full p-4 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all text-left flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[#E8EDEF] rounded-lg flex items-center justify-center text-[#4A5D6A] font-bold text-lg">
                     W
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-stone-900 block">Microsoft Word (.docx)</span>
-                    <span className="text-xs text-stone-500">Formato editable con estilos</span>
+                    <span className="text-sm font-medium text-neutral-900 block">Microsoft Word (.docx)</span>
+                    <span className="text-xs text-neutral-500">Formato editable con estilos</span>
                   </div>
                 </button>
                 
-                <button className="w-full p-4 border border-stone-200 rounded-lg hover:border-violet-300 hover:bg-violet-50 transition-all text-left flex items-center gap-4">
-                  <div className="w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center text-rose-600 font-bold text-lg">
+                <button className="w-full p-4 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all text-left flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[#F0E8E6] rounded-lg flex items-center justify-center text-[#8B5A50] font-bold text-lg">
                     PDF
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-stone-900 block">PDF (.pdf)</span>
-                    <span className="text-xs text-stone-500">Formato de lectura final</span>
+                    <span className="text-sm font-medium text-neutral-900 block">PDF (.pdf)</span>
+                    <span className="text-xs text-neutral-500">Formato de lectura final</span>
                   </div>
                 </button>
 
-                <button className="w-full p-4 border border-stone-200 rounded-lg hover:border-violet-300 hover:bg-violet-50 transition-all text-left flex items-center gap-4">
-                  <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600">
+                <button className="w-full p-4 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all text-left flex items-center gap-4">
+                  <div className="w-12 h-12 bg-[#E8EDE8] rounded-lg flex items-center justify-center text-[#4A5D4A]">
                     <Send className="w-6 h-6" />
                   </div>
                   <div>
-                    <span className="text-sm font-medium text-stone-900 block">Enviar al Manager</span>
-                    <span className="text-xs text-stone-500">Para revisión y aprobación</span>
+                    <span className="text-sm font-medium text-neutral-900 block">Enviar al Manager</span>
+                    <span className="text-xs text-neutral-500">Para revisión y aprobación</span>
                   </div>
                 </button>
               </div>
 
-              <div className="px-6 py-4 bg-stone-50 border-t border-stone-100">
+              <div className="px-6 py-4 bg-neutral-50 border-t border-neutral-100">
                 <button
                   onClick={() => setShowExportModal(false)}
-                  className="w-full px-4 py-2 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors"
+                  className="w-full px-4 py-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
                 >
                   Cancelar
                 </button>

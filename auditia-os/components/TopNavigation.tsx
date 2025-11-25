@@ -134,7 +134,7 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({ viewLevel, selecte
              <span className="text-stone-300 text-xs">/</span>
              <div className="flex items-center gap-2 px-2">
                 <span className="text-[12px] font-medium text-stone-900">Auditoría 2025</span>
-                <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-100 text-[9px] rounded-full">En curso</span>
+                <span className="px-1.5 py-0.5 bg-[#F7F9F7] text-[#4A5D4A] border border-[#E0E5E0] text-[9px] rounded-full">En curso</span>
              </div>
            </>
         )}

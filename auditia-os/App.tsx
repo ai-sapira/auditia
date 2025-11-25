@@ -83,9 +83,9 @@ const AppContent: React.FC = () => {
     // AUDITOR MODE
     if (viewLevel === 'firm') {
       switch (currentModule) {
-        case 'dashboard': return <Dashboard />;
-        case 'portfolio': return <PortfolioView />;
-        default: return <Dashboard />;
+        case 'dashboard': return <Dashboard onNavigate={setCurrentModule} onSelectClient={handleClientSelect} />;
+        case 'portfolio': return <PortfolioView onSelectClient={handleClientSelect} />;
+        default: return <Dashboard onNavigate={setCurrentModule} onSelectClient={handleClientSelect} />;
       }
     }
 

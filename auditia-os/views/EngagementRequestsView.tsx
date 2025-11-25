@@ -157,13 +157,13 @@ export const EngagementRequestsView: React.FC = () => {
   const getStatusStyles = (status: string) => {
     switch (status) {
       case 'Completed':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        return 'bg-[#F7F9F7] text-[#4A5D4A] border-[#E0E5E0]200';
       case 'In Review':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return 'bg-[#F7F9FA] text-[#4A5D6A] border-[#E0E5E8]200';
       case 'Overdue':
-        return 'bg-rose-50 text-rose-700 border-rose-200';
+        return 'bg-[#FBF8F7] text-[#8B5A50] border-[#E8E0DE]200';
       default:
-        return 'bg-amber-50 text-amber-700 border-amber-200';
+        return 'bg-[#FDFAF6] text-[#8B7355] border-[#EDE5D8]200';
     }
   };
 
@@ -179,11 +179,11 @@ export const EngagementRequestsView: React.FC = () => {
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case 'high':
-        return <span className="px-2 py-0.5 bg-rose-100 text-rose-700 text-[10px] font-medium rounded border border-rose-200">Alta</span>;
+        return <span className="px-2 py-0.5 bg-[#F0E8E6] text-[#8B5A50] text-[10px] font-medium rounded border border-[#E8E0DE]200">Alta</span>;
       case 'medium':
-        return <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-medium rounded border border-amber-200">Media</span>;
+        return <span className="px-2 py-0.5 bg-[#F5EDE0] text-[#8B7355] text-[10px] font-medium rounded border border-[#EDE5D8]200">Media</span>;
       default:
-        return <span className="px-2 py-0.5 bg-stone-100 text-stone-600 text-[10px] font-medium rounded border border-stone-200">Baja</span>;
+        return <span className="px-2 py-0.5 bg-neutral-100 text-neutral-600 text-[10px] font-medium rounded border border-neutral-200">Baja</span>;
     }
   };
 
@@ -200,15 +200,15 @@ export const EngagementRequestsView: React.FC = () => {
        {/* Main Content */}
        <div className={`flex-1 flex flex-col transition-all duration-300 ${selectedRequest ? 'mr-[500px]' : ''}`}>
          {/* Header */}
-         <div className="px-10 pt-10 pb-6 border-b border-stone-200 shrink-0">
+         <div className="px-10 pt-10 pb-6 border-b border-neutral-200 shrink-0">
             <div className="flex justify-between items-center mb-6">
                <div>
-                  <h1 className="text-3xl font-serif text-stone-900">Solicitudes al cliente</h1>
-                  <p className="text-stone-400 font-sans text-sm mt-1">Gestiona y realiza seguimiento de las peticiones de información</p>
+                  <h1 className="text-3xl font-serif text-neutral-900">Solicitudes al cliente</h1>
+                  <p className="text-neutral-400 font-sans text-sm mt-1">Gestiona y realiza seguimiento de las peticiones de información</p>
                </div>
                <button 
                   onClick={() => setShowNewRequestModal(true)}
-                  className="flex items-center gap-2 bg-stone-900 text-white px-4 py-2 rounded-md hover:bg-stone-800 transition-colors text-sm font-medium"
+                  className="flex items-center gap-2 bg-neutral-900 text-white px-4 py-2 rounded-md hover:bg-neutral-800 transition-colors text-sm font-medium"
                >
                   <Plus className="w-4 h-4" />
                   Nueva solicitud
@@ -216,26 +216,26 @@ export const EngagementRequestsView: React.FC = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-5 gap-px bg-stone-200 rounded-lg overflow-hidden mb-6">
+            <div className="grid grid-cols-5 gap-px bg-neutral-200 rounded-lg overflow-hidden mb-6">
               <div className="bg-white p-4">
-                <span className="text-[10px] text-stone-400 uppercase tracking-wider block mb-1">Total</span>
-                <span className="text-2xl font-serif text-stone-900">{stats.total}</span>
+                <span className="text-[10px] text-neutral-400 uppercase tracking-wider block mb-1">Total</span>
+                <span className="text-2xl font-serif text-neutral-900">{stats.total}</span>
               </div>
               <div className="bg-white p-4">
-                <span className="text-[10px] text-amber-600 uppercase tracking-wider block mb-1">Pendientes</span>
-                <span className="text-2xl font-serif text-amber-600">{stats.pending}</span>
+                <span className="text-[10px] text-[#8B7355] uppercase tracking-wider block mb-1">Pendientes</span>
+                <span className="text-2xl font-serif text-[#8B7355]">{stats.pending}</span>
               </div>
               <div className="bg-white p-4">
-                <span className="text-[10px] text-blue-600 uppercase tracking-wider block mb-1">En Revisión</span>
-                <span className="text-2xl font-serif text-blue-600">{stats.inReview}</span>
+                <span className="text-[10px] text-[#4A5D6A] uppercase tracking-wider block mb-1">En Revisión</span>
+                <span className="text-2xl font-serif text-[#4A5D6A]">{stats.inReview}</span>
               </div>
               <div className="bg-white p-4">
-                <span className="text-[10px] text-emerald-600 uppercase tracking-wider block mb-1">Completadas</span>
-                <span className="text-2xl font-serif text-emerald-600">{stats.completed}</span>
+                <span className="text-[10px] text-[#4A5D4A] uppercase tracking-wider block mb-1">Completadas</span>
+                <span className="text-2xl font-serif text-[#4A5D4A]">{stats.completed}</span>
               </div>
               <div className="bg-white p-4">
-                <span className="text-[10px] text-rose-600 uppercase tracking-wider block mb-1">Vencidas</span>
-                <span className="text-2xl font-serif text-rose-600">{stats.overdue}</span>
+                <span className="text-[10px] text-[#8B5A50] uppercase tracking-wider block mb-1">Vencidas</span>
+                <span className="text-2xl font-serif text-[#8B5A50]">{stats.overdue}</span>
               </div>
             </div>
 
@@ -248,8 +248,8 @@ export const EngagementRequestsView: React.FC = () => {
                         onClick={() => setFilter(status)}
                         className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors border ${
                            filter === status 
-                           ? 'bg-stone-900 text-white border-stone-900' 
-                           : 'bg-white text-stone-500 border-stone-200 hover:border-stone-400'
+                           ? 'bg-neutral-900 text-white border-neutral-900' 
+                           : 'bg-white text-neutral-500 border-neutral-200 hover:border-neutral-400'
                         }`}
                      >
                         {status === 'All' ? 'Todas' : 
@@ -260,11 +260,11 @@ export const EngagementRequestsView: React.FC = () => {
                   ))}
                </div>
                <div className="relative group w-64">
-                  <Search className="absolute left-3 top-2.5 w-4 h-4 text-stone-400 group-hover:text-stone-600 transition-colors" />
+                  <Search className="absolute left-3 top-2.5 w-4 h-4 text-neutral-400 group-hover:text-neutral-600 transition-colors" />
                   <input 
                     type="text" 
                     placeholder="Buscar solicitud..." 
-                    className="w-full bg-stone-50 border border-stone-200 rounded-md py-2 pl-10 pr-4 text-xs text-stone-600 focus:outline-none focus:border-stone-400 transition-colors"
+                    className="w-full bg-neutral-50 border border-neutral-200 rounded-md py-2 pl-10 pr-4 text-xs text-neutral-600 focus:outline-none focus:border-neutral-400 transition-colors"
                   />
                </div>
             </div>
@@ -280,30 +280,30 @@ export const EngagementRequestsView: React.FC = () => {
                      initial={{ opacity: 0, y: 10 }}
                      animate={{ opacity: 1, y: 0 }}
                      className={`bg-white border rounded-lg p-5 hover:shadow-sm transition-all cursor-pointer group ${
-                       selectedRequest === task.id ? 'border-stone-900 shadow-sm' : 'border-stone-200'
+                       selectedRequest === task.id ? 'border-neutral-900 shadow-sm' : 'border-neutral-200'
                      }`}
                      onClick={() => setSelectedRequest(task.id)}
                   >
                      <div className="flex justify-between items-start mb-3">
                         <div className="flex items-start gap-3">
                            <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center ${
-                              task.status === 'Completed' ? 'bg-emerald-500 border-emerald-500 text-white' : 
-                              task.status === 'Overdue' ? 'border-rose-300' : 'border-stone-300'
+                              task.status === 'Completed' ? 'bg-[#F7F9F7]0 border-[#E0E5E0]500 text-white' : 
+                              task.status === 'Overdue' ? 'border-[#E8E0DE]300' : 'border-neutral-300'
                            }`}>
                               {task.status === 'Completed' && <CheckSquare className="w-3.5 h-3.5" />}
                            </div>
                            <div>
-                              <h3 className={`text-sm font-medium text-stone-900 mb-1 ${task.status === 'Completed' ? 'line-through text-stone-400' : ''}`}>
+                              <h3 className={`text-sm font-medium text-neutral-900 mb-1 ${task.status === 'Completed' ? 'line-through text-neutral-400' : ''}`}>
                                  {task.title}
                               </h3>
-                              <div className="flex items-center gap-3 text-xs text-stone-500">
-                                 <span className="font-mono bg-stone-100 px-1.5 py-0.5 rounded text-stone-600">{task.id}</span>
+                              <div className="flex items-center gap-3 text-xs text-neutral-500">
+                                 <span className="font-mono bg-neutral-100 px-1.5 py-0.5 rounded text-neutral-600">{task.id}</span>
                                  <span>•</span>
                                  <span>{task.area}</span>
                                  {task.linkedFindingId && (
                                     <>
                                       <span>•</span>
-                                      <span className="flex items-center gap-1 text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-100">
+                                      <span className="flex items-center gap-1 text-[#8B7355] bg-[#FDFAF6] px-1.5 py-0.5 rounded border border-[#EDE5D8]100">
                                          <LinkIcon className="w-3 h-3" />
                                          {task.linkedFindingId}
                                       </span>
@@ -321,35 +321,35 @@ export const EngagementRequestsView: React.FC = () => {
                      </div>
 
                      {task.description && (
-                        <p className="text-xs text-stone-600 pl-8 mb-3 line-clamp-2">
+                        <p className="text-xs text-neutral-600 pl-8 mb-3 line-clamp-2">
                            {task.description}
                         </p>
                      )}
 
-                     <div className="flex items-center justify-between pl-8 pt-3 border-t border-stone-50">
+                     <div className="flex items-center justify-between pl-8 pt-3 border-t border-neutral-50">
                         <div className="flex items-center gap-5">
-                           <div className="flex items-center gap-2 text-xs text-stone-400">
+                           <div className="flex items-center gap-2 text-xs text-neutral-400">
                               <Calendar className="w-3.5 h-3.5" />
-                              <span className={task.status === 'Overdue' ? 'text-rose-600 font-medium' : ''}>Vence: {task.dueDate}</span>
+                              <span className={task.status === 'Overdue' ? 'text-[#8B5A50] font-medium' : ''}>Vence: {task.dueDate}</span>
                            </div>
-                           <div className="flex items-center gap-2 text-xs text-stone-400">
+                           <div className="flex items-center gap-2 text-xs text-neutral-400">
                               <User className="w-3.5 h-3.5" />
                               <span>{task.requestedBy}</span>
                            </div>
                            {task.clientResponse && (
-                             <div className="flex items-center gap-1.5 text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                             <div className="flex items-center gap-1.5 text-xs text-[#4A5D6A] bg-[#F7F9FA] px-2 py-0.5 rounded">
                                <MessageSquare className="w-3 h-3" />
                                <span>Cliente respondió</span>
                              </div>
                            )}
                            {task.attachments && task.attachments.length > 0 && (
-                             <div className="flex items-center gap-1.5 text-xs text-stone-500">
+                             <div className="flex items-center gap-1.5 text-xs text-neutral-500">
                                <Paperclip className="w-3 h-3" />
                                <span>{task.attachments.length} adjuntos</span>
                              </div>
                            )}
                         </div>
-                        <ChevronRight className="w-4 h-4 text-stone-300 group-hover:text-stone-600 transition-colors" />
+                        <ChevronRight className="w-4 h-4 text-neutral-300 group-hover:text-neutral-600 transition-colors" />
                      </div>
                   </motion.div>
                ))}
@@ -365,23 +365,23 @@ export const EngagementRequestsView: React.FC = () => {
              animate={{ x: 0 }}
              exit={{ x: '100%' }}
              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-             className="fixed right-0 top-0 h-screen w-[500px] bg-white border-l border-stone-200 shadow-2xl z-40 flex flex-col"
+             className="fixed right-0 top-0 h-screen w-[500px] bg-white border-l border-neutral-200 shadow-2xl z-40 flex flex-col"
            >
              {/* Sidebar Header */}
-             <div className="px-6 py-5 border-b border-stone-200 flex justify-between items-start shrink-0">
+             <div className="px-6 py-5 border-b border-neutral-200 flex justify-between items-start shrink-0">
                <div>
                  <div className="flex items-center gap-2 mb-2">
-                   <span className="font-mono text-xs bg-stone-100 px-2 py-0.5 rounded text-stone-600">{selectedTask.id}</span>
+                   <span className="font-mono text-xs bg-neutral-100 px-2 py-0.5 rounded text-neutral-600">{selectedTask.id}</span>
                    <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium ${getStatusStyles(selectedTask.status)}`}>
                      {getStatusLabel(selectedTask.status)}
                    </span>
                    {getPriorityBadge(selectedTask.priority)}
                  </div>
-                 <h2 className="text-lg font-serif text-stone-900">{selectedTask.title}</h2>
+                 <h2 className="text-lg font-serif text-neutral-900">{selectedTask.title}</h2>
                </div>
                <button 
                  onClick={() => setSelectedRequest(null)}
-                 className="p-2 hover:bg-stone-100 rounded-full transition-colors text-stone-400 hover:text-stone-900"
+                 className="p-2 hover:bg-neutral-100 rounded-full transition-colors text-neutral-400 hover:text-neutral-900"
                >
                  <X className="w-5 h-5" />
                </button>
@@ -391,19 +391,19 @@ export const EngagementRequestsView: React.FC = () => {
              <div className="flex-1 overflow-y-auto p-6 space-y-6">
                {/* Linked Finding */}
                {selectedTask.linkedFindingId && (
-                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                 <div className="bg-[#FDFAF6] border border-[#EDE5D8]200 rounded-lg p-4">
                    <div className="flex items-center gap-2 mb-2">
-                     <AlertOctagon className="w-4 h-4 text-amber-600" />
-                     <span className="text-xs font-medium text-amber-800">Hallazgo vinculado</span>
+                     <AlertOctagon className="w-4 h-4 text-[#8B7355]" />
+                     <span className="text-xs font-medium text-[#8B7355]">Hallazgo vinculado</span>
                    </div>
                    <div className="flex items-center justify-between">
                      <div>
-                       <span className="font-mono text-sm text-amber-700">{selectedTask.linkedFindingId}</span>
+                       <span className="font-mono text-sm text-[#8B7355]">{selectedTask.linkedFindingId}</span>
                        {selectedTask.linkedFindingTitle && (
-                         <p className="text-xs text-amber-600 mt-0.5">{selectedTask.linkedFindingTitle}</p>
+                         <p className="text-xs text-[#8B7355] mt-0.5">{selectedTask.linkedFindingTitle}</p>
                        )}
                      </div>
-                     <button className="text-amber-700 hover:text-amber-900 p-1">
+                     <button className="text-[#8B7355] hover:text-[#6B5A45] p-1">
                        <ExternalLink className="w-4 h-4" />
                      </button>
                    </div>
@@ -412,45 +412,45 @@ export const EngagementRequestsView: React.FC = () => {
 
                {/* Description */}
                <div>
-                 <h3 className="text-xs font-medium text-stone-500 uppercase tracking-wider mb-2">Descripción</h3>
-                 <p className="text-sm text-stone-700 leading-relaxed">{selectedTask.description}</p>
+                 <h3 className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">Descripción</h3>
+                 <p className="text-sm text-neutral-700 leading-relaxed">{selectedTask.description}</p>
                </div>
 
                {/* Metadata */}
                <div className="grid grid-cols-2 gap-4">
-                 <div className="bg-stone-50 rounded-lg p-3">
-                   <span className="text-[10px] text-stone-400 uppercase tracking-wider block mb-1">Solicitado por</span>
-                   <span className="text-sm text-stone-900">{selectedTask.requestedBy}</span>
+                 <div className="bg-neutral-50 rounded-lg p-3">
+                   <span className="text-[10px] text-neutral-400 uppercase tracking-wider block mb-1">Solicitado por</span>
+                   <span className="text-sm text-neutral-900">{selectedTask.requestedBy}</span>
                  </div>
-                 <div className="bg-stone-50 rounded-lg p-3">
-                   <span className="text-[10px] text-stone-400 uppercase tracking-wider block mb-1">Fecha solicitud</span>
-                   <span className="text-sm font-mono text-stone-900">{selectedTask.requestDate}</span>
+                 <div className="bg-neutral-50 rounded-lg p-3">
+                   <span className="text-[10px] text-neutral-400 uppercase tracking-wider block mb-1">Fecha solicitud</span>
+                   <span className="text-sm font-mono text-neutral-900">{selectedTask.requestDate}</span>
                  </div>
-                 <div className="bg-stone-50 rounded-lg p-3">
-                   <span className="text-[10px] text-stone-400 uppercase tracking-wider block mb-1">Área</span>
-                   <span className="text-sm text-stone-900">{selectedTask.area}</span>
+                 <div className="bg-neutral-50 rounded-lg p-3">
+                   <span className="text-[10px] text-neutral-400 uppercase tracking-wider block mb-1">Área</span>
+                   <span className="text-sm text-neutral-900">{selectedTask.area}</span>
                  </div>
-                 <div className={`rounded-lg p-3 ${selectedTask.status === 'Overdue' ? 'bg-rose-50' : 'bg-stone-50'}`}>
-                   <span className={`text-[10px] uppercase tracking-wider block mb-1 ${selectedTask.status === 'Overdue' ? 'text-rose-400' : 'text-stone-400'}`}>Fecha límite</span>
-                   <span className={`text-sm font-mono ${selectedTask.status === 'Overdue' ? 'text-rose-600 font-medium' : 'text-stone-900'}`}>{selectedTask.dueDate}</span>
+                 <div className={`rounded-lg p-3 ${selectedTask.status === 'Overdue' ? 'bg-[#FBF8F7]' : 'bg-neutral-50'}`}>
+                   <span className={`text-[10px] uppercase tracking-wider block mb-1 ${selectedTask.status === 'Overdue' ? 'text-[#8B5A50]' : 'text-neutral-400'}`}>Fecha límite</span>
+                   <span className={`text-sm font-mono ${selectedTask.status === 'Overdue' ? 'text-[#8B5A50] font-medium' : 'text-neutral-900'}`}>{selectedTask.dueDate}</span>
                  </div>
                </div>
 
                {/* Attachments */}
                {selectedTask.attachments && selectedTask.attachments.length > 0 && (
                  <div>
-                   <h3 className="text-xs font-medium text-stone-500 uppercase tracking-wider mb-2">Documentos adjuntos</h3>
+                   <h3 className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">Documentos adjuntos</h3>
                    <div className="space-y-2">
                      {selectedTask.attachments.map((file, i) => (
-                       <div key={i} className="flex items-center justify-between bg-stone-50 rounded-lg p-3">
+                       <div key={i} className="flex items-center justify-between bg-neutral-50 rounded-lg p-3">
                          <div className="flex items-center gap-3">
-                           <FileText className="w-4 h-4 text-stone-400" />
+                           <FileText className="w-4 h-4 text-neutral-400" />
                            <div>
-                             <span className="text-sm text-stone-900 block">{file.name}</span>
-                             <span className="text-[10px] text-stone-400">{file.size}</span>
+                             <span className="text-sm text-neutral-900 block">{file.name}</span>
+                             <span className="text-[10px] text-neutral-400">{file.size}</span>
                            </div>
                          </div>
-                         <button className="p-2 hover:bg-stone-200 rounded-lg transition-colors text-stone-500">
+                         <button className="p-2 hover:bg-neutral-200 rounded-lg transition-colors text-neutral-500">
                            <Download className="w-4 h-4" />
                          </button>
                        </div>
@@ -461,23 +461,23 @@ export const EngagementRequestsView: React.FC = () => {
 
                {/* Client Response */}
                {selectedTask.clientResponse && (
-                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                 <div className="bg-[#F7F9FA] border border-[#E0E5E8]200 rounded-lg p-4">
                    <div className="flex items-center gap-2 mb-3">
-                     <MessageSquare className="w-4 h-4 text-blue-600" />
-                     <span className="text-xs font-medium text-blue-800">Respuesta del cliente</span>
-                     <span className="text-[10px] text-blue-500 ml-auto">{selectedTask.clientResponse.date}</span>
+                     <MessageSquare className="w-4 h-4 text-[#4A5D6A]" />
+                     <span className="text-xs font-medium text-[#4A5D6A]">Respuesta del cliente</span>
+                     <span className="text-[10px] text-[#4A5D6A] ml-auto">{selectedTask.clientResponse.date}</span>
                    </div>
-                   <p className="text-sm text-blue-900 mb-3">{selectedTask.clientResponse.message}</p>
+                   <p className="text-sm text-[#3A4D5A] mb-3">{selectedTask.clientResponse.message}</p>
                    {selectedTask.clientResponse.attachments && (
                      <div className="space-y-2">
                        {selectedTask.clientResponse.attachments.map((file, i) => (
                          <div key={i} className="flex items-center justify-between bg-white/50 rounded p-2">
                            <div className="flex items-center gap-2">
-                             <FileText className="w-3.5 h-3.5 text-blue-500" />
-                             <span className="text-xs text-blue-800">{file.name}</span>
-                             <span className="text-[10px] text-blue-400">({file.size})</span>
+                             <FileText className="w-3.5 h-3.5 text-[#4A5D6A]" />
+                             <span className="text-xs text-[#4A5D6A]">{file.name}</span>
+                             <span className="text-[10px] text-[#6A7D8A]">({file.size})</span>
                            </div>
-                           <button className="text-blue-600 hover:text-blue-800">
+                           <button className="text-[#4A5D6A] hover:text-[#4A5D6A]">
                              <Download className="w-3.5 h-3.5" />
                            </button>
                          </div>
@@ -490,15 +490,15 @@ export const EngagementRequestsView: React.FC = () => {
                {/* Comments */}
                {selectedTask.comments.length > 0 && (
                  <div>
-                   <h3 className="text-xs font-medium text-stone-500 uppercase tracking-wider mb-2">Comentarios internos</h3>
+                   <h3 className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-2">Comentarios internos</h3>
                    <div className="space-y-3">
                      {selectedTask.comments.map((comment, i) => (
-                       <div key={i} className="bg-stone-50 rounded-lg p-3">
+                       <div key={i} className="bg-neutral-50 rounded-lg p-3">
                          <div className="flex items-center gap-2 mb-1">
-                           <span className="text-xs font-medium text-stone-700">{comment.user}</span>
-                           <span className="text-[10px] text-stone-400">{comment.date}</span>
+                           <span className="text-xs font-medium text-neutral-700">{comment.user}</span>
+                           <span className="text-[10px] text-neutral-400">{comment.date}</span>
                          </div>
-                         <p className="text-sm text-stone-600">{comment.text}</p>
+                         <p className="text-sm text-neutral-600">{comment.text}</p>
                        </div>
                      ))}
                    </div>
@@ -507,22 +507,22 @@ export const EngagementRequestsView: React.FC = () => {
              </div>
 
              {/* Sidebar Actions */}
-             <div className="px-6 py-4 border-t border-stone-200 shrink-0 bg-stone-50">
+             <div className="px-6 py-4 border-t border-neutral-200 shrink-0 bg-neutral-50">
                <div className="flex gap-2">
                  {selectedTask.status !== 'Completed' && (
                    <>
-                     <button className="flex-1 px-4 py-2 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2">
+                     <button className="flex-1 px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2">
                        <Send className="w-4 h-4" />
                        Enviar recordatorio
                      </button>
-                     <button className="px-4 py-2 border border-stone-200 text-stone-600 text-sm font-medium rounded-lg hover:bg-stone-100 transition-colors flex items-center justify-center gap-2">
+                     <button className="px-4 py-2 border border-neutral-200 text-neutral-600 text-sm font-medium rounded-lg hover:bg-neutral-100 transition-colors flex items-center justify-center gap-2">
                        <CheckCircle className="w-4 h-4" />
                        Marcar completa
                      </button>
                    </>
                  )}
                  {selectedTask.status === 'Completed' && (
-                   <button className="flex-1 px-4 py-2 border border-stone-200 text-stone-600 text-sm font-medium rounded-lg hover:bg-stone-100 transition-colors flex items-center justify-center gap-2">
+                   <button className="flex-1 px-4 py-2 border border-neutral-200 text-neutral-600 text-sm font-medium rounded-lg hover:bg-neutral-100 transition-colors flex items-center justify-center gap-2">
                      <RefreshCw className="w-4 h-4" />
                      Reabrir solicitud
                    </button>

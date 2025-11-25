@@ -81,7 +81,7 @@ export const EngagementMessagesView: React.FC = () => {
     },
     {
       id: 'conv-3',
-      name: 'Equipo Auditor (Interno)',
+      name: 'Equipo auditor (Interno)',
       type: 'internal',
       participants: ['Elena M. (Socio)', 'Carlos D. (Manager)', 'María G. (Staff)'],
       lastMessage: 'Elena: Revisad los ajustes de cut-off antes del viernes.',
@@ -245,39 +245,39 @@ export const EngagementMessagesView: React.FC = () => {
 
   const getFileIcon = (type: string) => {
     switch (type) {
-      case 'pdf': return <FileText className="w-4 h-4 text-rose-500" />;
-      case 'xlsx': return <File className="w-4 h-4 text-emerald-500" />;
-      case 'image': return <Image className="w-4 h-4 text-blue-500" />;
-      default: return <File className="w-4 h-4 text-stone-400" />;
+      case 'pdf': return <FileText className="w-4 h-4 text-[#8B5A50]" />;
+      case 'xlsx': return <File className="w-4 h-4 text-[#4A5D4A]" />;
+      case 'image': return <Image className="w-4 h-4 text-[#4A5D6A]" />;
+      default: return <File className="w-4 h-4 text-neutral-400" />;
     }
   };
 
   return (
     <div className="flex-1 flex h-full bg-white animate-fade-in overflow-hidden">
        {/* Chat List (Sidebar) */}
-       <div className="w-80 border-r border-stone-200 flex flex-col bg-stone-50/30">
-          <div className="p-4 border-b border-stone-200">
-             <h2 className="text-lg font-serif font-bold text-stone-900 mb-4">Mensajes</h2>
+       <div className="w-80 border-r border-neutral-200 flex flex-col bg-neutral-50/30">
+          <div className="p-4 border-b border-neutral-200">
+             <h2 className="text-lg font-serif font-bold text-neutral-900 mb-4">Mensajes</h2>
              <div className="relative group">
-                <Search className="absolute left-3 top-2.5 w-4 h-4 text-stone-400" />
+                <Search className="absolute left-3 top-2.5 w-4 h-4 text-neutral-400" />
                 <input 
                   type="text" 
                   placeholder="Buscar..." 
-                  className="w-full bg-white border border-stone-200 rounded-md py-2 pl-10 pr-4 text-xs focus:outline-none focus:border-stone-400 transition-colors"
+                  className="w-full bg-white border border-neutral-200 rounded-md py-2 pl-10 pr-4 text-xs focus:outline-none focus:border-neutral-400 transition-colors"
                 />
              </div>
           </div>
           
           {/* Conversation Filters */}
-          <div className="px-4 py-2 border-b border-stone-100 flex gap-2">
-            <button className="text-[10px] font-medium px-2 py-1 rounded-full bg-stone-900 text-white">Todos</button>
-            <button className="text-[10px] font-medium px-2 py-1 rounded-full bg-white text-stone-500 border border-stone-200 hover:border-stone-400 transition-colors">
+          <div className="px-4 py-2 border-b border-neutral-100 flex gap-2">
+            <button className="text-[10px] font-medium px-2 py-1 rounded-full bg-neutral-900 text-white">Todos</button>
+            <button className="text-[10px] font-medium px-2 py-1 rounded-full bg-white text-neutral-500 border border-neutral-200 hover:border-neutral-400 transition-colors">
               <span className="flex items-center gap-1">
                 <Building2 className="w-3 h-3" />
                 Cliente
               </span>
             </button>
-            <button className="text-[10px] font-medium px-2 py-1 rounded-full bg-white text-stone-500 border border-stone-200 hover:border-stone-400 transition-colors">
+            <button className="text-[10px] font-medium px-2 py-1 rounded-full bg-white text-neutral-500 border border-neutral-200 hover:border-neutral-400 transition-colors">
               <span className="flex items-center gap-1">
                 <Users className="w-3 h-3" />
                 Interno
@@ -290,29 +290,29 @@ export const EngagementMessagesView: React.FC = () => {
                <div 
                  key={conv.id}
                  onClick={() => setSelectedConversation(conv.id)}
-                 className={`p-4 border-b border-stone-100 cursor-pointer transition-colors ${
+                 className={`p-4 border-b border-neutral-100 cursor-pointer transition-colors ${
                    selectedConversation === conv.id 
-                     ? 'bg-white border-l-2 border-l-stone-900' 
+                     ? 'bg-white border-l-2 border-l-neutral-900' 
                      : 'hover:bg-white'
                  }`}
                >
                   <div className="flex justify-between items-start mb-1">
                      <div className="flex items-center gap-2">
-                       <span className="font-medium text-sm text-stone-900">{conv.name}</span>
+                       <span className="font-medium text-sm text-neutral-900">{conv.name}</span>
                        {conv.type === 'internal' && (
-                         <span className="text-[9px] px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded font-medium">Interno</span>
+                         <span className="text-[9px] px-1.5 py-0.5 bg-neutral-100 text-neutral-700 rounded font-medium">Interno</span>
                        )}
                      </div>
                      <div className="flex items-center gap-2">
                        {conv.unread > 0 && (
-                         <span className="w-5 h-5 bg-stone-900 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                         <span className="w-5 h-5 bg-neutral-900 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                            {conv.unread}
                          </span>
                        )}
-                       <span className="text-[10px] text-stone-400">{conv.lastTime}</span>
+                       <span className="text-[10px] text-neutral-400">{conv.lastTime}</span>
                      </div>
                   </div>
-                  <p className="text-xs text-stone-500 truncate">{conv.lastMessage}</p>
+                  <p className="text-xs text-neutral-500 truncate">{conv.lastMessage}</p>
                </div>
              ))}
           </div>
@@ -321,41 +321,41 @@ export const EngagementMessagesView: React.FC = () => {
        {/* Chat Area */}
        <div className="flex-1 flex flex-col bg-white">
           {/* Header */}
-          <div className="h-16 border-b border-stone-200 flex items-center justify-between px-6 bg-white shrink-0">
+          <div className="h-16 border-b border-neutral-200 flex items-center justify-between px-6 bg-white shrink-0">
              <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs border ${
                   currentConversation?.type === 'internal' 
-                    ? 'bg-purple-100 text-purple-700 border-purple-200'
-                    : 'bg-emerald-100 text-emerald-700 border-emerald-200'
+                    ? 'bg-neutral-100 text-neutral-700 border-neutral-200'
+                    : 'bg-[#E8EDE8] text-[#4A5D4A] border-[#E0E5E0]200'
                 }`}>
                    {currentConversation?.name.substring(0, 2).toUpperCase()}
                 </div>
                 <div>
-                   <h3 className="text-sm font-bold text-stone-900">{currentConversation?.name}</h3>
+                   <h3 className="text-sm font-bold text-neutral-900">{currentConversation?.name}</h3>
                    <div className="flex items-center gap-2">
                      {currentConversation?.isOnline && (
-                       <span className="text-[10px] text-emerald-600 flex items-center gap-1">
-                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                       <span className="text-[10px] text-[#4A5D4A] flex items-center gap-1">
+                         <div className="w-1.5 h-1.5 rounded-full bg-[#F7F9F7]0"></div>
                          Online
                        </span>
                      )}
-                     <span className="text-[10px] text-stone-400">
+                     <span className="text-[10px] text-neutral-400">
                        {currentConversation?.participants.join(', ')}
                      </span>
                    </div>
                 </div>
              </div>
-             <div className="flex items-center gap-4 text-stone-400">
-                <button className="hover:text-stone-900 transition-colors"><Phone className="w-4 h-4" /></button>
-                <button className="hover:text-stone-900 transition-colors"><Video className="w-4 h-4" /></button>
-                <button className="hover:text-stone-900 transition-colors"><Info className="w-4 h-4" /></button>
-                <div className="w-px h-6 bg-stone-200"></div>
-                <button className="hover:text-stone-900 transition-colors"><MoreVertical className="w-4 h-4" /></button>
+             <div className="flex items-center gap-4 text-neutral-400">
+                <button className="hover:text-neutral-900 transition-colors"><Phone className="w-4 h-4" /></button>
+                <button className="hover:text-neutral-900 transition-colors"><Video className="w-4 h-4" /></button>
+                <button className="hover:text-neutral-900 transition-colors"><Info className="w-4 h-4" /></button>
+                <div className="w-px h-6 bg-neutral-200"></div>
+                <button className="hover:text-neutral-900 transition-colors"><MoreVertical className="w-4 h-4" /></button>
              </div>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-stone-50/30">
+          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-neutral-50/30">
              {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.isMe ? 'justify-end' : 'justify-start'}`}>
                    <div className={`flex flex-col max-w-lg ${msg.isMe ? 'items-end' : 'items-start'}`}>
@@ -363,8 +363,8 @@ export const EngagementMessagesView: React.FC = () => {
                       {msg.linkedItem && (
                         <div className={`mb-2 flex items-center gap-1.5 text-[10px] px-2 py-1 rounded-t-lg ${
                           msg.linkedItem.type === 'finding' 
-                            ? 'bg-amber-100 text-amber-700 border border-amber-200 border-b-0' 
-                            : 'bg-blue-100 text-blue-700 border border-blue-200 border-b-0'
+                            ? 'bg-[#F5EDE0] text-[#8B7355] border border-[#EDE5D8]200 border-b-0' 
+                            : 'bg-[#E8EDEF] text-[#4A5D6A] border border-[#E0E5E8]200 border-b-0'
                         }`}>
                           {msg.linkedItem.type === 'finding' ? (
                             <AlertOctagon className="w-3 h-3" />
@@ -380,13 +380,13 @@ export const EngagementMessagesView: React.FC = () => {
                       
                       <div className={`px-5 py-3 rounded-2xl shadow-sm text-sm ${
                          msg.isMe 
-                         ? 'bg-stone-900 text-white rounded-tr-sm' 
+                         ? 'bg-neutral-900 text-white rounded-tr-sm' 
                          : msg.sender && 'isInternal' in msg.sender && msg.sender.isInternal
-                           ? 'bg-purple-50 border border-purple-100 text-stone-800 rounded-tl-sm'
-                           : 'bg-white border border-stone-100 text-stone-800 rounded-tl-sm'
+                           ? 'bg-neutral-50 border border-neutral-100 text-neutral-800 rounded-tl-sm'
+                           : 'bg-white border border-neutral-100 text-neutral-800 rounded-tl-sm'
                       }`}>
                          {!msg.isMe && (
-                           <div className="text-[10px] font-medium text-stone-500 mb-1">
+                           <div className="text-[10px] font-medium text-neutral-500 mb-1">
                              {typeof msg.sender === 'object' && 'name' in msg.sender ? msg.sender.name : (msg.sender as typeof CLIENT_USER).name}
                            </div>
                          )}
@@ -397,19 +397,19 @@ export const EngagementMessagesView: React.FC = () => {
                       {msg.attachments && msg.attachments.length > 0 && (
                         <div className={`mt-2 space-y-1.5 ${msg.isMe ? 'items-end' : 'items-start'} flex flex-col`}>
                           {msg.attachments.map((file, i) => (
-                            <div key={i} className="flex items-center gap-2 bg-white border border-stone-200 rounded-lg px-3 py-2 shadow-sm hover:border-stone-300 cursor-pointer transition-colors">
+                            <div key={i} className="flex items-center gap-2 bg-white border border-neutral-200 rounded-lg px-3 py-2 shadow-sm hover:border-neutral-300 cursor-pointer transition-colors">
                               {getFileIcon(file.type)}
                               <div className="flex flex-col">
-                                <span className="text-xs text-stone-900">{file.name}</span>
-                                <span className="text-[10px] text-stone-400">{file.size}</span>
+                                <span className="text-xs text-neutral-900">{file.name}</span>
+                                <span className="text-[10px] text-neutral-400">{file.size}</span>
                               </div>
-                              <Download className="w-3.5 h-3.5 text-stone-400 ml-2" />
+                              <Download className="w-3.5 h-3.5 text-neutral-400 ml-2" />
                             </div>
                           ))}
                         </div>
                       )}
                       
-                      <span className="text-[10px] text-stone-400 mt-1 px-1">
+                      <span className="text-[10px] text-neutral-400 mt-1 px-1">
                          {msg.time}
                       </span>
                    </div>
@@ -419,14 +419,14 @@ export const EngagementMessagesView: React.FC = () => {
           </div>
 
           {/* Input */}
-          <div className="p-4 bg-white border-t border-stone-200 shrink-0">
+          <div className="p-4 bg-white border-t border-neutral-200 shrink-0">
              <div className="relative flex items-center gap-3 max-w-4xl mx-auto">
                 {/* Link Menu */}
                 <div className="relative">
                   <button 
                     onClick={() => setShowLinkMenu(!showLinkMenu)}
                     className={`p-2 rounded-full transition-colors ${
-                      showLinkMenu ? 'bg-stone-100 text-stone-900' : 'text-stone-400 hover:text-stone-600 hover:bg-stone-100'
+                      showLinkMenu ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100'
                     }`}
                   >
                     <LinkIcon className="w-5 h-5" />
@@ -438,15 +438,15 @@ export const EngagementMessagesView: React.FC = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute bottom-full left-0 mb-2 bg-white border border-stone-200 rounded-lg shadow-lg p-2 w-48"
+                        className="absolute bottom-full left-0 mb-2 bg-white border border-neutral-200 rounded-lg shadow-lg p-2 w-48"
                       >
-                        <div className="text-[10px] text-stone-400 uppercase tracking-wider px-2 py-1 mb-1">Vincular a:</div>
-                        <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-stone-700 hover:bg-stone-50 rounded-md transition-colors">
-                          <AlertOctagon className="w-4 h-4 text-amber-500" />
+                        <div className="text-[10px] text-neutral-400 uppercase tracking-wider px-2 py-1 mb-1">Vincular a:</div>
+                        <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-50 rounded-md transition-colors">
+                          <AlertOctagon className="w-4 h-4 text-[#8B7355]" />
                           Hallazgo
                         </button>
-                        <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-stone-700 hover:bg-stone-50 rounded-md transition-colors">
-                          <CheckSquare className="w-4 h-4 text-blue-500" />
+                        <button className="w-full flex items-center gap-2 px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-50 rounded-md transition-colors">
+                          <CheckSquare className="w-4 h-4 text-[#4A5D6A]" />
                           Solicitud
                         </button>
                       </motion.div>
@@ -454,7 +454,7 @@ export const EngagementMessagesView: React.FC = () => {
                   </AnimatePresence>
                 </div>
                 
-                <button className="p-2 text-stone-400 hover:text-stone-600 transition-colors rounded-full hover:bg-stone-100">
+                <button className="p-2 text-neutral-400 hover:text-neutral-600 transition-colors rounded-full hover:bg-neutral-100">
                    <Paperclip className="w-5 h-5" />
                 </button>
                 <input 
@@ -462,9 +462,9 @@ export const EngagementMessagesView: React.FC = () => {
                    value={newMessage}
                    onChange={(e) => setNewMessage(e.target.value)}
                    placeholder="Escribe un mensaje..." 
-                   className="flex-1 bg-stone-50 border border-stone-200 rounded-full py-3 px-6 text-sm focus:outline-none focus:border-stone-400 focus:bg-white transition-all shadow-inner"
+                   className="flex-1 bg-neutral-50 border border-neutral-200 rounded-full py-3 px-6 text-sm focus:outline-none focus:border-neutral-400 focus:bg-white transition-all shadow-inner"
                 />
-                <button className="p-3 bg-stone-900 text-white rounded-full hover:bg-black transition-colors shadow-md transform hover:scale-105 active:scale-95">
+                <button className="p-3 bg-neutral-900 text-white rounded-full hover:bg-black transition-colors shadow-md transform hover:scale-105 active:scale-95">
                    <Send className="w-4 h-4 ml-0.5" />
                 </button>
              </div>

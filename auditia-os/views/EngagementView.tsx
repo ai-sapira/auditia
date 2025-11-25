@@ -4,6 +4,7 @@ import { EngagementRequestsView } from './EngagementRequestsView';
 import { EngagementMessagesView } from './EngagementMessagesView';
 import { EngagementDocumentsView } from './EngagementDocumentsView';
 import { EngagementERPIntegrationsView } from './EngagementERPIntegrationsView';
+import { EngagementTeamView } from './EngagementTeamView';
 import { EngagementOverview } from '../components/engagement/EngagementOverview';
 import { EngagementAreaDetail } from '../components/engagement/EngagementAreaDetail';
 
@@ -40,6 +41,10 @@ export const EngagementView: React.FC<EngagementViewProps> = ({ activeArea, onSe
 
   if (activeArea === 'erp-integrations') {
     return <EngagementERPIntegrationsView />;
+  }
+
+  if (activeArea === 'team') {
+    return <EngagementTeamView />;
   }
 
   // --- RENDER: OVERVIEW (Section 1) ---
