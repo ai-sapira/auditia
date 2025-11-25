@@ -416,26 +416,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
                      
                      {/* ACTIVO */}
                      <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Activo no corriente</div>
-                     <TreeItem code="20" label="Inmovilizado intangible" status="not_started" />
-                     <TreeItem code="21" label="Inmovilizado material" status="not_started" />
-                     <TreeItem code="22" label="Inversiones inmobiliarias" status="not_started" />
+                     <TreeItem code="20" label="Inmovilizado intangible" status="completed" />
+                     <TreeItem code="21" label="Inmovilizado material" status="in_progress" />
+                     <TreeItem code="22" label="Inversiones inmobiliarias" status="completed" />
                      <TreeItem code="23" label="Inmovilizado en curso" status="not_started" />
                      <TreeItem code="24" label="Inversiones financieras L/P" status="not_started" />
                      <TreeItem code="25" label="Otras inversiones L/P" status="not_started" />
-                     <TreeItem code="28" label="Amortización acumulada" status="not_started" />
+                     <TreeItem code="28" label="Amortización acumulada" status="completed" />
                      <TreeItem code="29" label="Deterioro de valor" status="not_started" />
                      
                      <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Activo corriente</div>
-                     <TreeItem code="30" label="Existencias comerciales" status="not_started" />
+                     <TreeItem code="30" label="Existencias comerciales" status="in_progress" />
                      <TreeItem code="31" label="Materias primas" status="not_started" />
                      <TreeItem code="32" label="Otros aprovisionamientos" status="not_started" />
                      <TreeItem code="33" label="Productos en curso" status="not_started" />
                      <TreeItem code="35" label="Productos terminados" status="not_started" />
                      <TreeItem code="39" label="Deterioro existencias" status="not_started" />
                      <TreeItem code="41" label="Acreedores varios" status="not_started" />
-                     <TreeItem code="43" label="Clientes" status="not_started" />
+                     <TreeItem code="43" label="Clientes" status="in_progress" />
                      <TreeItem code="44" label="Deudores varios" status="not_started" />
-                     <TreeItem code="46" label="Personal" status="not_started" />
+                     <TreeItem code="46" label="Personal" status="completed" />
                      <TreeItem code="47" label="Administraciones públicas" status="not_started" />
                   </div>
 
@@ -447,21 +447,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         
                         <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Tesorería</div>
                         <TreeItem code="52" label="Deudas C/P entidades crédito" status="not_started" />
-                        <TreeItem code="54" label="Inversiones financieras C/P" status="review" />
+                        <TreeItem code="54" label="Inversiones financieras C/P" status="in_progress" />
                         <TreeItem code="55" label="Otras cuentas no bancarias" status="not_started" />
                         <TreeItem code="56" label="Fianzas y depósitos C/P" status="not_started" />
-                        <TreeItem code="57" label="Tesorería (Bancos)" status="review" />
+                        <TreeItem code="57" label="Tesorería (Bancos)" status="completed" />
                         
                         {/* PATRIMONIO NETO */}
                         <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Patrimonio neto</div>
-                        <TreeItem code="10" label="Capital social" status="not_started" />
-                        <TreeItem code="11" label="Reservas" status="not_started" />
+                        <TreeItem code="10" label="Capital social" status="completed" />
+                        <TreeItem code="11" label="Reservas" status="completed" />
                         <TreeItem code="12" label="Resultados pendientes aplicación" status="not_started" />
                         <TreeItem code="13" label="Subvenciones, donaciones" status="not_started" />
                         
                         {/* PASIVO */}
                         <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Pasivo no corriente</div>
-                        <TreeItem code="14" label="Provisiones" status="not_started" />
+                        <TreeItem code="14" label="Provisiones" status="in_progress" />
                         <TreeItem code="15" label="Deudas L/P partes vinculadas" status="not_started" />
                         <TreeItem code="16" label="Deudas L/P ent. crédito" status="not_started" />
                         <TreeItem code="17" label="Deudas L/P" status="not_started" />
@@ -473,7 +473,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <TreeItem code="61" label="Variación existencias" status="not_started" />
                         <TreeItem code="62" label="Servicios exteriores" status="not_started" />
                         <TreeItem code="63" label="Tributos" status="not_started" />
-                        <TreeItem code="64" label="Gastos de personal" status="not_started" />
+                        <TreeItem code="64" label="Gastos de personal" status="completed" />
                         <TreeItem code="65" label="Otros gastos de gestión" status="not_started" />
                         <TreeItem code="66" label="Gastos financieros" status="not_started" />
                         <TreeItem code="67" label="Pérdidas procedentes activos" status="not_started" />
@@ -481,7 +481,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <TreeItem code="69" label="Pérdidas deterioro" status="not_started" />
                         
                         <div className="text-[9px] uppercase tracking-wider text-neutral-400 pl-1 pt-3 pb-1 font-medium">Ventas e ingresos</div>
-                        <TreeItem code="70" label="Ventas de mercaderías" status="not_started" />
+                        <TreeItem code="70" label="Ventas de mercaderías" status="in_progress" />
                         <TreeItem code="71" label="Variación existencias" status="not_started" />
                         <TreeItem code="73" label="Trabajos realizados empresa" status="not_started" />
                         <TreeItem code="74" label="Subvenciones explotación" status="not_started" />
@@ -666,22 +666,38 @@ const UserProfile = ({ compact }: { compact: boolean }) => (
 );
 
 const TreeItem = ({ code, label, status, isActive, onClick }: { code: string, label: string, status: string, isActive?: boolean, onClick?: () => void }) => {
+   // Status indicator colors (subtle/muted tones from design system)
+   const getStatusColor = () => {
+      switch (status) {
+         case 'completed':
+            // Green - Completed (subtle sage green)
+            return 'bg-[#8BA08B]'; // Muted sage green
+         case 'in_progress':
+         case 'review':
+            // Yellow/Amber - In progress (subtle ochre/sand)
+            return 'bg-[#C4A574]'; // Muted golden ochre
+         case 'not_started':
+         default:
+            // Red - Pending review (subtle terracotta/dusty rose)
+            return 'bg-[#B89090]'; // Muted dusty rose
+      }
+   };
+
    return (
       <div 
          onClick={onClick}
          className={`group relative pl-4 border-l-[1.5px] ${isActive ? 'border-neutral-900' : 'border-transparent hover:border-neutral-300'} cursor-pointer py-2 transition-all hover:pl-5`}
       >
-         <div className="flex flex-col">
-            <div className="flex justify-between items-center mb-0.5">
-               <span className={`text-[13px] font-medium transition-colors ${isActive ? 'text-neutral-900 font-serif' : 'text-neutral-500 group-hover:text-neutral-900'}`}>{label}</span>
-               {status === 'in_progress' && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#8B7355]"></div>
-               )}
-               {status === 'review' && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#4A5D6A]"></div>
-               )}
+         <div className="flex items-start gap-3">
+            {/* Status indicator (traffic light) - solid circle */}
+            <div className={`w-2.5 h-2.5 rounded-full ${getStatusColor()} mt-[5px] shrink-0 shadow-sm`}></div>
+            
+            <div className="flex flex-col flex-1 min-w-0">
+               <div className="flex justify-between items-center mb-0.5">
+                  <span className={`text-[13px] font-medium transition-colors truncate ${isActive ? 'text-neutral-900 font-serif' : 'text-neutral-500 group-hover:text-neutral-900'}`}>{label}</span>
+               </div>
+               <span className={`text-[10px] font-mono ${isActive ? 'text-neutral-500' : 'text-neutral-300 group-hover:text-neutral-400'}`}>{code}</span>
             </div>
-            <span className={`text-[10px] font-mono ${isActive ? 'text-neutral-500' : 'text-neutral-300 group-hover:text-neutral-400'}`}>{code}</span>
          </div>
       </div>
    );

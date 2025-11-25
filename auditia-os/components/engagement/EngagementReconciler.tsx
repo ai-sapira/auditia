@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, Scale, Filter, Download, Plus, AlertTriangle, ArrowRight, Eye, X, FileText, Calendar, Euro } from 'lucide-react';
+import { ChevronLeft, Scale, Filter, Download, Plus, AlertTriangle, ArrowRight, Eye, X, FileText, Calendar, Euro, CloudDownload, Loader2, CheckCircle2, Building2 } from 'lucide-react';
 
 interface EngagementReconcilerProps {
   onBack: () => void;
@@ -32,6 +32,37 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
   const [findingTitle, setFindingTitle] = useState('');
   const [findingDescription, setFindingDescription] = useState('');
   const [findingPriority, setFindingPriority] = useState<'low' | 'medium' | 'high'>('medium');
+  
+  // SAP fetch states
+  const [fetchingSAPInvoice, setFetchingSAPInvoice] = useState<string | null>(null);
+  const [sapFetchedInvoices, setSapFetchedInvoices] = useState<Set<string>>(new Set());
+  const [showSAPDataModal, setShowSAPDataModal] = useState(false);
+  const [selectedSAPInvoice, setSelectedSAPInvoice] = useState<{
+    invoiceNumber: string;
+    sapData: {
+      documentNumber: string;
+      postingDate: string;
+      vendor: string;
+      vendorCode: string;
+      amount: number;
+      currency: string;
+      paymentTerms: string;
+      paymentDueDate: string;
+      documentType: string;
+      companyCode: string;
+      fiscalYear: string;
+      lineItems: Array<{
+        item: number;
+        glAccount: string;
+        description: string;
+        debit: number;
+        credit: number;
+        costCenter: string;
+      }>;
+      status: string;
+      clearingDocument: string | null;
+    };
+  } | null>(null);
   
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -146,11 +177,59 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
     setFindingTitle('');
     setFindingDescription('');
     setFindingPriority('medium');
-    setShowAddFindingModal(false);
-    setSelectedVendor(null);
+  };
 
-    // Show success message or navigate to findings
-    alert(`Hallazgo ${newFinding.code} creado exitosamente. Puedes verlo en la pestaña de Hallazgos.`);
+  // Function to fetch invoice data from SAP
+  const handleFetchFromSAP = async (invoice: Invoice) => {
+    setFetchingSAPInvoice(invoice.id);
+    
+    // Simulate API call to SAP
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Mock SAP data - in real app, this would come from SAP API
+    const mockSAPData = {
+      documentNumber: invoice.invoiceNumber.replace('F-', 'SAP-'),
+      postingDate: invoice.date,
+      vendor: selectedDiscrepancy?.vendor || '',
+      vendorCode: `V${Math.floor(Math.random() * 10000).toString().padStart(5, '0')}`,
+      amount: invoice.amount,
+      currency: 'EUR',
+      paymentTerms: 'Z030',
+      paymentDueDate: new Date(new Date(invoice.date).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      documentType: 'KR',
+      companyCode: '1000',
+      fiscalYear: '2025',
+      lineItems: [
+        {
+          item: 10,
+          glAccount: '6000001',
+          description: invoice.description,
+          debit: invoice.amount,
+          credit: 0,
+          costCenter: 'CC-100'
+        },
+        {
+          item: 20,
+          glAccount: '4000001',
+          description: `Proveedor: ${selectedDiscrepancy?.vendor}`,
+          debit: 0,
+          credit: invoice.amount,
+          costCenter: ''
+        }
+      ],
+      status: invoice.status === 'in_ledger' ? 'Contabilizado' : invoice.status === 'not_in_ledger' ? 'No encontrado en SAP' : 'Importe diferente',
+      clearingDocument: invoice.status === 'in_ledger' ? `CLR-${Math.floor(Math.random() * 100000)}` : null
+    };
+    
+    setSelectedSAPInvoice({
+      invoiceNumber: invoice.invoiceNumber,
+      sapData: mockSAPData
+    });
+    
+    // Mark as fetched
+    setSapFetchedInvoices(prev => new Set(prev).add(invoice.id));
+    setFetchingSAPInvoice(null);
+    setShowSAPDataModal(true);
   };
 
   return (
@@ -475,13 +554,31 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                                            )}
                                         </div>
                                         {(invoice.status === 'not_in_ledger' || invoice.status === 'amount_mismatch') && (
-                                           <button className={`px-2.5 py-1 text-white text-[10px] font-medium rounded-sm transition-colors flex items-center gap-1 ${
-                                              invoice.status === 'not_in_ledger' 
-                                                 ? 'bg-[#8B5A50] hover:bg-[#6B4A42]' 
-                                                 : 'bg-[#8B7355] hover:bg-[#6B5A45]'
-                                           }`}>
-                                              <Plus className="w-3 h-3" />
-                                              Hallazgo
+                                           <button 
+                                              onClick={() => handleFetchFromSAP(invoice)}
+                                              disabled={fetchingSAPInvoice === invoice.id}
+                                              className={`px-2.5 py-1.5 text-[10px] font-medium rounded-sm transition-all flex items-center gap-1.5 ${
+                                                 sapFetchedInvoices.has(invoice.id)
+                                                    ? 'bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]'
+                                                    : 'bg-[#1A4D8C] hover:bg-[#143D6B] text-white'
+                                              } ${fetchingSAPInvoice === invoice.id ? 'opacity-75 cursor-wait' : ''}`}
+                                           >
+                                              {fetchingSAPInvoice === invoice.id ? (
+                                                 <>
+                                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                                    Cargando...
+                                                 </>
+                                              ) : sapFetchedInvoices.has(invoice.id) ? (
+                                                 <>
+                                                    <CheckCircle2 className="w-3 h-3" />
+                                                    Ver SAP
+                                                 </>
+                                              ) : (
+                                                 <>
+                                                    <CloudDownload className="w-3 h-3" />
+                                                    Traer desde SAP
+                                                 </>
+                                              )}
                                            </button>
                                         )}
                                      </div>
@@ -694,6 +791,196 @@ export const EngagementReconciler: React.FC<EngagementReconcilerProps> = ({ onBa
                          >
                             <Plus className="w-3 h-3" />
                             Crear hallazgo
+                         </button>
+                      </div>
+                   </div>
+                </motion.div>
+             </motion.div>
+          )}
+       </AnimatePresence>
+
+       {/* SAP Data Modal */}
+       <AnimatePresence>
+          {showSAPDataModal && selectedSAPInvoice && (
+             <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-neutral-900/40 backdrop-blur-sm z-[100] flex items-center justify-center p-6"
+                style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+                onClick={() => {
+                   setShowSAPDataModal(false);
+                   setSelectedSAPInvoice(null);
+                }}
+             >
+                <motion.div
+                   initial={{ scale: 0.98, opacity: 0, y: 10 }}
+                   animate={{ scale: 1, opacity: 1, y: 0 }}
+                   exit={{ scale: 0.98, opacity: 0, y: 10 }}
+                   transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+                   className="bg-white rounded-sm border border-neutral-200 shadow-2xl max-w-3xl w-full flex flex-col relative z-[101] max-h-[85vh] overflow-hidden"
+                   onClick={(e) => e.stopPropagation()}
+                >
+                   {/* Header */}
+                   <div className="px-5 py-3 border-b border-neutral-200 flex items-center justify-between bg-gradient-to-r from-[#1A4D8C] to-[#2E6DB4]">
+                      <div className="flex items-center gap-3">
+                         <div className="w-8 h-8 bg-white/20 rounded flex items-center justify-center">
+                            <Building2 className="w-4 h-4 text-white" />
+                         </div>
+                         <div>
+                            <h3 className="text-sm font-serif text-white">Datos desde SAP</h3>
+                            <p className="text-[11px] text-white/70 mt-0.5 font-mono">{selectedSAPInvoice.invoiceNumber}</p>
+                         </div>
+                      </div>
+                      <button
+                         onClick={() => {
+                            setShowSAPDataModal(false);
+                            setSelectedSAPInvoice(null);
+                         }}
+                         className="p-1.5 hover:bg-white/10 rounded-sm transition-colors text-white/70 hover:text-white"
+                      >
+                         <X className="w-4 h-4" />
+                      </button>
+                   </div>
+
+                   {/* Content */}
+                   <div className="overflow-y-auto flex-1">
+                      {/* Document Info */}
+                      <div className="px-5 py-4 border-b border-neutral-100 bg-neutral-50/50">
+                         <div className="grid grid-cols-4 gap-4">
+                            <div>
+                               <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Nº Documento SAP</span>
+                               <div className="text-sm font-mono text-neutral-900">{selectedSAPInvoice.sapData.documentNumber}</div>
+                            </div>
+                            <div>
+                               <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Tipo Doc.</span>
+                               <div className="text-sm font-mono text-neutral-900">{selectedSAPInvoice.sapData.documentType}</div>
+                            </div>
+                            <div>
+                               <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Sociedad</span>
+                               <div className="text-sm font-mono text-neutral-900">{selectedSAPInvoice.sapData.companyCode}</div>
+                            </div>
+                            <div>
+                               <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Año Fiscal</span>
+                               <div className="text-sm font-mono text-neutral-900">{selectedSAPInvoice.sapData.fiscalYear}</div>
+                            </div>
+                         </div>
+                      </div>
+
+                      {/* Vendor & Amount */}
+                      <div className="px-5 py-4 border-b border-neutral-100">
+                         <div className="grid grid-cols-2 gap-6">
+                            <div>
+                               <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-2">Proveedor</span>
+                               <div className="flex items-center gap-2">
+                                  <div className="w-8 h-8 bg-neutral-100 rounded flex items-center justify-center">
+                                     <Building2 className="w-4 h-4 text-neutral-500" />
+                                  </div>
+                                  <div>
+                                     <div className="text-sm font-medium text-neutral-900">{selectedSAPInvoice.sapData.vendor}</div>
+                                     <div className="text-[11px] text-neutral-500 font-mono">{selectedSAPInvoice.sapData.vendorCode}</div>
+                                  </div>
+                               </div>
+                            </div>
+                            <div>
+                               <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-2">Importe</span>
+                               <div className="text-2xl font-serif text-neutral-900 tabular-nums">
+                                  {selectedSAPInvoice.sapData.amount.toLocaleString('es-ES', { minimumFractionDigits: 2 })} <span className="text-sm text-neutral-500">{selectedSAPInvoice.sapData.currency}</span>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+
+                      {/* Dates & Payment */}
+                      <div className="px-5 py-4 border-b border-neutral-100 bg-neutral-50/30">
+                         <div className="grid grid-cols-3 gap-4">
+                            <div>
+                               <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Fecha Contable</span>
+                               <div className="text-sm text-neutral-900">{new Date(selectedSAPInvoice.sapData.postingDate).toLocaleDateString('es-ES')}</div>
+                            </div>
+                            <div>
+                               <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Condición Pago</span>
+                               <div className="text-sm font-mono text-neutral-900">{selectedSAPInvoice.sapData.paymentTerms}</div>
+                            </div>
+                            <div>
+                               <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Vencimiento</span>
+                               <div className="text-sm text-neutral-900">{new Date(selectedSAPInvoice.sapData.paymentDueDate).toLocaleDateString('es-ES')}</div>
+                            </div>
+                         </div>
+                      </div>
+
+                      {/* Status */}
+                      <div className="px-5 py-3 border-b border-neutral-100">
+                         <div className="flex items-center justify-between">
+                            <div>
+                               <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Estado</span>
+                               <div className={`text-sm font-medium ${
+                                  selectedSAPInvoice.sapData.status === 'Contabilizado' ? 'text-[#2E7D32]' : 
+                                  selectedSAPInvoice.sapData.status === 'No encontrado en SAP' ? 'text-[#8B5A50]' : 'text-[#8B7355]'
+                               }`}>
+                                  {selectedSAPInvoice.sapData.status}
+                               </div>
+                            </div>
+                            {selectedSAPInvoice.sapData.clearingDocument && (
+                               <div className="text-right">
+                                  <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-0.5">Doc. Compensación</span>
+                                  <div className="text-sm font-mono text-neutral-900">{selectedSAPInvoice.sapData.clearingDocument}</div>
+                               </div>
+                            )}
+                         </div>
+                      </div>
+
+                      {/* Line Items */}
+                      <div className="px-5 py-4">
+                         <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-sans block mb-3">Posiciones del documento</span>
+                         <div className="border border-neutral-200 rounded-sm overflow-hidden">
+                            <table className="w-full text-xs">
+                               <thead className="bg-neutral-50 border-b border-neutral-200">
+                                  <tr>
+                                     <th className="px-3 py-2 text-left font-medium text-neutral-500">Pos.</th>
+                                     <th className="px-3 py-2 text-left font-medium text-neutral-500">Cuenta</th>
+                                     <th className="px-3 py-2 text-left font-medium text-neutral-500">Descripción</th>
+                                     <th className="px-3 py-2 text-right font-medium text-neutral-500">Debe</th>
+                                     <th className="px-3 py-2 text-right font-medium text-neutral-500">Haber</th>
+                                     <th className="px-3 py-2 text-left font-medium text-neutral-500">CeCo</th>
+                                  </tr>
+                               </thead>
+                               <tbody className="divide-y divide-neutral-100">
+                                  {selectedSAPInvoice.sapData.lineItems.map((item) => (
+                                     <tr key={item.item} className="hover:bg-neutral-50/50">
+                                        <td className="px-3 py-2 font-mono text-neutral-600">{item.item}</td>
+                                        <td className="px-3 py-2 font-mono text-neutral-900">{item.glAccount}</td>
+                                        <td className="px-3 py-2 text-neutral-700 max-w-[200px] truncate">{item.description}</td>
+                                        <td className="px-3 py-2 text-right font-mono text-neutral-900 tabular-nums">
+                                           {item.debit > 0 ? item.debit.toLocaleString('es-ES', { minimumFractionDigits: 2 }) : '-'}
+                                        </td>
+                                        <td className="px-3 py-2 text-right font-mono text-neutral-900 tabular-nums">
+                                           {item.credit > 0 ? item.credit.toLocaleString('es-ES', { minimumFractionDigits: 2 }) : '-'}
+                                        </td>
+                                        <td className="px-3 py-2 font-mono text-neutral-600">{item.costCenter || '-'}</td>
+                                     </tr>
+                                  ))}
+                               </tbody>
+                            </table>
+                         </div>
+                      </div>
+                   </div>
+
+                   {/* Footer */}
+                   <div className="px-5 py-3 border-t border-neutral-200 bg-neutral-50 flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-[11px] text-neutral-500">
+                         <CheckCircle2 className="w-3.5 h-3.5 text-[#2E7D32]" />
+                         Datos sincronizados desde SAP
+                      </div>
+                      <div className="flex gap-2">
+                         <button
+                            onClick={() => {
+                               setShowSAPDataModal(false);
+                               setSelectedSAPInvoice(null);
+                            }}
+                            className="px-4 py-1.5 bg-white border border-neutral-200 text-neutral-700 hover:border-neutral-900 hover:text-neutral-900 text-xs font-medium rounded-sm transition-colors"
+                         >
+                            Cerrar
                          </button>
                       </div>
                    </div>

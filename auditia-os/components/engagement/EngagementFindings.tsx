@@ -1565,7 +1565,7 @@ export const EngagementFindings: React.FC<EngagementFindingsProps> = ({ onSideba
   );
 };
 
-// Internal Comment Input Component (Legacy - kept for compatibility)
+// Internal Comment Input Component
 const InternalCommentInput = ({ onAdd }: { onAdd: (comment: string) => void }) => {
   const [comment, setComment] = useState('');
 
@@ -1610,97 +1610,56 @@ const InternalCommentInput = ({ onAdd }: { onAdd: (comment: string) => void }) =
 
 // Add Task Input Component
 const AddTaskInput = ({ onAdd }: { onAdd: (title: string, assignee: string, priority: 'low' | 'medium' | 'high') => void }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [title, setTitle] = useState('');
   const [assignee, setAssignee] = useState('');
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
 
   const handleSubmit = () => {
     if (title.trim() && assignee.trim()) {
-      onAdd(title, assignee, priority);
+      onAdd(title.trim(), assignee.trim(), priority);
       setTitle('');
       setAssignee('');
       setPriority('medium');
-      setIsExpanded(false);
     }
   };
 
-  if (!isExpanded) {
-    return (
-      <button
-        onClick={() => setIsExpanded(true)}
-        className="w-full py-3 border-2 border-dashed border-neutral-200 rounded-lg text-sm text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 hover:bg-neutral-50 transition-all flex items-center justify-center gap-2"
-      >
-        <Plus className="w-4 h-4" />
-        Añadir nueva tarea
-      </button>
-    );
-  }
-
   return (
-    <div className="border border-neutral-200 rounded-lg p-4 bg-neutral-50">
-      <div className="space-y-4">
-        <div>
-          <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 block">Título de la tarea</label>
+    <div className="border-t border-neutral-200 pt-4 mt-4">
+      <div className="space-y-3">
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Título de la tarea..."
+          className="w-full text-sm border-neutral-200 rounded-lg bg-white p-3 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
+        />
+        <div className="flex gap-2">
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Ej: Solicitar documentación adicional..."
-            className="w-full text-sm border-neutral-200 rounded-lg bg-white p-3 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
-            autoFocus
+            value={assignee}
+            onChange={(e) => setAssignee(e.target.value)}
+            placeholder="Asignado a..."
+            className="flex-1 text-sm border-neutral-200 rounded-lg bg-white p-3 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
           />
-        </div>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 block">Asignado a</label>
-            <input
-              type="text"
-              value={assignee}
-              onChange={(e) => setAssignee(e.target.value)}
-              placeholder="Nombre del responsable"
-              className="w-full text-sm border-neutral-200 rounded-lg bg-white p-3 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
-            />
-          </div>
-          
-          <div>
-            <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2 block">Prioridad</label>
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-              className="w-full text-sm border-neutral-200 rounded-lg bg-white p-3 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
-            >
-              <option value="low">Baja</option>
-              <option value="medium">Media</option>
-              <option value="high">Alta</option>
-            </select>
-          </div>
-        </div>
-        
-        <div className="flex justify-end gap-2 pt-2">
-          <button
-            onClick={() => {
-              setIsExpanded(false);
-              setTitle('');
-              setAssignee('');
-              setPriority('medium');
-            }}
-            className="px-4 py-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
+          <select
+            value={priority}
+            onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+            className="text-sm border-neutral-200 rounded-lg bg-white px-3 py-2 focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-900"
           >
-            Cancelar
-          </button>
+            <option value="low">Baja</option>
+            <option value="medium">Media</option>
+            <option value="high">Alta</option>
+          </select>
           <button
             onClick={handleSubmit}
             disabled={!title.trim() || !assignee.trim()}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               title.trim() && assignee.trim()
                 ? 'bg-neutral-900 text-white hover:bg-neutral-800'
                 : 'bg-neutral-100 text-neutral-300 cursor-not-allowed'
             }`}
           >
             <Plus className="w-4 h-4" />
-            Añadir tarea
           </button>
         </div>
       </div>

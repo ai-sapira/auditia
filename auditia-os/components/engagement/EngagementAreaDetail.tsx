@@ -28,11 +28,18 @@ import {
   X,
   ChevronDown,
   ChevronUp,
+  RefreshCw,
   Search,
   Sparkles,
   PenTool,
   BarChart3,
-  TrendingUp
+  TrendingUp,
+  Lock,
+  Calendar,
+  Activity,
+  PieChart,
+  ListChecks,
+  Check
 } from 'lucide-react';
 import { FINDINGS_ALFA } from '../../constants';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -140,8 +147,36 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
     }
   };
 
+  // Test execution order and blocking logic
+  const testOrder = ['reconciler', 'riskmapper', 'circularizer', 'tester'];
+  
+  const canExecuteTest = (testId: string): boolean => {
+    const currentIndex = testOrder.indexOf(testId);
+    if (currentIndex === 0) return true; // First test always available
+    if (currentIndex === 1) return true; // RiskMapper is automatic
+    
+    // For other tests, check if previous test (except riskmapper which is automatic) is completed
+    const previousTestId = testOrder[currentIndex - 1];
+    const previousState = testExecutionStates[previousTestId];
+    return previousState === 'completed' || previousState === 'completed_with_issues';
+  };
+  
+  const getBlockedReason = (testId: string): string | null => {
+    if (canExecuteTest(testId)) return null;
+    const currentIndex = testOrder.indexOf(testId);
+    // For circularizer (3), it needs riskmapper (2) which needs reconciler (1) to be complete
+    // Since riskmapper is automatic, we actually need reconciler to be done first
+    if (testId === 'circularizer') {
+      return 'Requiere completar "Mapa de riesgos de Proveedores" primero';
+    }
+    const previousTestId = testOrder[currentIndex - 1];
+    const previousTestName = testPlans[previousTestId]?.title || previousTestId;
+    return `Requiere completar "${previousTestName}" primero`;
+  };
+
   // Data Tab States
   const [showMaterialityDetails, setShowMaterialityDetails] = useState(false);
+  
   // Libro mayor y saldo de cierre ya subidos desde onboarding
   const [fileStates, setFileStates] = useState<{
     movements: 'pending' | 'uploading' | 'processing' | 'uploaded' | 'error';
@@ -335,7 +370,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
             importe: Number((Math.random() * 5000 + 100).toFixed(2))
         }));
       case 'ledger':
-        return Array.from({ length: 85 }, (_, i) => ({
+        return Array.from({ length: 847 }, (_, i) => ({
             cuenta: i % 2 === 0 ? '400' : '410',
             descripcion: i % 2 === 0 ? 'Proveedores' : 'Proveedores efectos a pagar',
             saldoInicial: Number((Math.random() * 50000).toFixed(2)),
@@ -344,7 +379,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
             saldoFinal: Number((Math.random() * 55000).toFixed(2))
         }));
       case 'closing':
-        return Array.from({ length: 45 }, (_, i) => ({
+        return Array.from({ length: 245 }, (_, i) => ({
             cuenta: String(400 + i),
             descripcion: `Cuenta ${400 + i} - Descripción genérica`,
             saldoDeudor: i % 2 === 0 ? Number((Math.random() * 10000).toFixed(2)) : 0,
@@ -724,9 +759,293 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
             {activeTab === 'data' && (
                <div className="animate-fade-in space-y-8 max-w-6xl mx-auto">
                   
-                  {/* File Upload Blocks - Hide when all loaded */}
+                  {/* COMPACT DESIGN: Data Preview & Upload Section */}
                   <AnimatePresence>
                       {(!allFilesUploaded || globalProcessingStage !== 'completed') && (
+                          <motion.div
+                              initial={{ opacity: 1 }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="space-y-5"
+                          >
+                              {/* Row 1: Three columns - Ledger, Balance, Upload */}
+                              <div className="grid grid-cols-3 gap-4">
+                                  {/* Libro Mayor - Opens Modal */}
+                                  <div 
+                                      className="bg-white border border-neutral-200 rounded transition-all cursor-pointer hover:border-neutral-300 hover:shadow-sm group"
+                                      onClick={() => {
+                                          if (!filePreviewData.ledger) {
+                                              const data = generatePreviewData('ledger');
+                                              setFilePreviewData(prev => ({ ...prev, ledger: data }));
+                                              setFileDataCounts(prev => ({ ...prev, ledger: data.length }));
+                                          }
+                                          setPreviewFileType('ledger');
+                                          setShowPreviewModal(true);
+                                      }}
+                                  >
+                                      <div className="p-4">
+                                          <div className="flex items-center justify-between mb-3">
+                                              <div className="flex items-center gap-2">
+                                                  <span className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider">Libro Mayor</span>
+                                                  <span className="text-[9px] px-1.5 py-0.5 bg-neutral-100 text-neutral-500 rounded font-mono">400/410</span>
+                                              </div>
+                                              <div className="flex items-center gap-2">
+                                                  <span className="text-[10px] px-1.5 py-0.5 bg-[#F7F9F7] text-[#4A5D4A] rounded font-medium">SAP</span>
+                                                  <Eye className="w-3.5 h-3.5 text-neutral-300 group-hover:text-neutral-500 transition-colors" />
+                                              </div>
+                                          </div>
+                                          <div className="flex items-baseline gap-3 mb-3">
+                                              <span className="text-2xl font-serif text-neutral-900">{(fileBalances.ledger / 1000000).toFixed(2)}</span>
+                                              <span className="text-sm text-neutral-400">M€</span>
+                                              <span className="text-[10px] text-neutral-400 ml-auto">{fileDataCounts.ledger.toLocaleString()} registros</span>
+                                          </div>
+                                          <div className="space-y-1.5 text-[11px] text-neutral-500 mb-3">
+                                              <div className="flex justify-between">
+                                                  <span>400 - Proveedores</span>
+                                                  <span className="font-mono text-neutral-700">15.20 M€</span>
+                                              </div>
+                                              <div className="flex justify-between">
+                                                  <span>410 - Efectos a pagar</span>
+                                                  <span className="font-mono text-neutral-700">3.69 M€</span>
+                                              </div>
+                                          </div>
+                                          
+                                          {/* Analysis Insights */}
+                                          <div className="pt-3 border-t border-neutral-100 space-y-2">
+                                              <div className="flex items-center justify-between text-[10px]">
+                                                  <span className="text-neutral-500 flex items-center gap-1.5"><Calendar className="w-3 h-3 text-neutral-400" /> Periodo analizado</span>
+                                                  <span className="font-medium text-neutral-700">Ejercicio 2025</span>
+                                              </div>
+                                              <div className="flex items-center justify-between text-[10px]">
+                                                  <span className="text-neutral-500 flex items-center gap-1.5"><Activity className="w-3 h-3 text-neutral-400" /> Volumen</span>
+                                                  <span className="font-medium text-neutral-700">~70 asientos/mes</span>
+                                              </div>
+                                              <div className="flex items-center justify-between text-[10px]">
+                                                  <span className="text-neutral-500 flex items-center gap-1.5"><CheckCircle2 className="w-3 h-3 text-emerald-500" /> Integridad</span>
+                                                  <span className="font-medium text-emerald-700 flex items-center gap-1">Verificada</span>
+                                              </div>
+                                          </div>
+
+                                          <div className="mt-3 pt-2 border-t border-neutral-100 text-[10px] text-neutral-400 group-hover:text-neutral-600 transition-colors text-center flex items-center justify-center gap-1">
+                                              <Eye className="w-3 h-3" /> Click para ver detalle
+                                          </div>
+                                      </div>
+                                  </div>
+                                  
+                                  {/* Balance de Cierre - Opens Modal */}
+                                  <div 
+                                      className="bg-white border border-neutral-200 rounded transition-all cursor-pointer hover:border-neutral-300 hover:shadow-sm group"
+                                      onClick={() => {
+                                          if (!filePreviewData.closing) {
+                                              const data = generatePreviewData('closing');
+                                              setFilePreviewData(prev => ({ ...prev, closing: data }));
+                                              setFileDataCounts(prev => ({ ...prev, closing: data.length }));
+                                          }
+                                          setPreviewFileType('closing');
+                                          setShowPreviewModal(true);
+                                      }}
+                                  >
+                                      <div className="p-4">
+                                          <div className="flex items-center justify-between mb-3">
+                                              <div className="flex items-center gap-2">
+                                                  <span className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider">Balance Cierre</span>
+                                              </div>
+                                              <div className="flex items-center gap-2">
+                                                  <span className="text-[10px] px-1.5 py-0.5 bg-[#F7F9F7] text-[#4A5D4A] rounded font-medium">SAP</span>
+                                                  <Eye className="w-3.5 h-3.5 text-neutral-300 group-hover:text-neutral-500 transition-colors" />
+                                              </div>
+                                          </div>
+                                          <div className="flex items-baseline gap-3 mb-3">
+                                              <span className="text-2xl font-serif text-neutral-900">{(fileBalances.closing / 1000000).toFixed(2)}</span>
+                                              <span className="text-sm text-neutral-400">M€</span>
+                                              <span className="text-[10px] text-neutral-400 ml-auto">{fileDataCounts.closing.toLocaleString()} cuentas</span>
+                                          </div>
+                                          <div className="space-y-1.5 text-[11px] text-neutral-500 mb-3">
+                                              <div className="flex justify-between">
+                                                  <span>Saldo deudor</span>
+                                                  <span className="font-mono text-neutral-700">0.00 €</span>
+                                              </div>
+                                              <div className="flex justify-between">
+                                                  <span>Saldo acreedor</span>
+                                                  <span className="font-mono text-neutral-700">{(fileBalances.closing / 1000000).toFixed(2)} M€</span>
+                                              </div>
+                                          </div>
+
+                                          {/* Analysis Insights */}
+                                          <div className="pt-3 border-t border-neutral-100 space-y-2">
+                                              <div className="flex items-center justify-between text-[10px]">
+                                                  <span className="text-neutral-500 flex items-center gap-1.5"><Scale className="w-3 h-3 text-neutral-400" /> Cuadre con Mayor</span>
+                                                  <span className="font-medium text-emerald-700 flex items-center gap-1"><Check className="w-3 h-3" /> Correcto</span>
+                                              </div>
+                                              <div className="flex items-center justify-between text-[10px]">
+                                                  <span className="text-neutral-500 flex items-center gap-1.5"><ListChecks className="w-3 h-3 text-neutral-400" /> Cuentas activas</span>
+                                                  <span className="font-medium text-neutral-700">185 / 245</span>
+                                              </div>
+                                              <div className="flex items-center justify-between text-[10px]">
+                                                  <span className="text-neutral-500 flex items-center gap-1.5"><PieChart className="w-3 h-3 text-neutral-400" /> Composición</span>
+                                                  <span className="font-medium text-neutral-700">82% Proveedores</span>
+                                              </div>
+                                          </div>
+
+                                          <div className="mt-3 pt-2 border-t border-neutral-100 text-[10px] text-neutral-400 group-hover:text-neutral-600 transition-colors text-center flex items-center justify-center gap-1">
+                                              <Eye className="w-3 h-3" /> Click para ver detalle
+                                          </div>
+                                      </div>
+                                  </div>
+                                  
+                                  {/* Submayor - Upload or Status */}
+                                  <div className={`border rounded p-4 relative ${
+                                      fileStates.movements === 'uploaded' 
+                                          ? 'bg-white border-neutral-200' 
+                                          : fileStates.movements === 'error'
+                                          ? 'bg-[#FBF8F7] border-[#8B5A50]/30'
+                                          : 'bg-neutral-50 border-dashed border-neutral-300'
+                                  }`}>
+                                      {/* Processing Overlay */}
+                                      {(fileStates.movements === 'uploading' || fileStates.movements === 'processing') && (
+                                          <div className="absolute inset-0 bg-white/95 z-10 flex flex-col items-center justify-center rounded">
+                                              <Loader2 className="w-5 h-5 text-neutral-900 animate-spin mb-2" />
+                                              <span className="text-xs text-neutral-600">
+                                                  {fileStates.movements === 'uploading' ? 'Subiendo...' : 'Validando...'}
+                                              </span>
+                                          </div>
+                                      )}
+                                      
+                                      <div className="flex items-center justify-between mb-3">
+                                          <span className="text-[11px] font-medium text-neutral-500 uppercase tracking-wider">Submayor</span>
+                                          {fileStates.movements === 'uploaded' ? (
+                                              <span className="text-[10px] px-1.5 py-0.5 bg-[#F7F9F7] text-[#4A5D4A] rounded font-medium">Cargado</span>
+                                          ) : fileStates.movements === 'error' ? (
+                                              <span className="text-[10px] px-1.5 py-0.5 bg-[#FBF8F7] text-[#8B5A50] rounded font-medium">Error</span>
+                                          ) : (
+                                              <span className="text-[10px] px-1.5 py-0.5 bg-[#FDFAF6] text-[#8B7355] rounded font-medium">Pendiente</span>
+                                          )}
+                                      </div>
+                                      
+                                      {fileStates.movements === 'uploaded' ? (
+                                          <>
+                                              <div className="flex items-baseline gap-3 mb-3">
+                                                  <span className="text-2xl font-serif text-neutral-900">{(fileBalances.movements / 1000000).toFixed(2)}</span>
+                                                  <span className="text-sm text-neutral-400">M€</span>
+                                              </div>
+                                              <div className="mt-3 pt-3 border-t border-neutral-100 flex justify-between text-[10px] text-neutral-400">
+                                                  <span>{fileDataCounts.movements.toLocaleString()} asientos</span>
+                                                  <span>5 columnas</span>
+                                              </div>
+                                          </>
+                                      ) : fileStates.movements === 'error' ? (
+                                          <div className="space-y-3">
+                                              {/* Errors Summary */}
+                                              <div className="flex items-center justify-between">
+                                                  <span className="text-xs font-medium text-[#8B5A50]">
+                                                      {fileErrors.movements.length} errores detectados
+                                                  </span>
+                                                  <button
+                                                      onClick={() => setExpandedErrors(prev => ({ ...prev, movements: !prev.movements }))}
+                                                      className="text-[10px] text-[#8B5A50] hover:underline flex items-center gap-1"
+                                                  >
+                                                      {expandedErrors.movements ? 'Ocultar' : 'Ver errores'}
+                                                      <ChevronDown className={`w-3 h-3 transition-transform ${expandedErrors.movements ? 'rotate-180' : ''}`} />
+                                                  </button>
+                                              </div>
+                                              
+                                              {/* Errors List */}
+                                              <AnimatePresence>
+                                                  {expandedErrors.movements && (
+                                                      <motion.div
+                                                          initial={{ height: 0, opacity: 0 }}
+                                                          animate={{ height: 'auto', opacity: 1 }}
+                                                          exit={{ height: 0, opacity: 0 }}
+                                                          className="overflow-hidden"
+                                                      >
+                                                          <div className="space-y-1.5 mb-3">
+                                                              {fileErrors.movements.map((error, idx) => (
+                                                                  <div key={idx} className="flex items-start gap-2 text-[11px] text-[#8B5A50] bg-white/50 p-2 rounded border border-[#8B5A50]/20">
+                                                                      <XCircle className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                                                                      <span>{error}</span>
+                                                                  </div>
+                                                              ))}
+                                                          </div>
+                                                      </motion.div>
+                                                  )}
+                                              </AnimatePresence>
+                                              
+                                              {/* Preview Button - Opens Modal */}
+                                              <button
+                                                  onClick={() => {
+                                                      setPreviousFileState('error');
+                                                      setPreviewFileType('movements');
+                                                      setShowPreviewModal(true);
+                                                  }}
+                                                  className="w-full text-[10px] text-neutral-500 hover:text-neutral-700 font-medium flex items-center justify-center gap-1 py-1.5 border border-neutral-200 rounded bg-white hover:bg-neutral-50 transition-colors"
+                                              >
+                                                  <Eye className="w-3 h-3" />
+                                                  Ver preview de datos {fileDataCounts.movements > 0 && `(${fileDataCounts.movements.toLocaleString()} registros)`}
+                                              </button>
+                                              
+                                              {/* Retry Button */}
+                                              <button 
+                                                  onClick={() => handleRetry('movements')}
+                                                  className="w-full px-3 py-2 bg-neutral-900 text-white rounded text-xs font-medium hover:bg-black transition-colors flex items-center justify-center gap-2"
+                                              >
+                                                  <RefreshCw className="w-3 h-3" />
+                                                  Corregir y reintentar
+                                              </button>
+                                          </div>
+                                      ) : (
+                                          <div className="space-y-3">
+                                              <p className="text-xs text-neutral-500 leading-relaxed">
+                                                  Carga el fichero de movimientos para completar el análisis
+                                              </p>
+                                              <button 
+                                                  onClick={() => handleFileUpload('movements')}
+                                                  disabled={fileStates.movements === 'uploading' || fileStates.movements === 'processing'}
+                                                  className="w-full px-3 py-2.5 bg-neutral-900 text-white rounded text-xs font-medium hover:bg-black transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                                              >
+                                                  <UploadCloud className="w-3.5 h-3.5" />
+                                                  Subir archivo
+                                              </button>
+                                              <button
+                                                  onClick={() => handleDownloadTemplate('movements')}
+                                                  className="w-full text-[10px] text-neutral-400 hover:text-neutral-600 font-medium transition-colors"
+                                              >
+                                                  Descargar plantilla
+                                              </button>
+                                          </div>
+                                      )}
+                                  </div>
+                              </div>
+                              
+                              {/* Row 2: Reconciliation Status - Compact */}
+                              <div className={`flex items-center gap-3 p-3 rounded border ${
+                                  fileBalances.ledger === fileBalances.closing 
+                                      ? 'bg-[#F7F9F7] border-[#4A5D4A]/20' 
+                                      : 'bg-[#FDFAF6] border-[#8B7355]/20'
+                              }`}>
+                                  <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${
+                                      fileBalances.ledger === fileBalances.closing ? 'text-[#4A5D4A]' : 'text-[#8B7355]'
+                                  }`} />
+                                  <span className={`text-xs font-medium ${
+                                      fileBalances.ledger === fileBalances.closing ? 'text-[#4A5D4A]' : 'text-[#8B7355]'
+                                  }`}>
+                                      {fileBalances.ledger === fileBalances.closing 
+                                          ? `Mayor y Balance cuadran (${(fileBalances.ledger / 1000000).toFixed(2)} M€)`
+                                          : `Diferencia detectada: ${((fileBalances.ledger - fileBalances.closing) / 1000).toFixed(0)}k€`
+                                      }
+                                  </span>
+                                  {!allFilesUploaded && (
+                                      <span className="text-[10px] text-neutral-400 ml-auto">
+                                          Pendiente verificar con submayor
+                                      </span>
+                                  )}
+                              </div>
+                          </motion.div>
+                      )}
+                  </AnimatePresence>
+                  
+                  {/* Legacy File Upload Blocks - Hidden by new design */}
+                  <AnimatePresence>
+                      {false && (!allFilesUploaded || globalProcessingStage !== 'completed') && (
                           <motion.div
                               initial={{ opacity: 1 }}
                               exit={{ opacity: 0, height: 0 }}
@@ -1218,7 +1537,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                                           <span className="text-[10px] text-stone-400 uppercase tracking-wider">Saldo declarado</span>
                                                           <div className="text-lg font-serif text-stone-900 mt-0.5 tabular-nums">
                                                               {(fileBalances.closing / 1000000).toFixed(2)} M€
-                                                          </div>
+                                                      </div>
                                                       </div>
                                                   </div>
                                               </div>
@@ -1259,9 +1578,9 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                                       )}
                                                   </div>
                                               </div>
-                                          </div>
-                                      </div>
-                                  </motion.div>
+                           </div>
+                              </div>
+                          </motion.div>
                       
                                   {/* Step 2: Processing */}
                           <motion.div
@@ -1673,7 +1992,20 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                  borderColor: '#d6d3d1'
                               } : {}}
                            >
-                              <div className="p-4">
+                              <div className="p-4 flex gap-4">
+                                 {/* Order Number */}
+                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-serif text-lg font-medium ${
+                                    testExecutionStates.reconciler === 'completed' || testExecutionStates.reconciler === 'completed_with_issues'
+                                       ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-200'
+                                       : testExecutionStates.reconciler === 'running'
+                                       ? 'bg-blue-100 text-blue-700 border-2 border-blue-200'
+                                       : 'bg-stone-100 text-stone-500 border-2 border-stone-200'
+                                 }`}>
+                                    {testExecutionStates.reconciler === 'completed' || testExecutionStates.reconciler === 'completed_with_issues' 
+                                       ? <CheckCircle className="w-5 h-5" /> 
+                                       : '1'}
+                                 </div>
+                                 <div className="flex-1 min-w-0">
                                  {/* Fila 1: Título, badge agente, estado y botón */}
                                  <div className="flex items-center justify-between gap-4 mb-2">
                                     <div className="flex items-center gap-2.5 flex-1 min-w-0">
@@ -1752,6 +2084,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                           )}
                                        </AnimatePresence>
                                     </div>
+                                    </div>
                                  </div>
                               </div>
                            </motion.div>
@@ -1774,7 +2107,20 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                  borderColor: '#d6d3d1'
                               } : {}}
                            >
-                              <div className="p-4">
+                              <div className="p-4 flex gap-4">
+                                 {/* Order Number */}
+                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-serif text-lg font-medium ${
+                                    testExecutionStates.riskmapper === 'completed'
+                                       ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-200'
+                                       : testExecutionStates.riskmapper === 'running'
+                                       ? 'bg-blue-100 text-blue-700 border-2 border-blue-200'
+                                       : 'bg-stone-100 text-stone-500 border-2 border-stone-200'
+                                 }`}>
+                                    {testExecutionStates.riskmapper === 'completed' 
+                                       ? <CheckCircle className="w-5 h-5" /> 
+                                       : '2'}
+                                 </div>
+                                 <div className="flex-1 min-w-0">
                                  {/* Fila 1: Título, badge agente, estado y badge automático */}
                                  <div className="flex items-center justify-between gap-4 mb-2">
                                     <div className="flex items-center gap-2.5 flex-1 min-w-0">
@@ -1824,6 +2170,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                         )}
                                         </AnimatePresence>
                                     </div>
+                                    </div>
                                  </div>
                               </div>
                            </motion.div>
@@ -1833,22 +2180,45 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                     key="circularizer"
                               initial={{ opacity: 0 }}
                                     onClick={() => testExecutionStates.circularizer !== 'not_executed' && setSelectedTestId('circularizer')}
-                              className="w-full border border-stone-200 rounded-sm bg-white shadow-sm transition-all cursor-pointer hover:shadow-md hover:border-stone-300"
+                              className={`w-full border rounded-sm bg-white shadow-sm transition-all ${
+                                 !canExecuteTest('circularizer') 
+                                    ? 'border-stone-100 cursor-not-allowed' 
+                                    : testExecutionStates.circularizer !== 'not_executed' 
+                                       ? 'border-stone-200 cursor-pointer hover:shadow-md hover:border-stone-300' 
+                                       : 'border-stone-200 cursor-default'
+                              }`}
                                     animate={{ 
-                                 opacity: 1,
+                                 opacity: !canExecuteTest('circularizer') ? 0.5 : 1,
                                  backgroundColor: testExecutionStates.circularizer === 'running' ? '#eff6ff' : '#ffffff'
                               }}
                               transition={{ duration: 0.2 }}
-                              whileHover={{ 
+                              whileHover={canExecuteTest('circularizer') ? { 
                                  backgroundColor: '#fafaf9',
                                  borderColor: '#d6d3d1'
-                              }}
+                              } : {}}
                            >
-                              <div className="p-4">
+                              <div className="p-4 flex gap-4">
+                                 {/* Order Number */}
+                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-serif text-lg font-medium ${
+                                    !canExecuteTest('circularizer')
+                                       ? 'bg-stone-50 text-stone-300 border-2 border-stone-100'
+                                       : testExecutionStates.circularizer === 'completed'
+                                       ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-200'
+                                       : testExecutionStates.circularizer === 'running'
+                                       ? 'bg-blue-100 text-blue-700 border-2 border-blue-200'
+                                       : 'bg-stone-100 text-stone-500 border-2 border-stone-200'
+                                 }`}>
+                                    {!canExecuteTest('circularizer') 
+                                       ? <Lock className="w-4 h-4" />
+                                       : testExecutionStates.circularizer === 'completed' 
+                                       ? <CheckCircle className="w-5 h-5" /> 
+                                       : '3'}
+                                 </div>
+                                 <div className="flex-1 min-w-0">
                                  {/* Fila 1: Título, badge agente, estado y botón */}
                                  <div className="flex items-center justify-between gap-4 mb-2">
                                     <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                                       <h3 className="text-lg font-serif text-stone-900">Circularizaciones proveedores</h3>
+                                       <h3 className={`text-lg font-serif ${!canExecuteTest('circularizer') ? 'text-stone-400' : 'text-stone-900'}`}>Circularizaciones proveedores</h3>
                                        <span className="text-[10px] font-medium text-stone-500 bg-stone-100 px-2 py-0.5 rounded border border-stone-200 whitespace-nowrap">Circularizer</span>
                                        <motion.div
                                           key={testExecutionStates.circularizer}
@@ -1857,38 +2227,49 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                        >
                                           <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium inline-flex items-center gap-1.5 whitespace-nowrap ${
-                                              testExecutionStates.circularizer === 'completed'
+                                              !canExecuteTest('circularizer')
+                                                 ? 'bg-stone-50 text-stone-300 border-stone-100'
+                                                 : testExecutionStates.circularizer === 'completed'
                                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
                                                  : testExecutionStates.circularizer === 'running'
                                                  ? 'bg-blue-50 text-blue-700 border-blue-100'
                                                  : 'bg-stone-50 text-stone-400 border-stone-200'
                                            }`}>
+                                              {!canExecuteTest('circularizer') && <Lock className="w-3 h-3" />}
                                               {testExecutionStates.circularizer === 'running' && <Loader2 className="w-3 h-3 animate-spin" />}
-                                              {testExecutionStates.circularizer === 'completed' ? 'Completado' :
+                                              {!canExecuteTest('circularizer') ? 'Bloqueado' :
+                                               testExecutionStates.circularizer === 'completed' ? 'Completado' :
                                                testExecutionStates.circularizer === 'running' ? 'Ejecutando...' :
                                                'No iniciada'}
                                            </span>
                                        </motion.div>
                                     </div>
                                        <motion.button
-                                          whileTap={{ scale: 0.95 }}
-                                          onClick={(e) => { e.stopPropagation(); handleOpenExecutionPlan('circularizer'); }}
-                                          disabled={testExecutionStates.circularizer === 'running'}
+                                          whileTap={canExecuteTest('circularizer') && testExecutionStates.circularizer !== 'completed' ? { scale: 0.95 } : {}}
+                                          onClick={(e) => { e.stopPropagation(); if (canExecuteTest('circularizer') && testExecutionStates.circularizer !== 'completed') handleOpenExecutionPlan('circularizer'); }}
+                                          disabled={!canExecuteTest('circularizer') || testExecutionStates.circularizer === 'running' || testExecutionStates.circularizer === 'completed'}
                                        className={`px-3 py-1.5 text-xs font-medium rounded transition-all inline-flex items-center gap-1.5 shadow-sm flex-shrink-0 ${
-                                              testExecutionStates.circularizer === 'completed'
-                                              ? 'bg-white border border-stone-200 text-stone-700 hover:bg-stone-50'
+                                              !canExecuteTest('circularizer')
+                                              ? 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed'
+                                              : testExecutionStates.circularizer === 'completed'
+                                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default'
                                               : 'bg-stone-900 text-white hover:bg-black'
                                        } ${testExecutionStates.circularizer === 'running' ? 'opacity-70 cursor-not-allowed' : ''}`}
                                        >
-                                          {testExecutionStates.circularizer === 'running' ? (
+                                          {!canExecuteTest('circularizer') ? (
+                                          <>
+                                             <Lock className="w-3 h-3" />
+                                             Bloqueado
+                                          </>
+                                          ) : testExecutionStates.circularizer === 'running' ? (
                                           <>
                                              <Loader2 className="w-3 h-3 animate-spin" />
                                              Ejecutando...
                                           </>
                                           ) : testExecutionStates.circularizer === 'completed' ? (
                                               <>
-                                             <Play className="w-3 h-3" />
-                                             Re-ejecutar
+                                             <CheckCircle className="w-3 h-3" />
+                                             Hecho
                                               </>
                                           ) : (
                                              <>
@@ -1902,10 +2283,29 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                  {/* Fila 2: Descripción y última ejecución */}
                                  <div className="flex items-center justify-between gap-4">
                                     <div className="flex items-center gap-4 flex-1 min-w-0">
-                                       <p className="text-xs text-stone-500 truncate">Selecciona proveedores clave para enviar cartas de confirmación</p>
+                                       <p className={`text-xs truncate ${!canExecuteTest('circularizer') ? 'text-stone-300' : 'text-stone-500'}`}>
+                                          {!canExecuteTest('circularizer') 
+                                             ? getBlockedReason('circularizer')
+                                             : 'Selecciona proveedores clave para enviar cartas de confirmación'}
+                                       </p>
+                                       {canExecuteTest('circularizer') && (
                                        <div className="text-xs text-stone-500 whitespace-nowrap flex-shrink-0">
                                           <span className="font-medium">Última ejecución:</span>{' '}
                                           <span className="font-mono text-stone-400">{testLastRun.circularizer || '-'}</span>
+                                       </div>
+                                       )}
+                                       <AnimatePresence>
+                                       {testExecutionStates.circularizer === 'completed' && (
+                                           <motion.span 
+                                               initial={{ opacity: 0, x: -10 }}
+                                               animate={{ opacity: 1, x: 0 }}
+                                               className="font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100 text-[10px] inline-flex items-center gap-1.5 whitespace-nowrap flex-shrink-0"
+                                           >
+                                               <AlertCircle className="w-3 h-3" />
+                                               12 proveedores pendientes de revisar
+                                           </motion.span>
+                                       )}
+                                       </AnimatePresence>
                                        </div>
                                     </div>
                                  </div>
@@ -1917,22 +2317,45 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                     key="tester"
                               initial={{ opacity: 0 }}
                                     onClick={() => testExecutionStates.tester !== 'not_executed' && setSelectedTestId('tester')}
-                              className="w-full border border-stone-200 rounded-sm bg-white shadow-sm transition-all cursor-pointer hover:shadow-md hover:border-stone-300"
+                              className={`w-full border rounded-sm bg-white shadow-sm transition-all ${
+                                 !canExecuteTest('tester') 
+                                    ? 'border-stone-100 cursor-not-allowed' 
+                                    : testExecutionStates.tester !== 'not_executed' 
+                                       ? 'border-stone-200 cursor-pointer hover:shadow-md hover:border-stone-300' 
+                                       : 'border-stone-200 cursor-default'
+                              }`}
                                     animate={{ 
-                                 opacity: 1,
+                                 opacity: !canExecuteTest('tester') ? 0.5 : 1,
                                  backgroundColor: testExecutionStates.tester === 'running' ? '#eff6ff' : '#ffffff'
                               }}
                               transition={{ duration: 0.2 }}
-                              whileHover={{ 
+                              whileHover={canExecuteTest('tester') ? { 
                                  backgroundColor: '#fafaf9',
                                  borderColor: '#d6d3d1'
-                              }}
+                              } : {}}
                            >
-                              <div className="p-4">
+                              <div className="p-4 flex gap-4">
+                                 {/* Order Number */}
+                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-serif text-lg font-medium ${
+                                    !canExecuteTest('tester')
+                                       ? 'bg-stone-50 text-stone-300 border-2 border-stone-100'
+                                       : testExecutionStates.tester === 'completed'
+                                       ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-200'
+                                       : testExecutionStates.tester === 'running'
+                                       ? 'bg-blue-100 text-blue-700 border-2 border-blue-200'
+                                       : 'bg-stone-100 text-stone-500 border-2 border-stone-200'
+                                 }`}>
+                                    {!canExecuteTest('tester') 
+                                       ? <Lock className="w-4 h-4" />
+                                       : testExecutionStates.tester === 'completed' 
+                                       ? <CheckCircle className="w-5 h-5" /> 
+                                       : '4'}
+                                 </div>
+                                 <div className="flex-1 min-w-0">
                                  {/* Fila 1: Título, badge agente, estado y botón */}
                                  <div className="flex items-center justify-between gap-4 mb-2">
                                     <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                                       <h3 className="text-lg font-serif text-stone-900">Muestreo proveedores</h3>
+                                       <h3 className={`text-lg font-serif ${!canExecuteTest('tester') ? 'text-stone-400' : 'text-stone-900'}`}>Muestreo proveedores</h3>
                                        <span className="text-xs font-medium text-stone-600 bg-stone-100 px-2 py-0.5 rounded-md border border-stone-200 whitespace-nowrap">Tester</span>
                                        <motion.div
                                           key={testExecutionStates.tester}
@@ -1941,38 +2364,49 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                           transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                        >
                                           <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium inline-flex items-center gap-1.5 whitespace-nowrap ${
-                                              testExecutionStates.tester === 'completed'
+                                              !canExecuteTest('tester')
+                                                 ? 'bg-stone-50 text-stone-300 border-stone-100'
+                                                 : testExecutionStates.tester === 'completed'
                                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
                                                  : testExecutionStates.tester === 'running'
                                                  ? 'bg-blue-50 text-blue-700 border-blue-100'
                                                  : 'bg-stone-50 text-stone-400 border-stone-200'
                                            }`}>
+                                              {!canExecuteTest('tester') && <Lock className="w-3 h-3" />}
                                               {testExecutionStates.tester === 'running' && <Loader2 className="w-3 h-3 animate-spin" />}
-                                              {testExecutionStates.tester === 'completed' ? 'Completado' :
+                                              {!canExecuteTest('tester') ? 'Bloqueado' :
+                                               testExecutionStates.tester === 'completed' ? 'Completado' :
                                                testExecutionStates.tester === 'running' ? 'Ejecutando...' :
                                                'No iniciada'}
                                            </span>
                                        </motion.div>
                                     </div>
                                        <motion.button
-                                          whileTap={{ scale: 0.95 }}
-                                          onClick={(e) => { e.stopPropagation(); handleOpenExecutionPlan('tester'); }}
-                                          disabled={testExecutionStates.tester === 'running'}
+                                          whileTap={canExecuteTest('tester') && testExecutionStates.tester !== 'completed' ? { scale: 0.95 } : {}}
+                                          onClick={(e) => { e.stopPropagation(); if (canExecuteTest('tester') && testExecutionStates.tester !== 'completed') handleOpenExecutionPlan('tester'); }}
+                                          disabled={!canExecuteTest('tester') || testExecutionStates.tester === 'running' || testExecutionStates.tester === 'completed'}
                                        className={`px-3 py-1.5 text-xs font-medium rounded transition-all inline-flex items-center gap-1.5 shadow-sm flex-shrink-0 ${
-                                              testExecutionStates.tester === 'completed'
-                                              ? 'bg-white border border-stone-200 text-stone-700 hover:bg-stone-50'
+                                              !canExecuteTest('tester')
+                                              ? 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed'
+                                              : testExecutionStates.tester === 'completed'
+                                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default'
                                               : 'bg-stone-900 text-white hover:bg-black'
                                        } ${testExecutionStates.tester === 'running' ? 'opacity-70 cursor-not-allowed' : ''}`}
                                        >
-                                          {testExecutionStates.tester === 'running' ? (
+                                          {!canExecuteTest('tester') ? (
+                                          <>
+                                             <Lock className="w-3 h-3" />
+                                             Bloqueado
+                                          </>
+                                          ) : testExecutionStates.tester === 'running' ? (
                                           <>
                                              <Loader2 className="w-3 h-3 animate-spin" />
                                              Ejecutando...
                                           </>
                                           ) : testExecutionStates.tester === 'completed' ? (
                                               <>
-                                             <Play className="w-3 h-3" />
-                                             Re-ejecutar
+                                             <CheckCircle className="w-3 h-3" />
+                                             Hecho
                                               </>
                                           ) : (
                                              <>
@@ -1986,15 +2420,34 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                  {/* Fila 2: Descripción y última ejecución */}
                                  <div className="flex items-center justify-between gap-4">
                                     <div className="flex items-center gap-4 flex-1 min-w-0">
-                                       <p className="text-xs text-stone-500 truncate">Selecciona una muestra de facturas para revisión manual</p>
+                                       <p className={`text-xs truncate ${!canExecuteTest('tester') ? 'text-stone-300' : 'text-stone-500'}`}>
+                                          {!canExecuteTest('tester') 
+                                             ? getBlockedReason('tester')
+                                             : 'Selecciona una muestra de facturas para revisión manual'}
+                                       </p>
+                                       {canExecuteTest('tester') && (
                                        <div className="text-xs text-stone-500 whitespace-nowrap flex-shrink-0">
                                           <span className="font-medium">Última ejecución:</span>{' '}
                                           <span className="font-mono text-stone-400">{testLastRun.tester || '-'}</span>
                                        </div>
+                                       )}
+                                       <AnimatePresence>
+                                       {testExecutionStates.tester === 'completed' && (
+                                           <motion.span 
+                                               initial={{ opacity: 0, x: -10 }}
+                                               animate={{ opacity: 1, x: 0 }}
+                                               className="font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100 text-[10px] inline-flex items-center gap-1.5 whitespace-nowrap flex-shrink-0"
+                                           >
+                                               <AlertCircle className="w-3 h-3" />
+                                               25 facturas pendientes de revisar
+                                           </motion.span>
+                                       )}
+                                       </AnimatePresence>
+                                    </div>
                                     </div>
                                  </div>
                               </div>
-                        </motion.div>
+                           </motion.div>
                         </div>
                      </div>
                   )}
@@ -2044,7 +2497,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                        <span className="text-[9px] px-1.5 py-0.5 bg-stone-100 text-stone-500 rounded border border-stone-200 font-medium uppercase tracking-wider">IA</span>
                                     </div>
                                     <ChevronRight className="w-4 h-4 text-stone-300 group-hover:text-stone-500 transition-colors" />
-                                 </div>
+                                       </div>
                                  <p className="text-xs text-stone-500 leading-relaxed">
                                     Compara saldos con el ejercicio anterior y genera un informe de variaciones automáticamente.
                                  </p>
@@ -2061,7 +2514,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                        <span className="text-[9px] px-1.5 py-0.5 bg-stone-100 text-stone-500 rounded border border-stone-200 font-medium uppercase tracking-wider">IA</span>
                                     </div>
                                     <ChevronRight className="w-4 h-4 text-stone-300 group-hover:text-stone-500 transition-colors" />
-                                 </div>
+                                       </div>
                                  <p className="text-xs text-stone-500 leading-relaxed">
                                     Genera automáticamente el informe de conclusiones basado en todas las pruebas y hallazgos del área.
                                  </p>
@@ -2425,7 +2878,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                     Corrige los errores antes de continuar
                                 </span>
                             ) : (
-                                <span>Todo parece correcto</span>
+                                <span>{fileStates[previewFileType] === 'uploaded' ? 'Datos cargados correctamente' : 'Todo parece correcto'}</span>
                             )}
                         </div>
                         <div className="flex gap-3">
@@ -2433,8 +2886,9 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                onClick={handleCancelPreview}
                                className="px-4 py-2 text-xs font-medium text-stone-600 hover:text-stone-900 bg-white border border-stone-200 rounded-sm hover:border-stone-300 transition-colors shadow-sm"
                             >
-                               Cancelar
+                               {fileStates[previewFileType] === 'uploaded' ? 'Cerrar' : 'Cancelar'}
                             </button>
+                            {fileStates[previewFileType] !== 'uploaded' && (
                             <button
                                onClick={handleConfirmUpload}
                                disabled={fileErrors[previewFileType].length > 0}
@@ -2443,6 +2897,7 @@ export const EngagementAreaDetail: React.FC<EngagementAreaDetailProps> = ({ show
                                <CheckCircle2 className="w-4 h-4" />
                                Confirmar y subir
                             </button>
+                            )}
                         </div>
                      </div>
                   </motion.div>

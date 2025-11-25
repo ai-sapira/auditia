@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Plus, Users, Settings, Sparkles, Briefcase } from 'lucide-react';
+import { ChevronDown, Users, Settings, Sparkles, Briefcase } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ViewLevel } from '../types';
 
@@ -145,10 +145,6 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({ viewLevel, selecte
          
          {/* Quick Actions */}
          <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1.5 px-3 py-1.5 border border-stone-200 rounded hover:border-stone-900 transition-colors text-[11px] font-medium text-stone-600 hover:text-stone-900">
-               <Plus className="w-3 h-3" />
-               {t('top_nav.btn_create')}
-            </button>
             <button className="p-1.5 text-stone-400 hover:text-stone-900 transition-colors" title={t('top_nav.btn_invite')}>
                <Users className="w-4 h-4" />
             </button>

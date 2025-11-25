@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { ChevronLeft, TrendingUp, TrendingDown, FileText, Sparkles, Loader2, CheckCircle, AlertTriangle, Download, Send, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -88,14 +89,35 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
     setIsGeneratingReport(true);
     setGeneratedText('');
     
-    // Simulate AI typing effect
-    let index = 0;
+    // Split report into lines for cleaner typing effect (like ConclusionsWriter)
+    const lines = fullReportText.split('\n');
+    let lineIndex = 0;
+    let charIndex = 0;
+    
     const typingInterval = setInterval(() => {
-      if (index < fullReportText.length) {
-        // Add characters in chunks for more realistic typing
-        const chunkSize = Math.floor(Math.random() * 5) + 3;
-        setGeneratedText(prev => prev + fullReportText.slice(index, index + chunkSize));
-        index += chunkSize;
+      if (lineIndex < lines.length) {
+        const currentLine = lines[lineIndex];
+        
+        if (charIndex < currentLine.length) {
+          // Add characters within the current line
+          const charsToAdd = Math.min(
+            Math.floor(Math.random() * 4) + 3, // 3-6 chars at a time
+            currentLine.length - charIndex
+          );
+          charIndex += charsToAdd;
+          
+          // Rebuild text from completed lines + current progress
+          const newText = lines.slice(0, lineIndex).join('\n') + 
+                         (lineIndex > 0 ? '\n' : '') + 
+                         currentLine.slice(0, charIndex);
+          setGeneratedText(newText);
+        } else {
+          // Move to next line
+          lineIndex++;
+          charIndex = 0;
+          const newText = lines.slice(0, lineIndex).join('\n');
+          setGeneratedText(newText);
+        }
         
         // Auto-scroll to bottom
         if (reportRef.current) {
@@ -104,8 +126,9 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
       } else {
         clearInterval(typingInterval);
         setIsGeneratingReport(false);
+        setGeneratedText(fullReportText); // Ensure complete text
       }
-    }, 30);
+    }, 15);
   };
 
   return (
@@ -334,30 +357,69 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
                   )}
                   
                   {/* Rendered Markdown-like content */}
-                  <div className="text-xs text-neutral-700 whitespace-pre-wrap leading-relaxed font-mono">
+                  <div className="text-neutral-700 leading-relaxed">
                     {generatedText.split('\n').map((line, i) => {
+                      // Process inline bold formatting
+                      const processInline = (text: string): React.ReactNode => {
+                        const parts: React.ReactNode[] = [];
+                        let remaining = text;
+                        let key = 0;
+                        while (remaining.length > 0) {
+                          const boldMatch = remaining.match(/\*\*([^*]+)\*\*/);
+                          if (boldMatch && boldMatch.index !== undefined) {
+                            if (boldMatch.index > 0) {
+                              parts.push(<span key={key++}>{remaining.slice(0, boldMatch.index)}</span>);
+                            }
+                            parts.push(<strong key={key++} className="font-semibold text-neutral-900">{boldMatch[1]}</strong>);
+                            remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
+                          } else {
+                            parts.push(<span key={key++}>{remaining}</span>);
+                            break;
+                          }
+                        }
+                        return parts.length > 0 ? <>{parts}</> : text;
+                      };
+
+                      // Section titles (## )
                       if (line.startsWith('## ')) {
-                        return <h2 key={i} className="text-lg font-serif text-neutral-900 mt-6 mb-4 font-normal">{line.replace('## ', '')}</h2>;
+                        return <h2 key={i} className="text-lg font-serif text-neutral-900 mt-6 mb-3 pb-2 border-b border-neutral-200">{line.slice(3)}</h2>;
                       }
+                      // Subsection titles (### )
                       if (line.startsWith('### ')) {
-                        return <h3 key={i} className="text-sm font-medium text-neutral-800 mt-4 mb-2">{line.replace('### ', '')}</h3>;
+                        return <h3 key={i} className="text-sm font-semibold text-neutral-800 mt-5 mb-2">{line.slice(4)}</h3>;
                       }
-                      if (line.startsWith('**') && line.endsWith('**')) {
-                        return <p key={i} className="font-semibold text-neutral-900 mt-3">{line.replace(/\*\*/g, '')}</p>;
-                      }
-                      if (line.startsWith('- ')) {
-                        return <li key={i} className="ml-4 text-neutral-600">{line.replace('- ', '')}</li>;
-                      }
+                      // Horizontal rule
                       if (line.startsWith('---')) {
-                        return <hr key={i} className="my-4 border-neutral-200" />;
+                        return <hr key={i} className="my-6 border-neutral-200" />;
                       }
-                      if (line.startsWith('*') && line.endsWith('*')) {
-                        return <p key={i} className="text-neutral-400 italic text-[10px]">{line.replace(/\*/g, '')}</p>;
+                      // Numbered list with checkmarks (1. ✓)
+                      if (/^\d+\.\s*✓/.test(line)) {
+                        const content = line.replace(/^\d+\.\s*✓\s*/, '');
+                        return (
+                          <div key={i} className="flex items-start gap-2 ml-4 my-1.5 text-[#4A5D4A]">
+                            <CheckCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                            <span className="text-neutral-600 text-[13px]">{processInline(content)}</span>
+                          </div>
+                        );
                       }
+                      // Regular numbered list
+                      if (/^\d+\.\s/.test(line)) {
+                        return <li key={i} className="ml-6 text-neutral-600 list-decimal my-1 text-[13px]">{processInline(line.replace(/^\d+\.\s/, ''))}</li>;
+                      }
+                      // List items
+                      if (line.startsWith('- ')) {
+                        return <li key={i} className="ml-6 text-neutral-600 list-disc my-1 text-[13px]">{processInline(line.slice(2))}</li>;
+                      }
+                      // Italics (signature lines) - single asterisks
+                      if (line.startsWith('*') && line.endsWith('*') && !line.startsWith('**')) {
+                        return <p key={i} className="text-neutral-400 italic text-[11px] mt-1">{line.slice(1, -1)}</p>;
+                      }
+                      // Empty line
                       if (line.trim() === '') {
-                        return <br key={i} />;
+                        return <div key={i} className="h-2" />;
                       }
-                      return <p key={i} className="text-neutral-600 font-sans">{line}</p>;
+                      // Regular paragraph with inline formatting
+                      return <p key={i} className="text-neutral-600 text-[13px] leading-relaxed my-1">{processInline(line)}</p>;
                     })}
                     
                     {/* Blinking cursor when typing */}
@@ -388,53 +450,60 @@ Las variaciones identificadas **no superan el umbral de materialidad** estableci
           </div>
        </div>
 
-       {/* Send Modal */}
-       <AnimatePresence>
-         {showSendModal && (
-           <motion.div
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 1 }}
-             exit={{ opacity: 0 }}
-             className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-             onClick={() => setShowSendModal(false)}
-           >
+       {/* Send Modal - Using Portal */}
+       {ReactDOM.createPortal(
+         <AnimatePresence>
+           {showSendModal && (
              <motion.div
-               initial={{ scale: 0.95, opacity: 0 }}
-               animate={{ scale: 1, opacity: 1 }}
-               exit={{ scale: 0.95, opacity: 0 }}
-               className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6"
-               onClick={e => e.stopPropagation()}
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
+               onClick={() => setShowSendModal(false)}
              >
-               <h3 className="text-lg font-serif text-neutral-900 mb-2">Enviar informe al cliente</h3>
-               <p className="text-sm text-neutral-500 mb-4">
-                 El informe de revisión analítica será enviado al cliente para su revisión. 
-                 Se creará automáticamente una solicitud de confirmación.
-               </p>
-               
-               <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 mb-4">
-                 <div className="text-xs text-neutral-500 mb-2">Destinatario:</div>
-                 <div className="text-sm font-medium text-neutral-900">Marta García (CFO) - Grupo Alfa</div>
-               </div>
-               
-               <div className="flex gap-3">
-                 <button
-                   onClick={() => setShowSendModal(false)}
-                   className="flex-1 px-4 py-2 border border-neutral-200 text-neutral-600 text-sm font-medium rounded-lg hover:bg-neutral-50 transition-colors"
-                 >
-                   Cancelar
-                 </button>
-                 <button
-                   onClick={() => setShowSendModal(false)}
-                   className="flex-1 px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2"
-                 >
-                   <Send className="w-4 h-4" />
-                   Enviar
-                 </button>
-               </div>
+               <motion.div
+                 initial={{ scale: 0.95, opacity: 0 }}
+                 animate={{ scale: 1, opacity: 1 }}
+                 exit={{ scale: 0.95, opacity: 0 }}
+                 className="bg-white rounded-sm shadow-2xl max-w-md w-full"
+                 onClick={e => e.stopPropagation()}
+               >
+                 <div className="p-6 border-b border-neutral-100">
+                   <h3 className="text-lg font-serif text-neutral-900 mb-2">Enviar informe al cliente</h3>
+                   <p className="text-xs text-neutral-500">
+                     El informe de revisión analítica será enviado al cliente para su revisión. 
+                     Se creará automáticamente una solicitud de confirmación.
+                   </p>
+                 </div>
+                 
+                 <div className="p-6">
+                   <div className="bg-neutral-50 border border-neutral-200 rounded-sm p-4">
+                     <div className="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">Destinatario</div>
+                     <div className="text-sm font-medium text-neutral-900">Marta García (CFO)</div>
+                     <div className="text-xs text-neutral-500">Grupo Alfa</div>
+                   </div>
+                 </div>
+                 
+                 <div className="px-6 py-4 bg-neutral-50 border-t border-neutral-100 flex gap-3">
+                   <button
+                     onClick={() => setShowSendModal(false)}
+                     className="flex-1 px-4 py-2 border border-neutral-200 text-neutral-600 text-xs font-medium rounded-sm hover:bg-white transition-colors"
+                   >
+                     Cancelar
+                   </button>
+                   <button
+                     onClick={() => setShowSendModal(false)}
+                     className="flex-1 px-4 py-2 bg-neutral-900 text-white text-xs font-medium rounded-sm hover:bg-black transition-colors flex items-center justify-center gap-2"
+                   >
+                     Enviar
+                   </button>
+                 </div>
+               </motion.div>
              </motion.div>
-           </motion.div>
-         )}
-       </AnimatePresence>
+           )}
+         </AnimatePresence>,
+         document.body
+       )}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { 
   ChevronLeft, 
   FileText, 
@@ -857,72 +858,75 @@ Ref: INF-2024-GALFA-PROV-001`;
         </div>
       )}
 
-      {/* Export Modal */}
-      <AnimatePresence>
-        {showExportModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setShowExportModal(false)}
-          >
+      {/* Export Modal - Using Portal */}
+      {ReactDOM.createPortal(
+        <AnimatePresence>
+          {showExportModal && (
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white rounded-lg shadow-2xl max-w-md w-full"
-              onClick={e => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
+              onClick={() => setShowExportModal(false)}
             >
-              <div className="px-6 py-5 border-b border-neutral-100">
-                <h3 className="text-lg font-serif text-neutral-900">Exportar informe</h3>
-                <p className="text-sm text-neutral-500">Selecciona el formato de exportación</p>
-              </div>
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-white rounded-sm shadow-2xl max-w-md w-full"
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="px-6 py-5 border-b border-neutral-100">
+                  <h3 className="text-lg font-serif text-neutral-900">Exportar informe</h3>
+                  <p className="text-sm text-neutral-500">Selecciona el formato de exportación</p>
+                </div>
 
-              <div className="p-6 space-y-3">
-                <button className="w-full p-4 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all text-left flex items-center gap-4">
-                  <div className="w-12 h-12 bg-[#E8EDEF] rounded-lg flex items-center justify-center text-[#4A5D6A] font-bold text-lg">
-                    W
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-neutral-900 block">Microsoft Word (.docx)</span>
-                    <span className="text-xs text-neutral-500">Formato editable con estilos</span>
-                  </div>
-                </button>
-                
-                <button className="w-full p-4 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all text-left flex items-center gap-4">
-                  <div className="w-12 h-12 bg-[#F0E8E6] rounded-lg flex items-center justify-center text-[#8B5A50] font-bold text-lg">
-                    PDF
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-neutral-900 block">PDF (.pdf)</span>
-                    <span className="text-xs text-neutral-500">Formato de lectura final</span>
-                  </div>
-                </button>
+                <div className="p-6 space-y-3">
+                  <button className="w-full p-4 border border-neutral-200 rounded-sm hover:border-neutral-300 hover:bg-neutral-50 transition-all text-left flex items-center gap-4">
+                    <div className="w-10 h-10 bg-neutral-100 rounded-sm flex items-center justify-center text-neutral-600 font-semibold text-sm">
+                      W
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-neutral-900 block">Microsoft Word (.docx)</span>
+                      <span className="text-xs text-neutral-500">Formato editable con estilos</span>
+                    </div>
+                  </button>
+                  
+                  <button className="w-full p-4 border border-neutral-200 rounded-sm hover:border-neutral-300 hover:bg-neutral-50 transition-all text-left flex items-center gap-4">
+                    <div className="w-10 h-10 bg-neutral-100 rounded-sm flex items-center justify-center text-neutral-600 font-semibold text-sm">
+                      PDF
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-neutral-900 block">PDF (.pdf)</span>
+                      <span className="text-xs text-neutral-500">Formato de lectura final</span>
+                    </div>
+                  </button>
 
-                <button className="w-full p-4 border border-neutral-200 rounded-lg hover:border-neutral-300 hover:bg-neutral-50 transition-all text-left flex items-center gap-4">
-                  <div className="w-12 h-12 bg-[#E8EDE8] rounded-lg flex items-center justify-center text-[#4A5D4A]">
-                    <Send className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-neutral-900 block">Enviar al Manager</span>
-                    <span className="text-xs text-neutral-500">Para revisión y aprobación</span>
-                  </div>
-                </button>
-              </div>
+                  <button className="w-full p-4 border border-neutral-200 rounded-sm hover:border-neutral-300 hover:bg-neutral-50 transition-all text-left flex items-center gap-4">
+                    <div className="w-10 h-10 bg-neutral-100 rounded-sm flex items-center justify-center text-neutral-500">
+                      <Send className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-neutral-900 block">Enviar al Manager</span>
+                      <span className="text-xs text-neutral-500">Para revisión y aprobación</span>
+                    </div>
+                  </button>
+                </div>
 
-              <div className="px-6 py-4 bg-neutral-50 border-t border-neutral-100">
-                <button
-                  onClick={() => setShowExportModal(false)}
-                  className="w-full px-4 py-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
-                >
-                  Cancelar
-                </button>
-              </div>
+                <div className="px-6 py-4 bg-neutral-50 border-t border-neutral-100 flex gap-3">
+                  <button
+                    onClick={() => setShowExportModal(false)}
+                    className="flex-1 px-4 py-2 text-xs font-medium text-neutral-600 hover:text-neutral-900 border border-neutral-200 rounded-sm hover:bg-white transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };

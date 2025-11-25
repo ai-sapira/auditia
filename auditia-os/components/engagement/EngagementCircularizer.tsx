@@ -883,106 +883,110 @@ export const EngagementCircularizer: React.FC<EngagementCircularizerProps> = ({ 
          </div>
        )}
 
-       {/* Signature Modal */}
-       <AnimatePresence>
-         {showSignatureModal && (
-           <motion.div
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 1 }}
-             exit={{ opacity: 0 }}
-             className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-             onClick={() => !isSending && setShowSignatureModal(false)}
-           >
+       {/* Signature Modal - Rendered via Portal for full-screen overlay */}
+       {typeof document !== 'undefined' && createPortal(
+         <AnimatePresence>
+           {showSignatureModal && (
              <motion.div
-               initial={{ scale: 0.95, opacity: 0 }}
-               animate={{ scale: 1, opacity: 1 }}
-               exit={{ scale: 0.95, opacity: 0 }}
-               className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6"
-               onClick={e => e.stopPropagation()}
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               className="fixed inset-0 bg-black/50 flex items-center justify-center p-4"
+               style={{ zIndex: 9999 }}
+               onClick={() => !isSending && setShowSignatureModal(false)}
              >
-               {sentSuccess ? (
-                 <div className="text-center py-8">
-                   <motion.div
-                     initial={{ scale: 0 }}
-                     animate={{ scale: 1 }}
-                     className="w-16 h-16 bg-[#E8EDE8] rounded-full flex items-center justify-center mx-auto mb-4"
-                   >
-                     <CheckCircle className="w-8 h-8 text-[#4A5D4A]" />
-                   </motion.div>
-                   <h3 className="text-lg font-serif text-neutral-900 mb-2">¡Enviado correctamente!</h3>
-                   <p className="text-sm text-neutral-500">Las circularizaciones han sido enviadas para firma y aprobación.</p>
-                 </div>
-               ) : (
-                 <>
-                   <div className="flex justify-between items-start mb-6">
-                     <div>
-                       <h3 className="text-lg font-serif text-neutral-900">Confirmar envío para firma</h3>
-                       <p className="text-sm text-neutral-500 mt-1">Se enviarán {selectedVendors.length} circularizaciones al cliente para su firma y aprobación.</p>
+               <motion.div
+                 initial={{ scale: 0.95, opacity: 0 }}
+                 animate={{ scale: 1, opacity: 1 }}
+                 exit={{ scale: 0.95, opacity: 0 }}
+                 className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6"
+                 onClick={e => e.stopPropagation()}
+               >
+                 {sentSuccess ? (
+                   <div className="text-center py-8">
+                     <motion.div
+                       initial={{ scale: 0 }}
+                       animate={{ scale: 1 }}
+                       className="w-16 h-16 bg-[#E8EDE8] rounded-full flex items-center justify-center mx-auto mb-4"
+                     >
+                       <CheckCircle className="w-8 h-8 text-[#4A5D4A]" />
+                     </motion.div>
+                     <h3 className="text-lg font-serif text-neutral-900 mb-2">¡Enviado correctamente!</h3>
+                     <p className="text-sm text-neutral-500">Las circularizaciones han sido enviadas para firma y aprobación.</p>
+                   </div>
+                 ) : (
+                   <>
+                     <div className="flex justify-between items-start mb-6">
+                       <div>
+                         <h3 className="text-lg font-serif text-neutral-900">Confirmar envío para firma</h3>
+                         <p className="text-sm text-neutral-500 mt-1">Se enviarán {selectedVendors.length} circularizaciones al cliente para su firma y aprobación.</p>
+                       </div>
+                       <button 
+                         onClick={() => setShowSignatureModal(false)}
+                         className="p-1 hover:bg-neutral-100 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors"
+                         disabled={isSending}
+                       >
+                         <X className="w-5 h-5" />
+                       </button>
                      </div>
-                     <button 
-                       onClick={() => setShowSignatureModal(false)}
-                       className="p-1 hover:bg-neutral-100 rounded-full text-neutral-400 hover:text-neutral-900 transition-colors"
-                       disabled={isSending}
-                     >
-                       <X className="w-5 h-5" />
-                     </button>
-                   </div>
 
-                   <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 mb-6">
-                     <div className="flex items-center gap-3 mb-3">
-                       <Users className="w-5 h-5 text-neutral-400" />
-                       <span className="text-sm font-medium text-neutral-900">Proveedores seleccionados:</span>
+                     <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 mb-6">
+                       <div className="flex items-center gap-3 mb-3">
+                         <Users className="w-5 h-5 text-neutral-400" />
+                         <span className="text-sm font-medium text-neutral-900">Proveedores seleccionados:</span>
+                       </div>
+                       <ul className="space-y-1 pl-8">
+                         {selectedVendors.map(id => {
+                           const vendor = vendors.find(v => v.id === id);
+                           return (
+                             <li key={id} className="text-xs text-neutral-600 flex justify-between">
+                               <span>{vendor?.name}</span>
+                               <span className="font-mono text-neutral-500">{vendor?.balance.toLocaleString('es-ES')} €</span>
+                             </li>
+                           );
+                         })}
+                       </ul>
                      </div>
-                     <ul className="space-y-1 pl-8">
-                       {selectedVendors.map(id => {
-                         const vendor = vendors.find(v => v.id === id);
-                         return (
-                           <li key={id} className="text-xs text-neutral-600 flex justify-between">
-                             <span>{vendor?.name}</span>
-                             <span className="font-mono text-neutral-500">{vendor?.balance.toLocaleString('es-ES')} €</span>
-                           </li>
-                         );
-                       })}
-                     </ul>
-                   </div>
 
-                   <div className="flex items-center gap-2 p-3 bg-[#FDFAF6] border border-[#EDE5D8] rounded-lg mb-6">
-                     <AlertCircle className="w-4 h-4 text-[#8B7355] shrink-0" />
-                     <p className="text-xs text-[#8B7355]">El cliente recibirá un email para revisar y firmar las cartas antes del envío a los proveedores.</p>
-                   </div>
+                     <div className="flex items-center gap-2 p-3 bg-[#FDFAF6] border border-[#EDE5D8] rounded-lg mb-6">
+                       <AlertCircle className="w-4 h-4 text-[#8B7355] shrink-0" />
+                       <p className="text-xs text-[#8B7355]">El cliente recibirá un email para revisar y firmar las cartas antes del envío a los proveedores.</p>
+                     </div>
 
-                   <div className="flex gap-3">
-                     <button
-                       onClick={() => setShowSignatureModal(false)}
-                       disabled={isSending}
-                       className="flex-1 px-4 py-2 border border-neutral-200 text-neutral-600 text-sm font-medium rounded-lg hover:bg-neutral-50 transition-colors disabled:opacity-50"
-                     >
-                       Cancelar
-                     </button>
-                     <button
-                       onClick={handleConfirmSignature}
-                       disabled={isSending}
-                       className="flex-1 px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-                     >
-                       {isSending ? (
-                         <>
-                           <Loader2 className="w-4 h-4 animate-spin" />
-                           Enviando...
-                         </>
-                       ) : (
-                         <>
-                           <Send className="w-4 h-4" />
-                           Confirmar envío
-                         </>
-                       )}
-                     </button>
-                   </div>
-                 </>
-               )}
+                     <div className="flex gap-3">
+                       <button
+                         onClick={() => setShowSignatureModal(false)}
+                         disabled={isSending}
+                         className="flex-1 px-4 py-2 border border-neutral-200 text-neutral-600 text-sm font-medium rounded-lg hover:bg-neutral-50 transition-colors disabled:opacity-50"
+                       >
+                         Cancelar
+                       </button>
+                       <button
+                         onClick={handleConfirmSignature}
+                         disabled={isSending}
+                         className="flex-1 px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                       >
+                         {isSending ? (
+                           <>
+                             <Loader2 className="w-4 h-4 animate-spin" />
+                             Enviando...
+                           </>
+                         ) : (
+                           <>
+                             <Send className="w-4 h-4" />
+                             Confirmar envío
+                           </>
+                         )}
+                       </button>
+                     </div>
+                   </>
+                 )}
+               </motion.div>
              </motion.div>
-           </motion.div>
-         )}
-       </AnimatePresence>
+           )}
+         </AnimatePresence>,
+         document.body
+       )}
 
       {/* Letter Preview Modal - Rendered via Portal for full-screen overlay */}
       {typeof document !== 'undefined' && createPortal(
